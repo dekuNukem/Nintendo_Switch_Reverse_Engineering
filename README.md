@@ -2,6 +2,10 @@
 
 I'm just going to dump all my discoveries here, and hopefully they would be useful to the Nintendo Switch community.
 
+If you think something is wrong, have some observations that I might have missed, or just have general questions please feel free to ask here.
+
+If you want to use the information here somewhere else, feel free to do so, but please credit me if possible.
+
 ## Left Joycon PCB Layout and test points
 
 ![Alt text](http://i.imgur.com/7Ui8lFv.jpg)
