@@ -40,9 +40,7 @@ When attached to the console, the Joycon talks to it through a physical connecti
 
 Looking at the pins on the left Joycon, the left most one is Pin 1, and the right most one is Pin 10.
 
-And here is a capture of the docking of the left Joycon.
-
-[Click here](./logic_captures/leftjoycon_docking.logicdata) for the capture data.
+[And here](./logic_captures/leftjoycon_docking.logicdata) is a capture of the docking of the left Joycon.
 
 ![Alt text](https://i.imgur.com/iUq5RNG.png)
 
@@ -66,7 +64,7 @@ Channel mapping:
 
 * Data are on Pin 5 and 8. It appears to be simple async serial at 1.8V. console to Joycon at Pin 5, Joycon to console at Pin 8.
 
-* When first connected the baud rate is at 1000000bps, after the initial handshake the speed is switched to 3125000bps. The handshake probably exchanges information about the side of the joycon, the color, and bluetooth address etc.
+* When first connected the baud rate is at 1000000bps(!), after the initial handshake the speed is switched to 3125000bps(!!). The handshake probably exchanges information about the side of the joycon, the color, and bluetooth address etc.
 
 * Serial level of on Pin 5 (console to Joycon) is inverted(idle at GND), the serial on Pin 8 is standard.
 
