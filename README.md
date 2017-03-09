@@ -1,4 +1,4 @@
-# My effort of trying to reverse engineer Nintendo Switch(part of it anyway)
+# My Nintendo Switch reverse engineering attempts
 
 Basically I'm just going to dump all my discoveries here, and hopefully they would be useful to the Nintendo Switch community.
 
