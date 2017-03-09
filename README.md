@@ -64,7 +64,7 @@ Channel mapping:
 
 * Data are on Pin 5 and 8. It appears to be simple async serial at 1.8V. console to Joycon at Pin 5, Joycon to console at Pin 8.
 
-* When first connected the baud rate is at 1000000bps(!), after the initial handshake the speed is switched to 3125000bps(!!). The handshake probably exchanges information about the side of the joycon, the color, and bluetooth address etc.
+* When first connected the baud rate is at 1000000bps(!), after the initial handshake the speed is then switched to 3125000bps(!!). The handshake probably exchanges information about the side of the joycon, the color, and bluetooth address etc.
 
 * Serial level of on Pin 5 (console to Joycon) is inverted(idle at GND), the serial on Pin 8 is standard.
 
@@ -77,7 +77,7 @@ In normal operation the console asks Joycon for an update every 15ms (66.6fps), 
 19 01 03 08 00 92 00 01 00 00 69 2d 1f
 ```
 
-Around 4ms later, Joycon respond with a 61 bytes long answer, grouped in 14 4-byte packets, with 1 stop byte that is always 0xff.
+Around 4ms later, Joycon respond with a 61 bytes long answer, grouped in 15 4-byte packets, with 1 stop byte that is always 0xff.
 
 One sample:
 
@@ -100,15 +100,14 @@ ff 34 10 0a
 ff 
 ```
 
-Still working on decoding this...
-
-It has to contain battery level, button status, joystick position, accelerometer and gyroscope data, and maybe more.
-
 The first 8 byte is always ` 19 81 03 38 00 92 00 31 `, I'm not sure if this differs in different joycons because I only took apart one.
 
 The 16th and 17th byte (on line 5, before `65 f7`) are the button status, when a button is pressed the corresponding bit is set to 1.
 
 ![Alt text](http://i.imgur.com/H7DUmCx.png)
+
+
+Still working on decoding this... It has to contain battery level, button status, joystick position, accelerometer and gyroscope data, and maybe more.
 
 
 
