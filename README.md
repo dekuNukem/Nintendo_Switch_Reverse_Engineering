@@ -108,11 +108,12 @@ It has to contain battery level, button status, joystick position, accelerometer
 
 The first 8 byte is always ` 19 81 03 38 00 92 00 31 `, I'm not sure if this differs in different joycons because I only took apart one.
 
-The 16th and 17th byte (on line 5, before `65 f7`) are the button status.
+The 16th and 17th byte (on line 5, before `65 f7`) are the button status, when a button is pressed the corresponding bit is set to 1.
+
+![Alt text](http://i.imgur.com/H7DUmCx.png)
 
 
 
-![Alt text]()
 ![Alt text]()
 ![Alt text]()
 ![Alt text]()
