@@ -4,7 +4,7 @@ I'm just going to dump all my discoveries here, and hopefully they would be usef
 
 If you think something is wrong, have some observations that I might have missed, or just have general questions please feel free to ask here.
 
-If you want to use the information here somewhere else, feel free to do so, but please credit me if possible.
+If you want to use the information here somewhere else, feel free to do so, but please credit me (dekuNukem) if possible.
 
 ## Left Joycon PCB Layout and test points
 
