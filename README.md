@@ -40,7 +40,13 @@ When attached to the console, the Joycon communicates through a physical connect
 
 Looking at the pins on the joycon, the left most one is Pin 1, and the right most one is Pin 10. Pin 1, 2 and 7 is GND.
 
+And here is a capture of the docking of the left joycon.
+
+[Click here](./logic_captures/leftjoycon_docking.logicdata) for the capture data.
+
 ![Alt text](https://i.imgur.com/iUq5RNG.png)
+
+Channel mapping:
 
 | channel | joycon connector pin |
 |---------|----------------------|
@@ -51,6 +57,7 @@ Looking at the pins on the joycon, the left most one is Pin 1, and the right mos
 | 4       | 8                    |
 | 5       | 9                    |
 | 6       | 10                   |
+
 
 ![Alt text]()
 ![Alt text]()
