@@ -1,6 +1,6 @@
 # My Nintendo Switch reverse engineering attempts
 
-Basically I'm just going to dump all my discoveries here, and hopefully they would be useful to the Nintendo Switch community.
+I'm just going to dump all my discoveries here, and hopefully they would be useful to the Nintendo Switch community.
 
 ## Left Joycon PCB Layout
 
