@@ -38,9 +38,9 @@ When attached to the console, the Joycon communicates through a physical connect
 
 ![Alt text](https://i.imgur.com/52xjlRb.jpg)
 
-Looking at the pins on the joycon, the left most one is Pin 1, and the right most one is Pin 10. Pin 1, 2 and 7 is GND.
+Looking at the pins on the Joycon, the left most one is Pin 1, and the right most one is Pin 10. Pin 1, 2 and 7 is GND.
 
-And here is a capture of the docking of the left joycon.
+And here is a capture of the docking of the left Joycon.
 
 [Click here](./logic_captures/leftjoycon_docking.logicdata) for the capture data.
 
@@ -48,7 +48,7 @@ And here is a capture of the docking of the left joycon.
 
 Channel mapping:
 
-| channel | joycon connector pin |
+| channel | Joycon connector pin |
 |---------|----------------------|
 | 0       | 3                    |
 | 1       | 4                    |
@@ -58,6 +58,17 @@ Channel mapping:
 | 5       | 9                    |
 | 6       | 10                   |
 
+* Pin 4 is at constant 5V when connected, most likely for charging the Joycon battery.
+
+* Data are on Pin 5 and 8. It appears to be simple async serial at 1.8V level. Joycon to console at Pin 5, Console to Joycon at Pin 8.
+
+* When first connected the baud rate is at 1000000bps, after the initial setup the speed is switched to 3125000bps.
+
+* Serial level of on Pin 5 (console to Joycon) is inverted(idle at GND), the serial on Pin 8 is standard though.
+
+* In normal operation the console asks joycon for an update every 15ms (66.6fps)
+
+* Joycon's response is 61 bytes long, grouped in 14 4-byte packets, with 1 stop byte that is always 0xff.
 
 ![Alt text]()
 ![Alt text]()
