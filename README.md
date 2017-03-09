@@ -18,9 +18,9 @@ For the full-sized PDF [click here](./joycon_left_pcb.pdf).
 
 * There is no silkscreen marking component and test point numbers, maybe Nintendo is trying to discourage people from doing funky things to the Joycon?
 
-* Also, in a bizarre move, Nintendo didn't use the traditional "one side pulled-up and other side to ground" way of reading buttons, instead they used a keypad configuration where buttons are arranged to rows and columns. They used the keypad scanner built-in inside the BCM20734 for reading the buttons. That means it would be extremely hard to spoof button presses for TAS and twitch-plays. Maybe the Pro controller is different, need to buy one though.
+* Also, in a bizarre move, Nintendo didn't use the traditional "one side pulled-up and other side to ground" way of reading buttons, instead they used a keypad configuration where buttons are arranged to rows and columns. They used the keypad scanner built-in inside the BCM20734 with 128KHz clock for reading the buttons. That means it would be extremely hard to spoof button presses for TAS and twitch-plays. Maybe the Pro controller is different, need to buy one though.
 
-* The only button that's not part of the keypad is the joystick button. That is still activated by pulling it down to ground.
+* The only button that's not part of the keypad is the joystick button, which is still activated by pulling it down to ground.
 
 ## Left Joycon SPI flash dump
 
@@ -34,11 +34,11 @@ The SPI clock runs at 3MHz.
 
 ## Joycon Communication Protocol
 
-When attached to the console, the Joycon communicates through a physical connection instead of Bluetooth. There are 10 pins on the connector, I'm just going to arbitrarily name it like this:
+When attached to the console, the Joycon talks to console through a physical connection instead of Bluetooth. There are 10 pins on the connector, I'm just going to arbitrarily name it like this:
 
 ![Alt text](https://i.imgur.com/52xjlRb.jpg)
 
-Looking at the pins on the Joycon, the left most one is Pin 1, and the right most one is Pin 10. Pin 1, 2 and 7 is GND.
+Looking at the pins on the left Joycon, the left most one is Pin 1, and the right most one is Pin 10.
 
 And here is a capture of the docking of the left Joycon.
 
@@ -57,6 +57,8 @@ Channel mapping:
 | 4       | 8                    |
 | 5       | 9                    |
 | 6       | 10                   |
+
+* Pin 1, 2 and 7 is GND.
 
 * Pin 4 is at constant 5V when connected, most likely for charging the Joycon battery.
 
