@@ -110,7 +110,7 @@ The 16th and 17th byte (on line 5, before `65 f7`) are the button status, when a
 
 ### Joystick value
 
-Byte 19 and 20 (`f7 81` on the 5th and 6th line) are the Joystick values, most likely the raw 8-bit ADC data. Byte 19 is X while byte 20 is Y. Again, bizarrely, the X value is reversed, as in the `f7` should actually be `7f` (127 at neutral position). The Y value is correct though(0x81 is 129).
+Byte 19 and 20 (`f7 81` between 5th and 6th line) are the Joystick values, most likely the raw 8-bit ADC data. Byte 19 is X while byte 20 is Y. Again, bizarrely, the X value is reversed, as in the `f7` should actually be `7f` (127 at neutral position). The Y value is correct though (`0x81` is 129).
 
 ### The rest of them
 
@@ -118,7 +118,7 @@ Still working on decoding those... It has to contain battery level, button statu
 
 ## Ending remarks
 
-So far I only took apart one left joycon and yet to tear into the console itself, because I want to finish the Zelda first. But so far it looks like Nintendo make some really weird design decisions both in software and in hardware, probably to make what I'm doing more difficult. Anyway, I'll update this from time to time when I have new discoveries. Please share if you find this useful.
+Right now I only took apart one left joycon and yet to tear into the console itself, because I want to finish the Zelda first. But so far it looks like Nintendo make some really weird design decisions both in software and in hardware, probably to make what I'm doing more difficult. Anyway, I'll update this from time to time when I have new discoveries. Please share if you find this useful.
 
 
 ![Alt text]()
