@@ -8,7 +8,7 @@ I'm just going to dump all my discoveries here, and hopefully they would be usef
 
 For the full-sized PDF [click here](./joycon_left_pcb.pdf).
 
-## Remarks about the left Joycon PCB
+### Remarks about the left Joycon PCB
 
 * Joycon runs at 1.8V
 
