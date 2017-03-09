@@ -102,10 +102,17 @@ ff
 
 The first 8 byte is always ` 19 81 03 38 00 92 00 31 `, I'm not sure if this differs in different joycons because I only took apart one.
 
+### Button status
+
 The 16th and 17th byte (on line 5, before `65 f7`) are the button status, when a button is pressed the corresponding bit is set to 1.
 
 ![Alt text](http://i.imgur.com/H7DUmCx.png)
 
+### Joystick value
+
+Byte 19 and 20 (`f7 81` on the 5th and 6th line) are the Joystick values, most likely the raw 8-bit ADC data. Byte 19 is X while byte 20 is Y. Again, bizarrely, the X value is reversed, as in the `f7` should actually be `7f` (127 at neutral position). The Y value is correct though(0x81 is 129).
+
+### The rest of them
 
 Still working on decoding this... It has to contain battery level, button status, joystick position, accelerometer and gyroscope data, and maybe more.
 
