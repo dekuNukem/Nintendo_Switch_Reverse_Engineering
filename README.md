@@ -18,4 +18,14 @@ For the full-sized PDF [click here](./joycon_left_pcb.pdf).
 
 * The only button that's not part of the keypad is the joystick button. That is still activated by pulling it down to ground.
 
+## Left Joycon SPI flash dump
 
+![Alt text](https://i.imgur.com/2c3tmyd.png)
+
+Well it's not actually a dump, just a capture of the SPI lines when the Joycon is powered up (battery connected). I don't have time to go through it right now of course you can if you want.
+
+The SPI clock runs at 3MHz.
+
+[Click here](./logic_captures/leftjoyconspiflashpoweron.logicdata) for the capture data.
+
+## Joycon Communication Protocol
