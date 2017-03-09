@@ -32,9 +32,9 @@ The SPI clock runs at 3MHz.
 
 [Click here](./logic_captures/leftjoyconspiflashpoweron.logicdata) for the capture data.
 
-## Joycon Communication Protocol
+## Joycon to Console Communication
 
-When attached to the console, the Joycon talks to console through a physical connection instead of Bluetooth. There are 10 pins on the connector, I'm just going to arbitrarily name it like this:
+When attached to the console, the Joycon talks to it through a physical connection instead of Bluetooth. There are 10 pins on the connector, I'm just going to arbitrarily name it like this:
 
 ![Alt text](https://i.imgur.com/52xjlRb.jpg)
 
@@ -58,19 +58,50 @@ Channel mapping:
 | 5       | 9                    |
 | 6       | 10                   |
 
+### Remarks
+
 * Pin 1, 2 and 7 is GND.
 
 * Pin 4 is at constant 5V when connected, most likely for charging the Joycon battery.
 
-* Data are on Pin 5 and 8. It appears to be simple async serial at 1.8V. Console to Joycon at Pin 5, Joycon to console at Pin 8.
+* Data are on Pin 5 and 8. It appears to be simple async serial at 1.8V. console to Joycon at Pin 5, Joycon to console at Pin 8.
 
-* When first connected the baud rate is at 1000000bps, after the initial setup the speed is switched to 3125000bps.
+* When first connected the baud rate is at 1000000bps, after the initial handshake the speed is switched to 3125000bps.
 
-* Serial level of on Pin 5 (console to Joycon) is inverted(idle at GND), the serial on Pin 8 is standard though.
+* Serial level of on Pin 5 (console to Joycon) is inverted(idle at GND), the serial on Pin 8 is standard.
 
-* In normal operation the console asks joycon for an update every 15ms (66.6fps)
+### Protocol
 
-* Joycon's response is 61 bytes long, grouped in 14 4-byte packets, with 1 stop byte that is always 0xff.
+In normal operation the console asks Joycon for an update every 15ms (66.6fps), the command for requesting update is:
+
+
+```
+19 01 03 08 00 92 00 01 00 00 69 2d 1f
+```
+
+Around 4ms later, Joycon respond with a 61 bytes long answer, grouped in 14 4-byte packets, with 1 stop byte that is always 0xff.
+
+One sample:
+
+```
+19 81 03 38 
+00 92 00 31 
+00 00 e9 2e 
+30 7f 40 00 
+00 00 65 f7 
+81 00 00 00 
+c0 23 01 e2 
+ff 3e 10 0a 
+00 d6 ff d0 
+ff 23 01 e1 
+ff 37 10 0a 
+00 d6 ff cf 
+ff 29 01 dd 
+ff 34 10 0a 
+00 d7 ff ce 
+ff 
+```
+
 
 ![Alt text]()
 ![Alt text]()
