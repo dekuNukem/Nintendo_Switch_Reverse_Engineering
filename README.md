@@ -62,7 +62,7 @@ Channel mapping:
 
 * Pin 4 is at constant 5V when connected, most likely for charging the Joycon battery.
 
-* Data are on Pin 5 and 8. It appears to be simple async serial at 1.8V level. Joycon to console at Pin 5, Console to Joycon at Pin 8.
+* Data are on Pin 5 and 8. It appears to be simple async serial at 1.8V. Console to Joycon at Pin 5, Joycon to console at Pin 8.
 
 * When first connected the baud rate is at 1000000bps, after the initial setup the speed is switched to 3125000bps.
 
