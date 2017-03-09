@@ -2,7 +2,7 @@
 
 I'm just going to dump all my discoveries here, and hopefully they would be useful to the Nintendo Switch community.
 
-If you think something is wrong, have some observations that I might have missed, or just have general questions please feel free to ask here.
+If you think something is wrong, have some observations or hypothesis that I might have missed, or just general questions please feel free to ask here.
 
 If you want to use the information here somewhere else, feel free to do so, but please credit me (dekuNukem) if possible.
 
@@ -10,7 +10,9 @@ If you want to use the information here somewhere else, feel free to do so, but 
 
 ![Alt text](http://i.imgur.com/7Ui8lFv.jpg)
 
-For the full-sized PDF [click here](./joycon_left_pcb.pdf).
+The "JC" is for the 10-pin Joycon connector, see below for details.
+
+[Full-size PDF](./joycon_left_pcb.pdf).
 
 ### Remarks
 
@@ -30,7 +32,7 @@ Well it's not actually a dump, just a capture of the SPI lines when the Joycon i
 
 The SPI clock runs at 3MHz.
 
-[Click here](./logic_captures/leftjoyconspiflashpoweron.logicdata) for the capture data.
+[Raw capture data](./logic_captures/leftjoyconspiflashpoweron.logicdata).
 
 ## Joycon to Console Communication
 
