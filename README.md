@@ -64,7 +64,7 @@ Channel mapping:
 
 * Data are on Pin 5 and 8. It appears to be simple async serial at 1.8V. console to Joycon at Pin 5, Joycon to console at Pin 8.
 
-* When first connected the baud rate is at 1000000bps(!), after the initial handshake the speed is then switched to 3125000bps(!!). The handshake probably exchanges information about the side of the joycon, the color, and bluetooth address etc.
+* When first connected the baud rate is at 1000000bps(!), after the initial handshake the speed is then switched to 3125000bps(!!). The handshake probably exchanges information about the side of the Joycon, the color, and bluetooth address etc.
 
 * Serial level of on Pin 5 (console to Joycon) is inverted(idle at GND), the serial on Pin 8 is standard.
 
@@ -100,7 +100,7 @@ ff 34 10 0a
 ff 
 ```
 
-The first 8 byte is always ` 19 81 03 38 00 92 00 31 `, I'm not sure if this differs in different joycons because I only took apart one.
+The first 8 byte is always ` 19 81 03 38 00 92 00 31 `, I'm not sure if this differs in different Joycons because I only took apart one.
 
 ### Button status
 
@@ -118,5 +118,5 @@ Still working on decoding those... It has to contain battery level, button statu
 
 ## Ending remarks
 
-Right now I only took apart one left joycon and yet to tear into the console itself, because I want to finish the Zelda first. But so far it looks like Nintendo make some really weird design decisions both in software and in hardware, probably to make what I'm doing more difficult. Anyway, I'll update this from time to time when I have new discoveries. Please share if you find this useful.
+Right now I only took apart one left Joycon and yet to tear into the console itself, because I want to finish the Zelda first. But so far it looks like Nintendo make some really weird design decisions both in software and in hardware, probably to make what I'm doing more difficult. Anyway, I'll update this from time to time when I have new discoveries. Please share if you find this useful.
 
