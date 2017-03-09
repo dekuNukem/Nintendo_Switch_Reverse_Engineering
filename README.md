@@ -29,3 +29,12 @@ The SPI clock runs at 3MHz.
 [Click here](./logic_captures/leftjoyconspiflashpoweron.logicdata) for the capture data.
 
 ## Joycon Communication Protocol
+
+When attached to the console, the Joycon communicates through a physical connection instead of Bluetooth. There are 10 pins on the connector, I'm just going to arbitrarily name it like this:
+
+![Alt text](https://i.imgur.com/52xjlRb.jpg)
+
+Looking at the pins on the joycon, the left most one is Pin 1, and the right most one is Pin 10.
+
+
+![Alt text]()
