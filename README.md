@@ -114,8 +114,11 @@ Byte 19 and 20 (`f7 81` on the 5th and 6th line) are the Joystick values, most l
 
 ### The rest of them
 
-Still working on decoding this... It has to contain battery level, button status, joystick position, accelerometer and gyroscope data, and maybe more.
+Still working on decoding those... It has to contain battery level, button status, joystick position, accelerometer and gyroscope data, and maybe more.
 
+## Ending remarks
+
+So far I only took apart one left joycon and yet to tear into the console itself, because I want to finish the Zelda first. But so far it looks like Nintendo make some really weird design decisions both in software and in hardware, probably to make what I'm doing more difficult. Anyway, I'll update this from time to time when I have new discoveries. Please share if you find this useful.
 
 
 ![Alt text]()
