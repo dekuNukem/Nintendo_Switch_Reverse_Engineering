@@ -50,6 +50,8 @@ I simply removed the rumble motor, burned a hole on the back cover, and routed a
 
 ![Alt text](https://i.imgur.com/iUq5RNG.png)
 
+## Joycon Connector Pinout
+
 | Logic analyzer channel | Joycon Connector Pin |            Function           |                        Remarks                       |
 |:----------------------:|:--------------------:|:-----------------------------:|:----------------------------------------------------:|
 |            -           |           1          |              GND              |                           -                          |
