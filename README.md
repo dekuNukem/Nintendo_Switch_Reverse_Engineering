@@ -49,19 +49,18 @@ Looking at the pins on the left Joycon, the left most one is Pin 1, and the righ
 ## Joycon Connector Pinout
 
 
-| Logic analyzer channel | Joycon Connector Pin |            Function           |                                                                       Remarks                                                                       |
-|:----------------------:|:--------------------:|:-----------------------------:|:---------------------------------------------------------------------------------------------------------------------------------------------------:|
-|            -           |           1          |              GND              |                                                                          -                                                                          |
-|            -           |           2          |              GND              |                                                                          -                                                                          |
-|            0           |           3          |           BT status?          |                 Only high when connected to console via bluetooth, low when unpaired, sleeping, or attached to the console directly                 |
-|            1           |           4          |               5V              |                                                              Joycon power and charging                                                              |
-|            2           |           5          | Serial data console to Joycon |                                                             Inverted level (idle at GND)                                                            |
-|            3           |           6          |         Attach status?        | GND only when directly attached to console and not sleeping, 1.8V otherwise. Most likely used for insertion detection too. Console pulls it to GND. |
-|            -           |           7          |              GND              |                                                                          -                                                                          |
-|            4           |           8          | Serial data Joycon to console |                                                            Standard level (idle at 1.8V)                                                            |
-|            5           |           9          |               ?               |                                                                    Always at GND                                                                    |
-|            6           |          10          |       Data packet sync?       |                                                 Always goes low before the next data packet on Pin 8                                                |
-
+| Logic analyzer channel | Joycon Connector Pin |            Function           |                                                       Remarks                                                       |
+|:----------------------:|:--------------------:|:-----------------------------:|:-------------------------------------------------------------------------------------------------------------------:|
+|            -           |           1          |              GND              |                                                          -                                                          |
+|            -           |           2          |              GND              |                                                          -                                                          |
+|            0           |           3          |           BT status?          | Only high when connected to console via bluetooth, low when unpaired, sleeping, or attached to the console directly |
+|            1           |           4          |               5V              |                                              Joycon power and charging                                              |
+|            2           |           5          | Serial data console to Joycon |                                             Inverted level (idle at GND)                                            |
+|            3           |           6          |         Attach status?        |                     GND only when directly attached to console and not sleeping, 1.8V otherwise.                    |
+|            -           |           7          |              GND              |                                                          -                                                          |
+|            4           |           8          | Serial data Joycon to console |                                            Standard level (idle at 1.8V)                                            |
+|            5           |           9          |               ?               |                                                    Always at GND                                                    |
+|            6           |          10          |             Enable            |                             Console pulls this high when wants to communicate to Joycon                             |
 
 * When first connected the baud rate is at 1000000bps(!), after the initial handshake the speed is then switched to 3125000bps(!!). The handshake probably exchanges information about the side of the Joycon, the color, and bluetooth address etc.
 

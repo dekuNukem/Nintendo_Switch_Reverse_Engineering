@@ -75,10 +75,6 @@ UART_HandleTypeDef huart1;
 int32_t next_iwdg_kick;
 int32_t board_type;
 uint8_t switch_bf[SWITCH_BUF_SIZE];
-uint8_t frame1[SWITCH_BUF_SIZE];
-uint8_t frame2[SWITCH_BUF_SIZE];
-uint8_t frame3[SWITCH_BUF_SIZE];
-uint8_t frame4[SWITCH_BUF_SIZE];
 volatile uint8_t rx_complete = 0;
 /* USER CODE END PV */
 
@@ -105,17 +101,17 @@ void stm32_dac_init(void)
   HAL_DAC_Start(stm32_dac_ptr, DAC_CHANNEL_2);
 }
 
-// int fputc(int ch, FILE *f)
-// {
-//   my_usb_putchar((uint8_t)ch);
-//   return ch;
-// }
-
 int fputc(int ch, FILE *f)
 {
-    HAL_UART_Transmit(&huart1, (unsigned char *)&ch, 1, 1000);
-    return ch;
+  my_usb_putchar((uint8_t)ch);
+  return ch;
 }
+
+// int fputc(int ch, FILE *f)
+// {
+//     HAL_UART_Transmit(&huart1, (unsigned char *)&ch, 1, 1000);
+//     return ch;
+// }
 
 void blink(void)
 {
@@ -143,6 +139,26 @@ void print_packet(uint8_t* data)
       printf("| ");
   }
   printf("\n");
+}
+
+void handshake()
+{
+  uint8_t start[4] = {0xA1, 0xA2, 0xA3, 0xA4};
+  uint8_t cmd1[12] = {0x19, 0x01, 0x03, 0x07, 0x00, 0xA5, 0x02, 0x01, 0x7E, 0x00, 0x00, 0x00};
+  uint8_t cmd2[12] = {0x19, 0x01, 0x03, 0x07, 0x00, 0x91, 0x01, 0x00, 0x00, 0x00, 0x00, 0x24};
+  uint8_t cmd3[20] = {0x19, 0x01, 0x03, 0x0F, 0x00, 0x91, 0x20, 0x08, 0x00, 0x00, 0xBD, 0xB1, 0xC0, 0xC6, 0x2D, 0x00, 0x00, 0x00, 0x00, 0x00};
+
+  HAL_GPIO_WritePin(GPIOB, J_EN_Pin, GPIO_PIN_SET);
+  HAL_Delay(600);
+  HAL_UART_Transmit(&huart1, start, 4, 1000);
+  delay_us(44);
+  HAL_UART_Transmit(&huart1, cmd1, 12, 1000);
+  delay_us(840);
+  HAL_UART_Transmit(&huart1, cmd2, 12, 1000);
+  delay_us(840);
+  HAL_UART_Transmit(&huart1, cmd3, 20, 1000);
+  delay_us(1000);
+  HAL_GPIO_WritePin(GPIOB, J_EN_Pin, GPIO_PIN_RESET);
 }
 
 /* USER CODE END 0 */
@@ -186,9 +202,7 @@ int main(void)
 
   /* USER CODE BEGIN 3 */
     if(my_usb_readline() != NULL)
-    {
-      printf("hello");
-    }
+      handshake();
   }
   /* USER CODE END 3 */
 
@@ -405,10 +419,7 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(DEBUG_LED_GPIO_Port, DEBUG_LED_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(DUP_BUTTON_GPIO_Port, DUP_BUTTON_Pin, GPIO_PIN_RESET);
-
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(KEYPAD_COL1_GPIO_Port, KEYPAD_COL1_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(GPIOB, DUP_BUTTON_Pin|J_EN_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin : DEBUG_LED_Pin */
   GPIO_InitStruct.Pin = DEBUG_LED_Pin;
@@ -429,19 +440,12 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(USER_BUTTON_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : DUP_BUTTON_Pin */
-  GPIO_InitStruct.Pin = DUP_BUTTON_Pin;
+  /*Configure GPIO pins : DUP_BUTTON_Pin J_EN_Pin */
+  GPIO_InitStruct.Pin = DUP_BUTTON_Pin|J_EN_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(DUP_BUTTON_GPIO_Port, &GPIO_InitStruct);
-
-  /*Configure GPIO pin : KEYPAD_COL1_Pin */
-  GPIO_InitStruct.Pin = KEYPAD_COL1_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_OD;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(KEYPAD_COL1_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
 }
 
