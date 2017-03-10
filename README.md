@@ -63,17 +63,7 @@ I simply removed the rumble motor, burned a hole on the back cover, and routed a
 |            5           |           9          |               ?               |                     Always at GND                    |
 |            6           |          10          |       Data packet sync?       | Always goes low before the next data packet on Pin 8 |
 
-### Remarks
-
-* Pin 1, 2 and 7 is GND.
-
-* Pin 4 is at constant 5V when connected, most likely for charging the Joycon battery.
-
-* Data are on Pin 5 and 8. It appears to be simple async serial at 1.8V. console to Joycon at Pin 5, Joycon to console at Pin 8.
-
 * When first connected the baud rate is at 1000000bps(!), after the initial handshake the speed is then switched to 3125000bps(!!). The handshake probably exchanges information about the side of the Joycon, the color, and bluetooth address etc.
-
-* Serial level of on Pin 5 (console to Joycon) is inverted(idle at GND), the serial on Pin 8 is standard.
 
 ### Protocol
 
