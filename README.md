@@ -53,11 +53,11 @@ Looking at the pins on the left Joycon, the left most one is Pin 1, and the righ
 |            -           |           1          |              GND              |                           -                          |
 |            -           |           2          |              GND              |                           -                          |
 |            0           |           3          |       Insertion detect?       |        1.8V open, pulled to GND when attached        |
-|            1           |           4          |             Charge            |              Always at 5V when attached              |
+|            1           |           4          |               5V              |              Joycon power and charging               |
 |            2           |           5          | Serial data console to Joycon |             Inverted level (idle at GND)             |
 |            3           |           6          |               ?               |  1.8V open, changes during handshake, GND afterwards |
 |            -           |           7          |              GND              |                           -                          |
-|            4           |           8          | Serial data Joycon to console |             standard level (idle at 1.8V)            |
+|            4           |           8          | Serial data Joycon to console |             Standard level (idle at 1.8V)            |
 |            5           |           9          |               ?               |                     Always at GND                    |
 |            6           |          10          |       Data packet sync?       | Always goes low before the next data packet on Pin 8 |
 
