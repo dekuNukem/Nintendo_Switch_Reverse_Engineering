@@ -2,7 +2,7 @@
 
 I'm just going to dump all my discoveries here, and hopefully they would be useful to the Nintendo Switch community.
 
-If you think something is wrong, have some observations or hypothesis that I might have missed, or just general questions please feel free to ask here.
+If you think something is wrong, have some observations or hypothesis that I might have missed, stuff you want to contribute, or just general questions please feel free to ask here.
 
 If you want to use the information here somewhere else, feel free to do so, but please credit me (dekuNukem) if possible.
 
@@ -12,9 +12,7 @@ If you want to use the information here somewhere else, feel free to do so, but 
 
 [Full-size PDF](./joycon_left_pcb.pdf).
 
-
 The "JC" is for the 10-pin Joycon connector, see below for details.
-
 
 ### Remarks
 
@@ -30,7 +28,7 @@ The "JC" is for the 10-pin Joycon connector, see below for details.
 
 ![Alt text](https://i.imgur.com/2c3tmyd.png)
 
-Well it's not actually a dump, just a capture of the SPI lines when the Joycon is powered up (battery connected). I don't have time to go through it right now of course you can if you want.
+Well it's not actually a dump, just a capture of the SPI lines when the Joycon is powered up (battery connected). I don't have time to go through it right now but of course you can if you want.
 
 The SPI clock runs at 3MHz.
 
