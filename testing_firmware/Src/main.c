@@ -141,43 +141,49 @@ void print_packet(uint8_t* data)
   printf("\n");
 }
 
-void send_break()
-{
-  HAL_UART_MspDeInit(&huart1);
-  __HAL_RCC_GPIOA_CLK_ENABLE();
-
-  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_RESET);
-  GPIO_InitTypeDef GPIO_InitStruct;
-  GPIO_InitStruct.Pin = GPIO_PIN_9;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-
-  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_SET);
-  HAL_Delay(1);
-  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_RESET);
-}
-
 void handshake()
 {
   uint8_t start[4] = {0xA1, 0xA2, 0xA3, 0xA4};
   uint8_t cmd1[12] = {0x19, 0x01, 0x03, 0x07, 0x00, 0xA5, 0x02, 0x01, 0x7E, 0x00, 0x00, 0x00};
   uint8_t cmd2[12] = {0x19, 0x01, 0x03, 0x07, 0x00, 0x91, 0x01, 0x00, 0x00, 0x00, 0x00, 0x24};
+  // software reset? switch baud rate? go to sleep?
   uint8_t cmd3[20] = {0x19, 0x01, 0x03, 0x0F, 0x00, 0x91, 0x20, 0x08, 0x00, 0x00, 0xBD, 0xB1, 0xC0, 0xC6, 0x2D, 0x00, 0x00, 0x00, 0x00, 0x00};
+  
+  uint8_t cmd4[12] = {0x19, 0x01, 0x03, 0x07, 0x00, 0x91, 0x11, 0x00, 0x00, 0x00, 0x00, 0x0E};
+  uint8_t cmd5[12] = {0x19, 0x01, 0x03, 0x07, 0x00, 0x91, 0x10, 0x00, 0x00, 0x00, 0x00, 0x3D};
+  uint8_t cmd6[16] = {0x19, 0x01, 0x03, 0x0B, 0x00, 0x91, 0x12, 0x04, 0x00, 0x00, 0x12, 0xA6, 0x0F, 0x00, 0x00, 0x00};
 
   HAL_GPIO_WritePin(GPIOB, J_EN_Pin, GPIO_PIN_SET);
-  HAL_Delay(600);
+  HAL_Delay(200);
   HAL_UART_Transmit(&huart1, start, 4, 1000);
   delay_us(44);
   HAL_UART_Transmit(&huart1, cmd1, 12, 1000);
-  delay_us(840);
+  delay_us(740);
   HAL_UART_Transmit(&huart1, cmd2, 12, 1000);
-  delay_us(840);
+  delay_us(740);
   HAL_UART_Transmit(&huart1, cmd3, 20, 1000);
-  delay_us(1000);
+  delay_us(800);
+
+  HAL_UART_Transmit(&huart1, cmd3, 20, 1000);
+  delay_us(800);
+
+  // switch to faster baud rate
+  huart1.Init.BaudRate = 3125000;
+  if(HAL_UART_Init(&huart1) != HAL_OK)
+    Error_Handler();
+
+  HAL_UART_Transmit(&huart1, cmd4, 12, 1000);
+
+  // wait until attached
+  while(HAL_GPIO_ReadPin(USER_BUTTON_GPIO_Port, USER_BUTTON_Pin) == GPIO_PIN_SET)
+    ;
+
+  
+
+
+  HAL_Delay(50);
   HAL_GPIO_WritePin(GPIOB, J_EN_Pin, GPIO_PIN_RESET);
-  send_break();
+
 }
 
 /* USER CODE END 0 */
@@ -215,6 +221,7 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   board_type = eeprom_read(EEPROM_BOARD_TYPE_ADDR);
+  handshake();
   while (1)
   {
   /* USER CODE END WHILE */
@@ -369,7 +376,7 @@ static void MX_TIM2_Init(void)
   TIM_MasterConfigTypeDef sMasterConfig;
 
   htim2.Instance = TIM2;
-  htim2.Init.Prescaler = 47;
+  htim2.Init.Prescaler = 55;
   htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim2.Init.Period = 4294967295;
   htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;

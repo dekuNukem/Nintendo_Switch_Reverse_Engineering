@@ -60,7 +60,7 @@ Looking at the pins on the left Joycon, the left most one is Pin 1, and the righ
 |            -           |           7          |              GND              |                                                          -                                                          |
 |            4           |           8          | Serial data Joycon to console |                                            Standard level (idle at 1.8V)                                            |
 |            5           |           9          |               ?               |                                                    Always at GND                                                    |
-|            6           |          10          |             Enable            |                             Console pulls this high when wants to communicate to Joycon                             |
+|            6           |          10          |          Flow control         |                        Looks like RTS line, Joycon will only send data when this line is high                       |
 
 * When first connected the baud rate is at 1000000bps(!), after the initial handshake the speed is then switched to 3125000bps(!!). The handshake probably exchanges information about the side of the Joycon, the color, and bluetooth address etc.
 

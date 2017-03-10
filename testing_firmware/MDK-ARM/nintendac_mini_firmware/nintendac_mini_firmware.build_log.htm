@@ -28,12 +28,16 @@ Project File Date:  03/10/2017
 *** Using Compiler 'V5.06 update 1 (build 61)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
 Build target 'nintendac_mini_firmware'
 compiling main.c...
-../Src/main.c(350): warning:  #177-D: function "MX_IWDG_Init" was declared but never referenced
+../Src/main.c(153): warning:  #177-D: variable "cmd5" was declared but never referenced
+    uint8_t cmd5[12] = {0x19, 0x01, 0x03, 0x07, 0x00, 0x91, 0x10, 0x00, 0x00, 0x00, 0x00, 0x3D};
+../Src/main.c(154): warning:  #177-D: variable "cmd6" was declared but never referenced
+    uint8_t cmd6[16] = {0x19, 0x01, 0x03, 0x0B, 0x00, 0x91, 0x12, 0x04, 0x00, 0x00, 0x12, 0xA6, 0x0F, 0x00, 0x00, 0x00};
+../Src/main.c: 3 warnings, 0 errors
+#177-D: function "MX_IWDG_Init" was declared but never referenced
   static void MX_IWDG_Init(void)
-../Src/main.c: 1 warning, 0 errors
 linking...
-Program Size: Code=15760 RO-data=248 RW-data=376 ZI-data=4544  
-"nintendac_mini_firmware\nintendac_mini_firmware.axf" - 0 Error(s), 1 Warning(s).
+Program Size: Code=15464 RO-data=248 RW-data=376 ZI-data=4544  
+"nintendac_mini_firmware\nintendac_mini_firmware.axf" - 0 Error(s), 2 Warning(s).
 
 <h2>Software Packages used:</h2>
 
