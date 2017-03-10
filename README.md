@@ -42,6 +42,10 @@ When attached to the console, the Joycon talks to it through a physical connecti
 
 Looking at the pins on the left Joycon, the left most one is Pin 1, and the right most one is Pin 10.
 
+![Alt text](http://i.imgur.com/9fGDsj6.jpg)
+
+I simply removed the rumble motor, burned a hole on the back cover, and routed all the wires out through that and soldered on a header.
+
 [And here](./logic_captures/leftjoycon_docking.logicdata) is a capture of the docking of the left Joycon.
 
 ![Alt text](https://i.imgur.com/iUq5RNG.png)
