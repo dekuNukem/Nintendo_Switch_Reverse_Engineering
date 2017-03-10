@@ -2119,15 +2119,15 @@ Image Symbol Table
     i.delay_us_init                          0x08003a34   Section        0  delay_us.o(i.delay_us_init)
     i.eeprom_read                            0x08003a44   Section        0  eeprom.o(i.eeprom_read)
     i.handshake                              0x08003a8c   Section        0  main.o(i.handshake)
-    i.linear_buf_add                         0x08003bbc   Section        0  helpers.o(i.linear_buf_add)
-    i.linear_buf_add_str                     0x08003be2   Section        0  helpers.o(i.linear_buf_add_str)
-    i.linear_buf_init                        0x08003c10   Section        0  helpers.o(i.linear_buf_init)
-    i.linear_buf_reset                       0x08003c26   Section        0  helpers.o(i.linear_buf_reset)
-    i.main                                   0x08003c4c   Section        0  main.o(i.main)
-    i.my_usb_init                            0x08003ca4   Section        0  my_usb.o(i.my_usb_init)
-    i.my_usb_readline                        0x08003cbc   Section        0  my_usb.o(i.my_usb_readline)
-    .constdata                               0x08003d28   Section       16  system_stm32f0xx.o(.constdata)
-    .constdata                               0x08003d38   Section        8  system_stm32f0xx.o(.constdata)
+    i.linear_buf_add                         0x08003c58   Section        0  helpers.o(i.linear_buf_add)
+    i.linear_buf_add_str                     0x08003c7e   Section        0  helpers.o(i.linear_buf_add_str)
+    i.linear_buf_init                        0x08003cac   Section        0  helpers.o(i.linear_buf_init)
+    i.linear_buf_reset                       0x08003cc2   Section        0  helpers.o(i.linear_buf_reset)
+    i.main                                   0x08003ce8   Section        0  main.o(i.main)
+    i.my_usb_init                            0x08003d40   Section        0  my_usb.o(i.my_usb_init)
+    i.my_usb_readline                        0x08003d58   Section        0  my_usb.o(i.my_usb_readline)
+    .constdata                               0x08003dc4   Section       16  system_stm32f0xx.o(.constdata)
+    .constdata                               0x08003dd4   Section        8  system_stm32f0xx.o(.constdata)
     .data                                    0x20000000   Section        4  system_stm32f0xx.o(.data)
     .data                                    0x20000004   Section      219  usbd_cdc.o(.data)
     ifalt                                    0x20000004   Data           1  usbd_cdc.o(.data)
@@ -2403,18 +2403,18 @@ Image Symbol Table
     delay_us                                 0x08003a1d   Thumb Code    18  delay_us.o(i.delay_us)
     delay_us_init                            0x08003a35   Thumb Code    12  delay_us.o(i.delay_us_init)
     eeprom_read                              0x08003a45   Thumb Code    66  eeprom.o(i.eeprom_read)
-    handshake                                0x08003a8d   Thumb Code   230  main.o(i.handshake)
-    linear_buf_add                           0x08003bbd   Thumb Code    38  helpers.o(i.linear_buf_add)
-    linear_buf_add_str                       0x08003be3   Thumb Code    46  helpers.o(i.linear_buf_add_str)
-    linear_buf_init                          0x08003c11   Thumb Code    22  helpers.o(i.linear_buf_init)
-    linear_buf_reset                         0x08003c27   Thumb Code    36  helpers.o(i.linear_buf_reset)
-    main                                     0x08003c4d   Thumb Code    78  main.o(i.main)
-    my_usb_init                              0x08003ca5   Thumb Code    16  my_usb.o(i.my_usb_init)
-    my_usb_readline                          0x08003cbd   Thumb Code   100  my_usb.o(i.my_usb_readline)
-    AHBPrescTable                            0x08003d28   Data          16  system_stm32f0xx.o(.constdata)
-    APBPrescTable                            0x08003d38   Data           8  system_stm32f0xx.o(.constdata)
-    Region$$Table$$Base                      0x08003d40   Number         0  anon$$obj.o(Region$$Table)
-    Region$$Table$$Limit                     0x08003d60   Number         0  anon$$obj.o(Region$$Table)
+    handshake                                0x08003a8d   Thumb Code   358  main.o(i.handshake)
+    linear_buf_add                           0x08003c59   Thumb Code    38  helpers.o(i.linear_buf_add)
+    linear_buf_add_str                       0x08003c7f   Thumb Code    46  helpers.o(i.linear_buf_add_str)
+    linear_buf_init                          0x08003cad   Thumb Code    22  helpers.o(i.linear_buf_init)
+    linear_buf_reset                         0x08003cc3   Thumb Code    36  helpers.o(i.linear_buf_reset)
+    main                                     0x08003ce9   Thumb Code    78  main.o(i.main)
+    my_usb_init                              0x08003d41   Thumb Code    16  my_usb.o(i.my_usb_init)
+    my_usb_readline                          0x08003d59   Thumb Code   100  my_usb.o(i.my_usb_readline)
+    AHBPrescTable                            0x08003dc4   Data          16  system_stm32f0xx.o(.constdata)
+    APBPrescTable                            0x08003dd4   Data           8  system_stm32f0xx.o(.constdata)
+    Region$$Table$$Base                      0x08003ddc   Number         0  anon$$obj.o(Region$$Table)
+    Region$$Table$$Limit                     0x08003dfc   Number         0  anon$$obj.o(Region$$Table)
     SystemCoreClock                          0x20000000   Data           4  system_stm32f0xx.o(.data)
     USBD_CDC_CfgHSDesc                       0x20000014   Data          67  usbd_cdc.o(.data)
     USBD_CDC_CfgFSDesc                       0x20000058   Data          67  usbd_cdc.o(.data)
@@ -2452,9 +2452,9 @@ Memory Map of the image
 
   Image Entry point : 0x080000c1
 
-  Load Region LR_IROM1 (Base: 0x08000000, Size: 0x00003ed8, Max: 0x00010000, ABSOLUTE, COMPRESSED[0x00003e20])
+  Load Region LR_IROM1 (Base: 0x08000000, Size: 0x00003f74, Max: 0x00010000, ABSOLUTE, COMPRESSED[0x00003ebc])
 
-    Execution Region ER_IROM1 (Base: 0x08000000, Size: 0x00003d60, Max: 0x00010000, ABSOLUTE)
+    Execution Region ER_IROM1 (Base: 0x08000000, Size: 0x00003dfc, Max: 0x00010000, ABSOLUTE)
 
     Base Addr    Size         Type   Attr      Idx    E Section Name        Object
 
@@ -2662,18 +2662,18 @@ Memory Map of the image
     0x08003a1c   0x00000018   Code   RO         4496    i.delay_us          delay_us.o
     0x08003a34   0x00000010   Code   RO         4497    i.delay_us_init     delay_us.o
     0x08003a44   0x00000048   Code   RO         4465    i.eeprom_read       eeprom.o
-    0x08003a8c   0x00000130   Code   RO         3746    i.handshake         main.o
-    0x08003bbc   0x00000026   Code   RO         4364    i.linear_buf_add    helpers.o
-    0x08003be2   0x0000002e   Code   RO         4365    i.linear_buf_add_str  helpers.o
-    0x08003c10   0x00000016   Code   RO         4367    i.linear_buf_init   helpers.o
-    0x08003c26   0x00000024   Code   RO         4369    i.linear_buf_reset  helpers.o
-    0x08003c4a   0x00000002   PAD
-    0x08003c4c   0x00000058   Code   RO         3747    i.main              main.o
-    0x08003ca4   0x00000018   Code   RO         4424    i.my_usb_init       my_usb.o
-    0x08003cbc   0x0000006c   Code   RO         4426    i.my_usb_readline   my_usb.o
-    0x08003d28   0x00000010   Data   RO            5    .constdata          system_stm32f0xx.o
-    0x08003d38   0x00000008   Data   RO            6    .constdata          system_stm32f0xx.o
-    0x08003d40   0x00000020   Data   RO         4904    Region$$Table       anon$$obj.o
+    0x08003a8c   0x000001cc   Code   RO         3746    i.handshake         main.o
+    0x08003c58   0x00000026   Code   RO         4364    i.linear_buf_add    helpers.o
+    0x08003c7e   0x0000002e   Code   RO         4365    i.linear_buf_add_str  helpers.o
+    0x08003cac   0x00000016   Code   RO         4367    i.linear_buf_init   helpers.o
+    0x08003cc2   0x00000024   Code   RO         4369    i.linear_buf_reset  helpers.o
+    0x08003ce6   0x00000002   PAD
+    0x08003ce8   0x00000058   Code   RO         3747    i.main              main.o
+    0x08003d40   0x00000018   Code   RO         4424    i.my_usb_init       my_usb.o
+    0x08003d58   0x0000006c   Code   RO         4426    i.my_usb_readline   my_usb.o
+    0x08003dc4   0x00000010   Data   RO            5    .constdata          system_stm32f0xx.o
+    0x08003dd4   0x00000008   Data   RO            6    .constdata          system_stm32f0xx.o
+    0x08003ddc   0x00000020   Data   RO         4904    Region$$Table       anon$$obj.o
 
 
     Execution Region RW_IRAM1 (Base: 0x20000000, Size: 0x00001338, Max: 0x00004000, ABSOLUTE, COMPRESSED[0x000000c0])
@@ -2713,7 +2713,7 @@ Image component sizes
         40         10          0          4          0       1562   delay_us.o
         72          6          0          0          0        582   eeprom.o
        142          0          0          0          0       2925   helpers.o
-       994        148          0         12        336       7701   main.o
+      1150        176          0         12        336       7745   main.o
        132         16          0          4        524       1906   my_usb.o
         28          8        192          0       1024        620   startup_stm32f072xb.o
        116         18          0          4          0       3735   stm32f0xx_hal.o
@@ -2743,7 +2743,7 @@ Image component sizes
        140          0          0          0          0       4468   usbd_ioreq.o
 
     ----------------------------------------------------------------------
-     15154        950        248        376       4544     664835   Object Totals
+     15310        978        248        376       4544     664879   Object Totals
          0          0         32          0          0          0   (incl. Generated)
         24          0          0          6          0          0   (incl. Padding)
 
@@ -2787,15 +2787,15 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   
 
-     15464        966        248        376       4544     657631   Grand Totals
-     15464        966        248        192       4544     657631   ELF Image Totals (compressed)
-     15464        966        248        192          0          0   ROM Totals
+     15620        994        248        376       4544     657675   Grand Totals
+     15620        994        248        192       4544     657675   ELF Image Totals (compressed)
+     15620        994        248        192          0          0   ROM Totals
 
 ==============================================================================
 
-    Total RO  Size (Code + RO Data)                15712 (  15.34kB)
+    Total RO  Size (Code + RO Data)                15868 (  15.50kB)
     Total RW  Size (RW Data + ZI Data)              4920 (   4.80kB)
-    Total ROM Size (Code + RO Data + RW Data)      15904 (  15.53kB)
+    Total ROM Size (Code + RO Data + RW Data)      16060 (  15.68kB)
 
 ==============================================================================
 

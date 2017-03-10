@@ -3,7 +3,7 @@
 <title>Static Call Graph - [nintendac_mini_firmware\nintendac_mini_firmware.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image nintendac_mini_firmware\nintendac_mini_firmware.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060061: Last Updated: Fri Mar 10 17:15:56 2017
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060061: Last Updated: Fri Mar 10 17:28:27 2017
 <BR><P>
 <H3>Maximum Stack Usage =        228 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -1311,8 +1311,8 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[3b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[d2]"></a>handshake</STRONG> (Thumb, 230 bytes, Stack size 80 bytes, main.o(i.handshake))
-<BR><BR>[Stack]<UL><LI>Max Depth = 180<LI>Call Chain = handshake &rArr; HAL_UART_Init &rArr; UART_SetConfig &rArr; HAL_RCC_GetSysClockFreq &rArr; __aeabi_uidivmod
+<P><STRONG><a name="[d2]"></a>handshake</STRONG> (Thumb, 358 bytes, Stack size 112 bytes, main.o(i.handshake))
+<BR><BR>[Stack]<UL><LI>Max Depth = 212<LI>Call Chain = handshake &rArr; HAL_UART_Init &rArr; UART_SetConfig &rArr; HAL_RCC_GetSysClockFreq &rArr; __aeabi_uidivmod
 </UL>
 <BR>[Calls]<UL><LI><a href="#[97]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_WritePin
 <LI><a href="#[d5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_ReadPin
@@ -1360,7 +1360,7 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[3b]"></a>main</STRONG> (Thumb, 78 bytes, Stack size 0 bytes, main.o(i.main))
-<BR><BR>[Stack]<UL><LI>Max Depth = 196<LI>Call Chain = main &rArr; SystemClock_Config &rArr; HAL_RCC_ClockConfig &rArr; HAL_RCC_GetSysClockFreq &rArr; __aeabi_uidivmod
+<BR><BR>[Stack]<UL><LI>Max Depth = 212<LI>Call Chain = main &rArr; handshake &rArr; HAL_UART_Init &rArr; UART_SetConfig &rArr; HAL_RCC_GetSysClockFreq &rArr; __aeabi_uidivmod
 </UL>
 <BR>[Calls]<UL><LI><a href="#[45]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GetTick
 <LI><a href="#[56]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_Init

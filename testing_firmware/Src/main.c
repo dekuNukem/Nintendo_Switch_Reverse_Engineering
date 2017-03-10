@@ -164,21 +164,23 @@ void handshake()
   HAL_UART_Transmit(&huart1, cmd3, 20, 1000);
   delay_us(800);
 
-  HAL_UART_Transmit(&huart1, cmd3, 20, 1000);
-  delay_us(800);
-
   // switch to faster baud rate
   huart1.Init.BaudRate = 3125000;
   if(HAL_UART_Init(&huart1) != HAL_OK)
     Error_Handler();
 
-  HAL_UART_Transmit(&huart1, cmd4, 12, 1000);
-
   // wait until attached
   while(HAL_GPIO_ReadPin(USER_BUTTON_GPIO_Port, USER_BUTTON_Pin) == GPIO_PIN_SET)
     ;
 
-  
+  HAL_UART_Transmit(&huart1, cmd4, 12, 1000);
+  HAL_Delay(1);
+
+  HAL_UART_Transmit(&huart1, cmd5, 12, 1000);
+  HAL_Delay(1);
+
+  HAL_UART_Transmit(&huart1, cmd6, 12, 1000);
+  HAL_Delay(2);
 
 
   HAL_Delay(50);
