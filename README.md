@@ -50,17 +50,18 @@ I simply removed the rumble motor, burned a hole on the back cover, and routed a
 
 ![Alt text](https://i.imgur.com/iUq5RNG.png)
 
-Channel mapping:
-
-| channel | Joycon connector pin |
-|---------|----------------------|
-| 0       | 3                    |
-| 1       | 4                    |
-| 2       | 5                    |
-| 3       | 6                    |
-| 4       | 8                    |
-| 5       | 9                    |
-| 6       | 10                   |
+| Logic analyzer channel | Joycon Connector Pin |            Function           |                        Remarks                       |
+|:----------------------:|:--------------------:|:-----------------------------:|:----------------------------------------------------:|
+|            -           |           1          |              GND              |                           -                          |
+|            -           |           2          |              GND              |                           -                          |
+|            0           |           3          |       Insertion detect?       |        1.8V open, pulled to GND when attached        |
+|            1           |           4          |             Charge            |              Always at 5V when attached              |
+|            2           |           5          | Serial data console to Joycon |             Inverted level (idle at GND)             |
+|            3           |           6          |               ?               |  1.8V open, changes during handshake, GND afterwards |
+|            -           |           7          |              GND              |                           -                          |
+|            4           |           8          | Serial data Joycon to console |             standard level (idle at 1.8V)            |
+|            5           |           9          |               ?               |                     Always at GND                    |
+|            6           |          10          |       Data packet sync?       | Always goes low before the next data packet on Pin 8 |
 
 ### Remarks
 
