@@ -27,7 +27,13 @@ Project File Date:  03/10/2017
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 1 (build 61)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
 Build target 'nintendac_mini_firmware'
-"nintendac_mini_firmware\nintendac_mini_firmware.axf" - 0 Error(s), 0 Warning(s).
+compiling main.c...
+../Src/main.c(350): warning:  #177-D: function "MX_IWDG_Init" was declared but never referenced
+  static void MX_IWDG_Init(void)
+../Src/main.c: 1 warning, 0 errors
+linking...
+Program Size: Code=15760 RO-data=248 RW-data=376 ZI-data=4544  
+"nintendac_mini_firmware\nintendac_mini_firmware.axf" - 0 Error(s), 1 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -45,7 +51,7 @@ Package Vendor: ARM
 <h2>Collection of Component Files used:</h2>
 
    * Component: ARM::CMSIS:CORE:4.3.0
-Build Time Elapsed:  00:00:00
+Build Time Elapsed:  00:00:03
 </pre>
 </body>
 </html>

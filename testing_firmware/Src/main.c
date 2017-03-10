@@ -141,6 +141,24 @@ void print_packet(uint8_t* data)
   printf("\n");
 }
 
+void send_break()
+{
+  HAL_UART_MspDeInit(&huart1);
+  __HAL_RCC_GPIOA_CLK_ENABLE();
+
+  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_RESET);
+  GPIO_InitTypeDef GPIO_InitStruct;
+  GPIO_InitStruct.Pin = GPIO_PIN_9;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_SET);
+  HAL_Delay(1);
+  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_RESET);
+}
+
 void handshake()
 {
   uint8_t start[4] = {0xA1, 0xA2, 0xA3, 0xA4};
@@ -159,6 +177,7 @@ void handshake()
   HAL_UART_Transmit(&huart1, cmd3, 20, 1000);
   delay_us(1000);
   HAL_GPIO_WritePin(GPIOB, J_EN_Pin, GPIO_PIN_RESET);
+  send_break();
 }
 
 /* USER CODE END 0 */
