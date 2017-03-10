@@ -52,10 +52,10 @@ Looking at the pins on the left Joycon, the left most one is Pin 1, and the righ
 |:----------------------:|:--------------------:|:-----------------------------:|:-------------------------------------------------------------------------------------------------------------------:|
 |            -           |           1          |              GND              |                                                          -                                                          |
 |            -           |           2          |              GND              |                                                          -                                                          |
-|            0           |           3          |           BT status           | Only high when connected to console via bluetooth, low when unpaired, sleeping, or attached to the console directly |
+|            0           |           3          |           BT status?          | Only high when connected to console via bluetooth, low when unpaired, sleeping, or attached to the console directly |
 |            1           |           4          |               5V              |                                              Joycon power and charging                                              |
 |            2           |           5          | Serial data console to Joycon |                                             Inverted level (idle at GND)                                            |
-|            3           |           6          |               ?               |                                 1.8V open, changes during handshake, GND afterwards                                 |
+|            3           |           6          |         Attach status?        |                    1.8V when unattached or when attached but console is sleeping. GND otherwise.                    |
 |            -           |           7          |              GND              |                                                          -                                                          |
 |            4           |           8          | Serial data Joycon to console |                                            Standard level (idle at 1.8V)                                            |
 |            5           |           9          |               ?               |                                                    Always at GND                                                    |
