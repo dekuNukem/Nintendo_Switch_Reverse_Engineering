@@ -60,7 +60,7 @@ Looking at the pins on the left Joycon, the left most one is Pin 1, and the righ
 |            -           |           7          |              GND              |                                                          -                                                          |
 |            4           |           8          | Serial data Joycon to console |                                            Standard level (idle at 1.8V)                                            |
 |            5           |           9          |               ?               |                                                    Always at GND                                                    |
-|            6           |          10          |          Flow control         |                        Looks like RTS line, Joycon will only send data when this line is high                       |
+|            6           |          10          |          Flow control?        |                        Looks like RTS line, Joycon will only send data when this line is high                       |
 
 * When first connected the baud rate is at 1000000bps(!), after the initial handshake the speed is then switched to 3125000bps(!!). The handshake probably exchanges information about the side of the Joycon, the color, and bluetooth address etc.
 
@@ -73,7 +73,7 @@ In normal operation the console asks Joycon for an update every 15ms (66.6fps), 
 19 01 03 08 00 92 00 01 00 00 69 2d 1f
 ```
 
-Around 4ms later, Joycon respond with a 61 bytes long answer, grouped in 15 4-byte packets, with 1 stop byte that is always 0xff.
+Around 4ms later, Joycon respond with a 61 bytes long answer, the last byte is always 0xff.
 
 One sample:
 
