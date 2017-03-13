@@ -83,7 +83,7 @@ In normal operation the console asks Joycon for an update every 15ms (66.6fps), 
 19 01 03 08 00 92 00 01 00 00 69 2d 1f
 ```
 
-Around 4ms later, Joycon respond with a 61 bytes long answer, the last byte is always 0xff.
+Around 4ms later, Joycon respond with a 61 bytes long answer.
 
 One sample:
 
