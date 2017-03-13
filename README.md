@@ -70,7 +70,7 @@ Looking at the pins on the left Joycon, the left most one is Pin 1, and the righ
 
 * It seems Pin 5 needs to be pulled down for more than 500ms for the handshake to take place.
 
-* Once started, the console will send a 4-byte start sequence of `A1 A2 A3 A4`, around 46us later followed by 12 byte command of `19 01 03 07 00 A5 02 01 7E 00 00 00` repeatedly. It will send those commands every 100ms (10Hz) for 3 seconds. If no response is received it will give up and wait for another event on the line.
+* Once started, the console will send a 4-byte start sequence of `A1 A2 A3 A4`, around 46us later followed by 12 byte command of `19 01 03 07 00 A5 02 01 7E 00 00 00`. It will send those commands repeatedly every 100ms (10Hz) for 3 seconds. If no response is received it gives up and wait for another event on the line.
 
 * under construction...
 
