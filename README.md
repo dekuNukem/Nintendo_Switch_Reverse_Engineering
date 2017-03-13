@@ -55,10 +55,10 @@ Looking at the pins on the left Joycon, the left most one is Pin 1, and the righ
 |            -           |           2          |              GND              |                                                          -                                                          |
 |            0           |           3          |           BT status?          | Only high when connected to console via bluetooth, low when unpaired, sleeping, or attached to the console directly |
 |            1           |           4          |               5V              |                                              Joycon power and charging                                              |
-|            2           |           5          | Serial data console to Joycon |                                             Inverted level (idle at GND)                                            |
+|            2           |           5          | Serial data, console to Joycon |                                             Inverted level (idle at GND)                                            |
 |            3           |           6          |         Attach status?        |                     GND only when directly attached to console and not sleeping, 1.8V otherwise.                    |
 |            -           |           7          |              GND              |                                                          -                                                          |
-|            4           |           8          | Serial data Joycon to console |                                            Standard level (idle at 1.8V)                                            |
+|            4           |           8          | Serial data, Joycon to console |                                            Standard level (idle at 1.8V)                                            |
 |            5           |           9          |               ?               |                                                    Always at GND                                                    |
 |            6           |          10          |          Flow control         |                        Looks like RTS line, Joycon will only send data when this line is high                       |
 
@@ -66,7 +66,7 @@ Looking at the pins on the left Joycon, the left most one is Pin 1, and the righ
 
 ### Handshake procedure
 
-* Pin 5 (Serial data console to Joycon) is normally pulled high on the console side when nothing is connected. Since this line is inverted on the Joycon side, it will be pulled down when a Joycon is attached to the console, thus initializing a handshake.
+* Pin 5 (Serial data, console to Joycon) is normally pulled high on the console side when nothing is connected. Since this line is inverted on the Joycon side, it will be pulled down when a Joycon is attached to the console, thus initializing a handshake.
 
 * It seems Pin 5 needs to be pulled down for more than 500ms for the handshake to take place.
 
