@@ -5,20 +5,17 @@
 #include "helpers.h"
 #include "shared.h"
 #include "cmd_parser.h"
-#include "eeprom.h"
 
 #define ARG_PARSE_SUCCESS 0
 #define ARG_PARSE_ERROR_INVALID_CMD 126
-#define ARG_PARSE_ERROR_NOT_AVAILABLE 127
 #define ARG_QUEUE_SIZE 16
-#define SWITCH_JOYCON_BUTTON_COUNT 24
+#define SWITCH_PRO_CONTROLLER_BUTTON_COUNT 19
 
 uint16_t gpio_pin_queue[ARG_QUEUE_SIZE];
 GPIO_TypeDef* gpio_port_queue[ARG_QUEUE_SIZE];
 
-uint16_t gpio_pin_map[SWITCH_JOYCON_BUTTON_COUNT] = 
+uint16_t gpio_pin_map[SWITCH_PRO_CONTROLLER_BUTTON_COUNT] = 
 {
-  // left joycon
   DEBUG_LED_Pin,  // 0 dpad up
   DEBUG_LED_Pin,  // 1 dpad down
   DEBUG_LED_Pin,  // 2 dpad left
@@ -27,28 +24,21 @@ uint16_t gpio_pin_map[SWITCH_JOYCON_BUTTON_COUNT] =
   DEBUG_LED_Pin,  // 5 ZL
   DEBUG_LED_Pin,  // 6 minus
   DEBUG_LED_Pin,  // 7 capture
-  DEBUG_LED_Pin,  // 8 LSL
-  DEBUG_LED_Pin,  // 9 LSR
-  DEBUG_LED_Pin,  // 10 LSYNC
-  DEBUG_LED_Pin,  // 11 LSB
-  // right joycon
-  DEBUG_LED_Pin,  // 12 A
-  DEBUG_LED_Pin,  // 13 B
-  DEBUG_LED_Pin,  // 14 X
-  DEBUG_LED_Pin,  // 15 Y
-  DEBUG_LED_Pin,  // 16 R
-  DEBUG_LED_Pin,  // 17 ZR
-  DEBUG_LED_Pin,  // 18 plus
-  DEBUG_LED_Pin,  // 19 home
-  DEBUG_LED_Pin,  // 20 RSL
-  DEBUG_LED_Pin,  // 21 RSR
-  DEBUG_LED_Pin,  // 22 RSYNC
-  DEBUG_LED_Pin,  // 23 RSB
+  DEBUG_LED_Pin,  // 8 LSB
+  DEBUG_LED_Pin,  // 9 A
+  DEBUG_LED_Pin,  // 10 B
+  DEBUG_LED_Pin,  // 11 X
+  DEBUG_LED_Pin,  // 12 Y
+  DEBUG_LED_Pin,  // 13 R
+  DEBUG_LED_Pin,  // 14 ZR
+  DEBUG_LED_Pin,  // 15 plus
+  DEBUG_LED_Pin,  // 16 home
+  DEBUG_LED_Pin,  // 17 RSB
+  DEBUG_LED_Pin,  // 18 SYNC
 };
 
-GPIO_TypeDef* gpio_port_map[SWITCH_JOYCON_BUTTON_COUNT] = 
+GPIO_TypeDef* gpio_port_map[SWITCH_PRO_CONTROLLER_BUTTON_COUNT] = 
 {
-  // left joycon
   DEBUG_LED_GPIO_Port,  // 0 dpad up
   DEBUG_LED_GPIO_Port,  // 1 dpad down
   DEBUG_LED_GPIO_Port,  // 2 dpad left
@@ -57,23 +47,17 @@ GPIO_TypeDef* gpio_port_map[SWITCH_JOYCON_BUTTON_COUNT] =
   DEBUG_LED_GPIO_Port,  // 5 ZL
   DEBUG_LED_GPIO_Port,  // 6 minus
   DEBUG_LED_GPIO_Port,  // 7 capture
-  DEBUG_LED_GPIO_Port,  // 8 LSL
-  DEBUG_LED_GPIO_Port,  // 9 LSR
-  DEBUG_LED_GPIO_Port,  // 10 LSYNC
-  DEBUG_LED_GPIO_Port,  // 11 LSB
-  // right joycon
-  DEBUG_LED_GPIO_Port,  // 12 A
-  DEBUG_LED_GPIO_Port,  // 13 B
-  DEBUG_LED_GPIO_Port,  // 14 X
-  DEBUG_LED_GPIO_Port,  // 15 Y
-  DEBUG_LED_GPIO_Port,  // 16 R
-  DEBUG_LED_GPIO_Port,  // 17 ZR
-  DEBUG_LED_GPIO_Port,  // 18 plus
-  DEBUG_LED_GPIO_Port,  // 19 home
-  DEBUG_LED_GPIO_Port,  // 20 RSL
-  DEBUG_LED_GPIO_Port,  // 21 RSR
-  DEBUG_LED_GPIO_Port,  // 22 RSYNC
-  DEBUG_LED_GPIO_Port,  // 23 RSB
+  DEBUG_LED_GPIO_Port,  // 8 LSB
+  DEBUG_LED_GPIO_Port,  // 9 A
+  DEBUG_LED_GPIO_Port,  // 10 B
+  DEBUG_LED_GPIO_Port,  // 11 X
+  DEBUG_LED_GPIO_Port,  // 12 Y
+  DEBUG_LED_GPIO_Port,  // 13 R
+  DEBUG_LED_GPIO_Port,  // 14 ZR
+  DEBUG_LED_GPIO_Port,  // 15 plus
+  DEBUG_LED_GPIO_Port,  // 16 home
+  DEBUG_LED_GPIO_Port,  // 17 RSB
+  DEBUG_LED_GPIO_Port,  // 18 SYNC
 };
 
 char* goto_next_arg(char* buf)
@@ -95,63 +79,45 @@ char* goto_next_arg(char* buf)
 
 int32_t arg_to_button_index(char* cmd)
 {
-  int32_t result;
   if(strncmp(cmd, "du", 2) == 0)
-    result = 0;
+    return 0;
   else if(strncmp(cmd, "dd", 2) == 0)
-    result = 1;
+    return 1;
   else if(strncmp(cmd, "dl", 2) == 0)
-    result = 2;
+    return 2;
   else if(strncmp(cmd, "dr", 2) == 0)
-    result = 3;
+    return 3;
   else if(strncmp(cmd, "ls", 2) == 0)
-    result = 4;
+    return 4;
   else if(strncmp(cmd, "zl", 2) == 0)
-    result = 5;
+    return 5;
   else if(strncmp(cmd, "-", 1) == 0)
-    result = 6;
+    return 6;
   else if(strncmp(cmd, "cap", 3) == 0)
-    result = 7;
-  else if(strncmp(cmd, "lsl", 3) == 0)
-    result = 8;
-  else if(strncmp(cmd, "lsr", 3) == 0)
-    result = 9;
-  else if(strncmp(cmd, "syncl", 5) == 0)
-    result = 10;
+    return 7;
   else if(strncmp(cmd, "sbl", 3) == 0)
-    result = 11;
-  
+    return 8;
   else if(strncmp(cmd, "a", 1) == 0)
-    result = 12;
+    return 9;
   else if(strncmp(cmd, "b", 1) == 0)
-    result = 13;
+    return 10;
   else if(strncmp(cmd, "x", 1) == 0)
-    result = 14;
+    return 11;
   else if(strncmp(cmd, "y", 1) == 0)
-    result = 15;
+    return 12;
   else if(strncmp(cmd, "rs", 2) == 0)
-    result = 16;
+    return 13;
   else if(strncmp(cmd, "zr", 2) == 0)
-    result = 17;
+    return 14;
   else if(strncmp(cmd, "+", 1) == 0)
-    result = 18;
+    return 15;
   else if(strncmp(cmd, "h", 1) == 0)
-    result = 19;
-  else if(strncmp(cmd, "rsl", 3) == 0)
-    result = 20;
-  else if(strncmp(cmd, "rsr", 3) == 0)
-    result = 21;
-  else if(strncmp(cmd, "syncr", 5) == 0)
-    result = 22;
+    return 16;
   else if(strncmp(cmd, "sbr", 3) == 0)
-    result = 23;
-  else
-    return ARG_PARSE_ERROR_INVALID_CMD;
-
-  if((board_type == BOARD_TYPE_NDAC_MINI_JOYCON_LEFT && result >= 0 && result <= 11) ||
-    (board_type == BOARD_TYPE_NDAC_MINI_JOYCON_RIGHT && result >= 12 && result <= 23))
-    return result;
-  return ARG_PARSE_ERROR_NOT_AVAILABLE;
+    return 17;
+  else if(strncmp(cmd, "sync", 4) == 0)
+    return 18;
+  return ARG_PARSE_ERROR_INVALID_CMD;
 }
 
 int32_t process_multiarg(char* args)
@@ -166,7 +132,7 @@ int32_t process_multiarg(char* args)
     if(arg_ptr == NULL || count >= ARG_QUEUE_SIZE)
       break;
     result = arg_to_button_index(arg_ptr);
-    if(result >= 0 && result < SWITCH_JOYCON_BUTTON_COUNT)
+    if(result >= 0 && result < SWITCH_PRO_CONTROLLER_BUTTON_COUNT)
     {
       count++;
       gpio_port_queue[count] = gpio_port_map[result];
@@ -241,7 +207,7 @@ void stick_disengage(void)
 
 void release_all_button(void)
 {
-  for(int i = 0; i < SWITCH_JOYCON_BUTTON_COUNT; ++i)
+  for(int i = 0; i < SWITCH_PRO_CONTROLLER_BUTTON_COUNT; ++i)
       HAL_GPIO_WritePin(gpio_port_map[i], gpio_pin_map[i], GPIO_PIN_SET);
 }
 
@@ -250,43 +216,8 @@ void parse_cmd(char* cmd)
   int32_t result;
   if(strcmp(cmd, "test") == 0)
     puts("test OK");
-  if(strcmp(cmd, "eepinit") == 0)
-  {
-    eeprom_erase();
-    eeprom_write(EEPROM_BOARD_TYPE_ADDR, BOARD_TYPE_NDAC_MINI_JOYCON_LEFT);
-    board_type = BOARD_TYPE_NDAC_MINI_JOYCON_LEFT;
-    puts("eepinit OK");
-  }
-  else if(strncmp(cmd, "settype l", 9) == 0)
-  {
-    eeprom_write(EEPROM_BOARD_TYPE_ADDR, BOARD_TYPE_NDAC_MINI_JOYCON_LEFT);
-    board_type = BOARD_TYPE_NDAC_MINI_JOYCON_LEFT;
-    printf("settype OK\n");
-  }
-  else if(strncmp(cmd, "settype r", 9) == 0)
-  {
-    eeprom_write(EEPROM_BOARD_TYPE_ADDR, BOARD_TYPE_NDAC_MINI_JOYCON_RIGHT);
-    board_type = BOARD_TYPE_NDAC_MINI_JOYCON_RIGHT;
-    printf("settype OK\n");
-  }
   else if(strcmp(cmd, "whoami") == 0)
-  {
-    board_type = eeprom_read(EEPROM_BOARD_TYPE_ADDR);
-    switch(board_type)
-    {
-      case BOARD_TYPE_NDAC_MINI_JOYCON_LEFT:
-      puts("BOARD_TYPE_NDAC_MINI_JOYCON_LEFT");
-      break;
-
-      case BOARD_TYPE_NDAC_MINI_JOYCON_RIGHT:
-      puts("BOARD_TYPE_NDAC_MINI_JOYCON_RIGHT");
-      break;
-
-      default:
-      puts("unknown board type, use 'settype l/r' to configure this board");
-      break;
-    }
-  }
+    puts("BOARD_TYPE_NDAC_PRO_CTRLER");
   // button hold, multiple args allowed
   else if(strncmp(cmd, "bh ", 3) == 0)
   {
@@ -298,9 +229,6 @@ void parse_cmd(char* cmd)
       break;
       case ARG_PARSE_ERROR_INVALID_CMD:
       puts("bh ERROR: invalid command");
-      break;
-      case ARG_PARSE_ERROR_NOT_AVAILABLE:
-      puts("bh ERROR: not available on this side");
       break;
       default:
       puts("bh ERROR: unknown");
@@ -318,9 +246,6 @@ void parse_cmd(char* cmd)
       case ARG_PARSE_ERROR_INVALID_CMD:
       puts("br ERROR: invalid command");
       break;
-      case ARG_PARSE_ERROR_NOT_AVAILABLE:
-      puts("br ERROR: not available on this side");
-      break;
       default:
       puts("br ERROR: unknown");
     }
@@ -331,6 +256,7 @@ void parse_cmd(char* cmd)
     release_all_button();
     puts("bra OK");
   }
+  
   // stick hold, sh x y, x and y between 0 and 255 inclusive
   else if(strncmp(cmd, "sh ", 3) == 0)
   {

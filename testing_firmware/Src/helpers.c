@@ -79,30 +79,18 @@ void idwg_kick(void)
 {
   if(HAL_GetTick() > next_iwdg_kick)
   {
-    standby_check();
     HAL_IWDG_Refresh(stm32_iwdg_ptr);
     next_iwdg_kick = HAL_GetTick() + 500;
   }
 }
 
-void standby_check(void)
+void enter_standby(void)
 {
-  // if plugged in usb, do nothing
-  if(HAL_GPIO_ReadPin(USB_PRESENT_GPIO_Port, USB_PRESENT_Pin))
-    return;
-  // else enter standby to save joycon battery
-  HAL_GPIO_WritePin(DEBUG_LED_GPIO_Port, DEBUG_LED_Pin, GPIO_PIN_RESET);
-  HAL_Delay(1000);
-  // deinit PB15 as GPIO
-  __HAL_RCC_GPIOB_CLK_DISABLE();
-  HAL_GPIO_DeInit(USB_PRESENT_GPIO_Port, USB_PRESENT_Pin);
-  // init PB15 as WAKEUP
   __HAL_RCC_PWR_CLK_ENABLE();
-  // clear wakeup flags
-  HAL_PWR_DisableWakeUpPin(PWR_WAKEUP_PIN7);
+  HAL_Delay(1);
+  HAL_PWR_DisableWakeUpPin(PWR_WAKEUP_PIN6);
   __HAL_PWR_CLEAR_FLAG(PWR_FLAG_WU);
   __HAL_PWR_CLEAR_FLAG(PWR_FLAG_SB);
-  HAL_PWR_EnableWakeUpPin(PWR_WAKEUP_PIN7);
-  // enter standby, all pins are now high-z
+  HAL_PWR_EnableWakeUpPin(PWR_WAKEUP_PIN6);
   HAL_PWR_EnterSTANDBYMode();
 }

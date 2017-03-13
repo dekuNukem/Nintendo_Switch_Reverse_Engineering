@@ -51,19 +51,21 @@
 
 /* Private define ------------------------------------------------------------*/
 
-#define DEBUG_LED_Pin GPIO_PIN_13
+#define UART2_RTS_H_Pin GPIO_PIN_0
+#define UART2_RTS_H_GPIO_Port GPIOA
+#define STM32_DAC_X_Pin GPIO_PIN_4
+#define STM32_DAC_X_GPIO_Port GPIOA
+#define STM32_DAC_Y_Pin GPIO_PIN_5
+#define STM32_DAC_Y_GPIO_Port GPIOA
+#define SPI2_CS_Pin GPIO_PIN_12
+#define SPI2_CS_GPIO_Port GPIOB
+#define DEBUG_LED_Pin GPIO_PIN_8
 #define DEBUG_LED_GPIO_Port GPIOC
-#define USB_PRESENT_Pin GPIO_PIN_15
-#define USB_PRESENT_GPIO_Port GPIOB
-#define USER_BUTTON_Pin GPIO_PIN_8
-#define USER_BUTTON_GPIO_Port GPIOA
-#define DUP_BUTTON_Pin GPIO_PIN_7
-#define DUP_BUTTON_GPIO_Port GPIOB
-#define J_EN_Pin GPIO_PIN_8
-#define J_EN_GPIO_Port GPIOB
+#define USER_BUTTON_Pin GPIO_PIN_9
+#define USER_BUTTON_GPIO_Port GPIOC
+#define JOYCON_CTS_Pin GPIO_PIN_15
+#define JOYCON_CTS_GPIO_Port GPIOA
 /* USER CODE BEGIN Private defines */
-#define BOARD_TYPE_NDAC_MINI_JOYCON_LEFT 0
-#define BOARD_TYPE_NDAC_MINI_JOYCON_RIGHT 1
 void stm32_dac_init(void);
 /* USER CODE END Private defines */
 

@@ -24,7 +24,7 @@ int32_t linear_buf_line_available(linear_buf *lb);
 int32_t linear_buf_add(linear_buf *lb, uint8_t c);
 int32_t linear_buf_add_str(linear_buf *lb, uint8_t *s, uint32_t len);
 void idwg_kick(void);
-void standby_check(void);
+void enter_standby(void);
 
 #ifdef __cplusplus
 }

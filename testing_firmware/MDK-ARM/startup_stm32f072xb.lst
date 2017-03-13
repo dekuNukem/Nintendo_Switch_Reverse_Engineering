@@ -413,13 +413,13 @@ ARM Macro Assembler    Page 7
               00000000 
               00000000 
 Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M0 --apcs=interw
-ork --depend=nintendac_mini_firmware\startup_stm32f072xb.d -onintendac_mini_fir
-mware\startup_stm32f072xb.o -IC:\Users\Allen\Desktop\Nintendo_Switch_Reverse_En
-gineering\testing_firmware\MDK-ARM\RTE -IC:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CM
-SIS\Include -IC:\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\1.5.0\Device\Include --pre
-define="__MICROLIB SETA 1" --predefine="__UVISION_VERSION SETA 517" --predefine
-="_RTE_ SETA 1" --predefine="STM32F072xB SETA 1" --list=startup_stm32f072xb.lst
- startup_stm32f072xb.s
+ork --depend=switchmod_code\startup_stm32f072xb.d -oswitchmod_code\startup_stm3
+2f072xb.o -IC:\Users\Allen\Desktop\Nintendo_Switch_Reverse_Engineering\testing_
+firmware\MDK-ARM\RTE -IC:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\Include -IC:\K
+eil_v5\ARM\PACK\Keil\STM32F0xx_DFP\1.5.0\Device\Include --predefine="__MICROLIB
+ SETA 1" --predefine="__UVISION_VERSION SETA 517" --predefine="_RTE_ SETA 1" --
+predefine="STM32F072xB SETA 1" --list=startup_stm32f072xb.lst startup_stm32f072
+xb.s
 
 
 

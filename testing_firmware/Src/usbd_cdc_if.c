@@ -222,16 +222,14 @@ static int8_t CDC_Control_FS  (uint8_t cmd, uint8_t* pbuf, uint16_t length)
   /* 6      | bDataBits  |   1   | Number Data bits (5, 6, 7, 8 or 16).          */
   /*******************************************************************************/
   case CDC_SET_LINE_CODING:   
-    if(HAL_GetTick() > 1000)
-      is_port_open = 1;
+	if(HAL_GetTick() > 1000)
+    is_port_open = 1;
     break;
 
   case CDC_GET_LINE_CODING:     
-
     break;
 
   case CDC_SET_CONTROL_LINE_STATE:
-
     break;
 
   case CDC_SEND_BREAK:
@@ -288,11 +286,11 @@ uint8_t CDC_Transmit_FS(uint8_t* Buf, uint16_t Len)
   /* USER CODE BEGIN 7 */ 
   if ((hUsbDeviceFS.dev_state != USBD_STATE_CONFIGURED))
     return USBD_FAIL;
-  
+
   USBD_CDC_HandleTypeDef *hcdc = (USBD_CDC_HandleTypeDef*)hUsbDeviceFS.pClassData;
-  if (hcdc->TxState != 0){
+  if (hcdc->TxState != 0)
     return USBD_BUSY;
-  }
+
   USBD_CDC_SetTxBuffer(&hUsbDeviceFS, Buf, Len);
   result = USBD_CDC_TransmitPacket(&hUsbDeviceFS);
   /* USER CODE END 7 */ 

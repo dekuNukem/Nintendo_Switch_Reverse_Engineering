@@ -3,8 +3,8 @@
  * Auto generated Run-Time-Environment Component Configuration File
  *      *** Do not modify ! ***
  *
- * Project: 'nintendac_mini_firmware' 
- * Target:  'nintendac_mini_firmware' 
+ * Project: 'switchmod_code' 
+ * Target:  'switchmod_code' 
  */
 
 #ifndef RTE_COMPONENTS_H
