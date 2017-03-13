@@ -60,9 +60,19 @@ Looking at the pins on the left Joycon, the left most one is Pin 1, and the righ
 |            -           |           7          |              GND              |                                                          -                                                          |
 |            4           |           8          | Serial data Joycon to console |                                            Standard level (idle at 1.8V)                                            |
 |            5           |           9          |               ?               |                                                    Always at GND                                                    |
-|            6           |          10          |          Flow control?        |                        Looks like RTS line, Joycon will only send data when this line is high                       |
+|            6           |          10          |          Flow control         |                        Looks like RTS line, Joycon will only send data when this line is high                       |
 
 * When first connected the baud rate is at 1000000bps(!), after the initial handshake the speed is then switched to 3125000bps(!!). The handshake probably exchanges information about the side of the Joycon, the color, and bluetooth address etc.
+
+### Handshake procedure
+
+* Pin 5 (Serial data console to Joycon) is normally pulled high on the console side when nothing is connected. Since this line is inverted on the Joycon side, it will be pulled down when a Joycon is attached to the console, thus initializing a handshake.
+
+* It seems Pin 5 needs to be pulled down for more than 500ms for the handshake to take place.
+
+* Once started, the console will send a 4-byte start sequence of `A1 A2 A3 A4`, around 46us later followed by 12 byte command of `19 01 03 07 00 A5 02 01 7E 00 00 00` repeatedly. It will send those commands every 100ms (10Hz) for 3 seconds. If no response is received it will give up and wait for another event on the line.
+
+* under construction...
 
 ### Protocol
 
@@ -111,6 +121,10 @@ Byte 19 and 20 (`f7 81` between 5th and 6th line) are the Joystick values, most 
 ### The rest of them
 
 Still working on decoding those... It has to contain battery level, button status, joystick position, accelerometer and gyroscope data, and maybe more.
+
+## Joycon spoofing
+
+Right now I'm working on spoofing Joycon with a microcontroller, it's basically a replay attack. It's sort of working now but still needs some refinement. I'll do a detailed writeup when it's finished but feel free to take a look at the code (it's a mess).
 
 ## Ending remarks
 
