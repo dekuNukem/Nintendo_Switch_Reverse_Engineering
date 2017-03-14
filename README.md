@@ -66,6 +66,12 @@ Looking at the pins on the left Joycon, the left most one is Pin 1, and the righ
 
 ### Handshake procedure
 
+**Console to Joycon**|**Joycon response GREY**|**Joycon response RED**|**Remarks**
+:-----:|:-----:|:-----:|:-----:
+`A1 A2 A3 A4 19 01 03 07 00 A5 02 01 7E 00 00 00`|`19 81 03 07 00 A5 02 02 7D 00 00 64`|`19 81 03 07 00 A5 02 02 7D 00 00 64`|handshake response
+`19 01 03 07 00 91 01 00 00 00 00 24`|`19 81 03 0F 00 94 01 08 00 00 FA E8 01 31 67 9C 8A BB 7C 00`|`19 81 03 0F 00 94 01 08 00 00 8F 87 01 E6 4C 5F B9 E6 98 00`|Joycon info; possibly color
+`19 01 03 0F 00 91 20 08 00 00 BD B1 C0 C6 2D 00 00 00 00 00`|`19 81 03 07 00 94 20 00 00 00 00 A8`|`19 81 03 07 00 94 20 00 00 00 00 A8`|command to switch to 3125000bps
+
 * Pin 5 (Serial data, console to Joycon) is normally pulled high on the console side when nothing is connected. Since this line is inverted on the Joycon side, it will be pulled down when a Joycon is attached to the console, thus initializing a handshake.
 
 * It seems Pin 5 needs to be pulled down for more than 500ms for the handshake to take place.
