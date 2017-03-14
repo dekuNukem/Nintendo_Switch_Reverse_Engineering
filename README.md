@@ -18,9 +18,9 @@ The "JC" is for the 10-pin Joycon connector, see below for details.
 
 * Joycon runs at 1.8V
 
-* There is no silkscreen marking component and test point numbers, maybe Nintendo is trying to discourage people from doing funky things to the Joycon?
+* There is no silkscreen marking component and test point numbers, so maybe Nintendo is trying to discourage people from doing funky things to the Joycon?
 
-* Also, in a bizarre move, Nintendo didn't use the traditional "one side pulled-up and other side to ground" way of reading buttons, instead they used a keypad configuration where buttons are arranged to rows and columns. They used the keypad scanner built-in inside the BCM20734 with 128KHz clock for reading the buttons. That means it would be extremely hard to spoof button presses for TAS and twitch-plays. Maybe the Pro controller is different, need to buy one though.
+* Also, in a bizarre move, Nintendo didn't use the traditional "one side pulled-up and other side to ground" way of reading buttons, instead they used a keypad configuration where buttons are arranged in rows and columns. They used the keypad scanner built-in inside the BCM20734 with 128KHz clock for reading the buttons. That means it would be extremely hard to spoof button presses for TAS and twitch-plays. Maybe the Pro controller is different, need to buy one though.
 
 * The only button that's not part of the keypad is the joystick button, which is still activated by pulling it down to ground.
 
@@ -138,7 +138,7 @@ ff 34 10 0a
 ff 
 ```
 
-The first 8 byte is always ` 19 81 03 38 00 92 00 31 `, I'm not sure if this differs in different Joycons because I only took apart one.
+The first 8 byte is always ` 19 81 03 38 00 92 00 31 `, I'm not sure if this differs in different Joycons because I have only took apart one.
 
 ### Button status
 
@@ -160,5 +160,5 @@ Right now I'm working on spoofing Joycon with a microcontroller, it's basically 
 
 ## Ending remarks
 
-Right now I only took apart one left Joycon and yet to tear into the console itself, because I want to finish the Zelda first. But so far it looks like Nintendo make some really weird design decisions both in software and in hardware, probably to make what I'm doing more difficult. Anyway, I'll update this from time to time when I have new discoveries. Please share if you find this useful.
+Right now I have only took apart one left Joycon and have yet to tear into the console itself, because I want to finish the Zelda first. But so far it looks like Nintendo has made some really weird design decisions both in software and in hardware, will probably make what I'm doing more difficult. Anyway, I'll update this from time to time when I have new discoveries. Please share if you find this useful.
 
