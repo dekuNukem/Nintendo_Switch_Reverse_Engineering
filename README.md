@@ -66,12 +66,14 @@ Looking at the pins on the left Joycon, the left most one is Pin 1, and the righ
 
 ### Handshake procedure
 
-**Console to Joycon**|**Joycon response GREY**|**Joycon response RED**|**Different?**|**Remarks**
+I took apart 2 left Joycons, one grey one red. Below you can see the difference in the response between two Joycons.
+
+**Console to Joycon**|**GREY Joycon response**|**RED Joycon response**|**Different?**|**Remarks**
 :-----:|:-----:|:-----:|:-----:|:-----:
-`A1 A2 A3 A4 19 01 03 07 00 A5 02 01 7E 00 00 00`|`19 81 03 07 00 A5 02 02 7D 00 00 64`|`19 81 03 07 00 A5 02 02 7D 00 00 64`|Same|Handshake response
+`A1 A2 A3 A4 19 01 03 07 00 A5 02 01 7E 00 00 00`|`19 81 03 07 00 A5 02 02 7D 00 00 64`|`19 81 03 07 00 A5 02 02 7D 00 00 64`|Same|Handshake start; 1000000bps
 `19 01 03 07 00 91 01 00 00 00 00 24`|`19 81 03 0F 00 94 01 08 00 00 FA E8 01 31 67 9C 8A BB 7C 00`|`19 81 03 0F 00 94 01 08 00 00 8F 87 01 E6 4C 5F B9 E6 98 00`|Different|Joycon info; possibly color; side; battery level; BT info; etc
 `19 01 03 0F 00 91 20 08 00 00 BD B1 C0 C6 2D 00 00 00 00 00`|`19 81 03 07 00 94 20 00 00 00 00 A8`|`19 81 03 07 00 94 20 00 00 00 00 A8`|Same|Command to switch to 3125000bps
-`19 01 03 07 00 91 11 00 00 00 00 0E`|`19 81 03 07 00 94 11 00 00 0F 00 33`|`19 81 03 07 00 94 11 00 00 0F 00 33`|Same|?
+`19 01 03 07 00 91 11 00 00 00 00 0E`|`19 81 03 07 00 94 11 00 00 0F 00 33`|`19 81 03 07 00 94 11 00 00 0F 00 33`|Same|?; 3125000 bps from now on
 `19 01 03 07 00 91 10 00 00 00 00 3D`|`19 81 03 07 00 94 10 00 00 00 00 D6`|`19 81 03 07 00 94 10 00 00 00 00 D6`|Same|?
 `19 01 03 0B 00 91 12 04 00 00 12 A6 0F 00 00 00`|`19 81 03 07 00 94 12 00 00 00 00 B0`|`19 81 03 07 00 94 12 00 00 00 00 B0`|Same|?
 `19 01 03 08 00 92 00 01 00 00 69 2D 1F`|61B Controller status|61B Controller status|Different|Handshake done. Console sends this controller status request command every 15ms from now on.
