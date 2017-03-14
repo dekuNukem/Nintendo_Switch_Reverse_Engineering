@@ -46,7 +46,7 @@ Looking at the pins on the left Joycon, the left most one is Pin 1, and the righ
 
 ![Alt text](https://i.imgur.com/iUq5RNG.png)
 
-## Joycon Connector Pinout
+### Joycon Connector Pinout
 
 
 | Logic analyzer channel | Joycon Connector Pin |            Function           |                                                       Remarks                                                       |
