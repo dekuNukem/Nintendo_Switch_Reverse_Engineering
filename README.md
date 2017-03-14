@@ -70,9 +70,26 @@ Looking at the pins on the left Joycon, the left most one is Pin 1, and the righ
 
 * It seems Pin 5 needs to be pulled down for more than 500ms for the handshake to take place.
 
-* Handshake starts at 1000000bps, and the console will send a 4-byte start sequence of `A1 A2 A3 A4`, around 46us later followed by 12 byte command of `19 01 03 07 00 A5 02 01 7E 00 00 00`. It will send those commands repeatedly every 100ms (10Hz) for 3 seconds. If no response is received it gives up and wait for another event on the line.
+* Handshake starts at 1000000bps, and the console will send a 4-byte start sequence of `A1 A2 A3 A4`, around 46us later followed by 12 byte command of `19 01 03 07 00 A5 02 01 7E 00 00 00`. It will send those commands repeatedly every 100ms (10Hz) for 3 seconds. The Joycon respond with `19 81 03 07 00 A5 02 02 7D 00 00 64`. If no response is received it gives up and wait for another event on the line.
 
-* Under construction...
+* The console then send `19 01 03 07 00 91 01 00 00 00 00 24`, to which Joycon respond with `19 81 03 0F 00 94 01 08 00 00 FA E8 01 31 67 9C 8A BB 7C 00`. After this the little joycon insertion animation starts. Since that animation corresponds to the color of the joycon, I guess the color information is in the 20-byte response.
+
+* under construction...
+
+### Pesky checksums
+
+It turns out the last byte of each command seems to be a checksum of some sort, and without figuring it out it would be rather difficult testing what each command does because the console will not accept commands with the wrong checksum. 
+
+Luckily here are some examples of the checksum, seeing it changes drastically with the difference of a single bit it's probably not some simple xor or modular checksum. If you can figure it out it would be really helpful.
+
+```
+19 01 03 07 00 91 10 00 00 00 00 3D
+19 01 03 07 00 91 01 00 00 00 00 24
+19 01 03 07 00 91 11 00 00 00 00 0E
+
+19 81 03 07 00 94 10 00 00 00 00 D6
+19 81 03 07 00 94 11 00 00 0F 00 33
+```
 
 ### Protocol
 
