@@ -86,9 +86,9 @@ Looking at the pins on the left Joycon, the left most one is Pin 1, and the righ
 
 * They console sends `19 01 03 0F 00 91 20 08 00 00 BD B1 C0 C6 2D 00 00 00 00 00`, a command that switches baud rate from 1000000 to 3125000. Joycon respond with `19 81 03 07 00 94 20 00 00 00 00 A8`. Note that the faster baud rate takes effect from the next command.
 
-* Now console is at 3125000bps, it sends `19 01 03 07 00 91 11 00 00 00 00 0E`, joycon respond with `19 81 03 07 00 94 11 00 00 0F 00 33`.
+* Now serial comm is at 3125000bps. Console sends `19 01 03 07 00 91 11 00 00 00 00 0E`, Joycon responds with `19 81 03 07 00 94 11 00 00 0F 00 33`.
 
-* console sends `19 01 03 07 00 91 10 00 00 00 00 3D`, joycon respond with `19 81 03 07 00 94 10 00 00 00 00 D6`
+* Console sends `19 01 03 07 00 91 10 00 00 00 00 3D`, Joycon responds with `19 81 03 07 00 94 10 00 00 00 00 D6`
 
 * Now the pairing is seemingly done, the console will now send `19 01 03 08 00 92 00 01 00 00 69 2D 1F` every 15ms to ask for a controller status update. See "Protocol" section below for details.
 
@@ -138,7 +138,7 @@ ff 34 10 0a
 ff 
 ```
 
-The first 8 byte is always ` 19 81 03 38 00 92 00 31 `, I'm not sure if this differs in different Joycons because I only took apart one.
+The first 8 byte is always ` 19 81 03 38 00 92 00 31 `
 
 ### Button status
 
