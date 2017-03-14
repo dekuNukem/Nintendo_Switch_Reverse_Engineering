@@ -84,13 +84,13 @@ I took apart 2 left Joycons, one grey one red. Below you can see the difference 
 
 * Handshake starts at 1000000bps, and the console will send a 4-byte start sequence of `A1 A2 A3 A4`, around 46us later followed by 12 byte command of `19 01 03 07 00 A5 02 01 7E 00 00 00`. It will send those commands repeatedly every 100ms (10Hz) for 3 seconds. Joycon respond with `19 81 03 07 00 A5 02 02 7D 00 00 64`. If no response is received it gives up and wait for another event on the line.
 
-* The console then send `19 01 03 07 00 91 01 00 00 00 00 24`, to which Joycon respond with a 20-byte response that's different on each Joycon. That response definitely contains the color information of the Joycon, and also possibly contains the serial number, BT info, battery level, etc. After the response is received the little Joycon insertion animation starts.
+* The console then sends `19 01 03 07 00 91 01 00 00 00 00 24`, to which Joycon respond with a 20-byte response that's different on each Joycon. That response definitely contains the color information of the Joycon, and also possibly contains the serial number, BT info, battery level, etc. After the response is received the little Joycon insertion animation starts on the screen.
 
 * They console sends `19 01 03 0F 00 91 20 08 00 00 BD B1 C0 C6 2D 00 00 00 00 00`, a command that switches baud rate from 1000000 to 3125000. Joycon respond with `19 81 03 07 00 94 20 00 00 00 00 A8`. Note that the faster baud rate takes effect from the next command.
 
 * Now serial comm is at 3125000bps. Console sends `19 01 03 07 00 91 11 00 00 00 00 0E`, Joycon responds with `19 81 03 07 00 94 11 00 00 0F 00 33`.
 
-* Console sends `19 01 03 07 00 91 10 00 00 00 00 3D`, Joycon responds with `19 81 03 07 00 94 10 00 00 00 00 D6`
+* Console sends `19 01 03 07 00 91 10 00 00 00 00 3D`, Joycon responds with `19 81 03 07 00 94 10 00 00 00 00 D6`.
 
 * Now the pairing is seemingly done, the console will now send `19 01 03 08 00 92 00 01 00 00 69 2D 1F` every 15ms to ask for a controller status update. See "Protocol" section below for details.
 
@@ -162,5 +162,5 @@ Right now I'm working on spoofing Joycon with a microcontroller, it's basically 
 
 ## Ending remarks
 
-Right now I only took apart one left Joycon and yet to tear into the console itself, because I want to finish the Zelda first. But so far it looks like Nintendo make some really weird design decisions both in software and in hardware, probably to make what I'm doing more difficult. Anyway, I'll update this from time to time when I have new discoveries. Please share if you find this useful.
+Right now I only took apart left Joycons and yet to tear into the console itself, because I want to finish the Zelda first. But so far it looks like Nintendo make some really weird design decisions both in software and in hardware, probably to make what I'm doing more difficult. Anyway, I'll update this from time to time when I have new discoveries. Please share if you find this useful.
 
