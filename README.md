@@ -109,6 +109,10 @@ Luckily here are some examples of the checksum, seeing it changes drastically wi
 19 81 03 07 00 94 11 00 00 0F 00 33
 ```
 
+It turns out if you drop the first two bytes and checksum the rest using a CRC-8 with polynomial of 0x8d and an initial value of 0x7a, you get the checksum byte at the end.
+
+There's some example code for calculating this using a lookup table in [packet_parse/joycon_crc.py](./packet_parse/joycon_crc.py). It only seems to be valid for shorter commands, like the above. The 4th byte in the above (and other) joycon commands seems to correspond to the remaining length, not counting the checksum.
+
 ### Protocol
 
 In normal operation the console asks Joycon for an update every 15ms (66.6fps), the command for requesting update is:
