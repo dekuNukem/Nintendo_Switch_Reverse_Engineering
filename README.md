@@ -168,6 +168,8 @@ Joycon uses STMicroelectronics 's LSM6DS3 6-axis MEMS accelerometer and gyroscop
 |----------------------------------------------------------------------------------------------------------------------------------------|--------------------------------|
 | ODR 1.66KHz, full-scale ±8g, AA filter bandwidth 100Hz, low-pass filter enabled, slope filter enabled with cut-off frequency at 416Hz. | ODR 208Hz, full-scale 2000dps  |
 
+The Joycon then polls LSM6DS3 every 1.35ms for both accelerometer and gyroscope data in all axises, totaling 12 bytes(6 axis, each axis 2 bytes).
+
 ## Ending remarks
 
 Right now I only took apart left Joycons and yet to tear into the console itself, because I want to finish the Zelda first. But so far it looks like Nintendo make some really weird design decisions both in software and in hardware, probably to make what I'm doing more difficult. Anyway, I'll update this from time to time when I have new discoveries. Please share if you find this useful.
