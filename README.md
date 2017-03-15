@@ -32,7 +32,7 @@ Well it's not actually a dump, just a capture of the SPI lines when the Joycon i
 
 The SPI clock runs at 3MHz.
 
-[Raw capture data](./logic_captures/leftjoyconspiflashpoweron.logicdata).
+[Raw capture data](./logic_captures/left_grey_joycon_spi_flash_power_on.logicdata).
 
 ## Joycon to Console Communication
 
@@ -42,7 +42,7 @@ When attached to the console, the Joycon talks to it through a physical connecti
 
 Looking at the pins on the left Joycon, the left most one is Pin 1, and the right most one is Pin 10. I simply removed the rumble motor, burned a hole on the back cover, and routed all the wires out through that.
 
-[And here](./logic_captures/leftjoycon_docking.logicdata) is a capture of the docking of the left Joycon.
+[And here](./logic_captures/left_grey_joycon_docking_home_screen.logicdata) is a capture of the docking of the left Joycon.
 
 ![Alt text](https://i.imgur.com/iUq5RNG.png)
 
