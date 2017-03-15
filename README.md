@@ -129,7 +129,7 @@ The first 4 bytes are a header, with the 4th byte being the length of the remain
  
 There's some example code for calculating this CRC using a lookup table in [packet_parse/joycon_crc.py](./packet_parse/joycon_crc.py).
 
-### Protocol
+### Joycon status data packet
 
 In normal operation the console asks Joycon for an update every 15ms (66.6fps), the command for requesting update is:
 
@@ -160,7 +160,23 @@ ff 34 10 0a
 ff 
 ```
 
-The first 8 byte is always ` 19 81 03 38 00 92 00 31 `
+Here is what I figured out:
+
+
+|   Byte #  |        Sample value       |               Remarks              |
+|:---------:|:-------------------------:|:----------------------------------:|
+|   0 to 8  | `19 81 03 38 00 92 00 31` |               Header               |
+| 16 and 17 |          `00 02`          |  Button status, see section below  |
+|     19    |            `f7`           | Joystick X value, reversed nibble? |
+|     20    |            `81`           |          Joystick Y value          |
+| 31 and 32 |          `4e 05`          |          Gyroscope X value         |
+| 33 and 34 |          `cc fb`          |          Gyroscope Y value         |
+| 35 and 36 |          `eb ff`          |          Gyroscope Z value         |
+| 37 and 38 |          `41 00`          |        Accelerometer X Value       |
+| 39 and 40 |          `1b 03`          |        Accelerometer Y Value       |
+| 41 and 42 |          `82 f0`          |        Accelerometer Z Value       |
+
+Each accelerometer and gyroscope axis data is 2 bytes long and forms a int16_t, last byte is the higher byte.
 
 ### Button status
 

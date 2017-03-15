@@ -23,3 +23,4 @@ for item in master_list:
 		print()
 	else:
 		print(hex(item), end=' ')
+
