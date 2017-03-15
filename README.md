@@ -24,15 +24,31 @@ The "JC" is for the 10-pin Joycon connector, see below for details.
 
 * The only button that's not part of the keypad is the joystick button, which is still activated by pulling it down to ground.
 
-## Left Joycon SPI flash dump
+## SPI peripherals
 
 ![Alt text](https://i.imgur.com/2c3tmyd.png)
 
-Well it's not actually a dump, just a capture of the SPI lines when the Joycon is powered up (battery connected). I don't have time to go through it right now but of course you can if you want.
+There are 2 SPI devices on the bus, one 4Mb MX25U4033E flash memory and one LSM6DS3 6-axis MEMS accelerometer and gyroscope.
 
-The SPI clock runs at 3MHz.
+[Here is a capture](./logic_captures/left_grey_joycon_spi_poweron_then_dock.logicdata) of SPI lines when the Joycon battery is connected, and then attached to the console.
 
-[Raw capture data](./logic_captures/left_grey_joycon_spi_flash_power_on.logicdata).
+It looks like SCK runs at 12.5MHz when accessing the flash memory, but switches to 6.25MHz when accessing the MEMS chip.
+
+### Accelerometer and gyroscope
+
+Upon connection the microcontroller initializes a software reset of the MEMS chip, then set up the accelerometer and gyroscope as follows:
+
+| Accelerometer                                                                                                                          | Gyroscope                      |
+|----------------------------------------------------------------------------------------------------------------------------------------|--------------------------------|
+| ODR 1.66KHz, full-scale ±8g, AA filter bandwidth 100Hz, low-pass filter enabled, slope filter enabled with cut-off frequency at 416Hz. | ODR 208Hz, full-scale 2000dps  |
+
+The Joycon then polls LSM6DS3 every 1.35ms(740Hz) for both accelerometer and gyroscope data in all axises, totaling 12 bytes(6 axises, each axis 2 bytes).
+
+Since the Joycon polls MEMS data every 1.35ms but only send out controller update every 15ms, there might be some internal averaging to smooth out the data, needs to go through the numbers to find out.
+
+### Flash Memory
+
+Well there's a capture of the SPI lines when the Joycon is powered up (battery connected), which contains all the address and data Joycon reads from the flash memory. I don't have time to go through it right now but of course you can if you want.
 
 ## Joycon to Console Communication
 
@@ -159,18 +175,6 @@ Byte 19 and 20 (`f7 81` between 5th and 6th line) are the Joystick values, most 
 ### The rest of them
 
 Still working on decoding those... It has to contain battery level, button status, joystick position, accelerometer and gyroscope data, and maybe more.
-
-## Accelerometer and gyroscope setup
-
-Joycon uses STMicroelectronics 's LSM6DS3 6-axis MEMS accelerometer and gyroscope. It operates in SPI modes and shares the same SPI bus with the flash memory. Upon connection the uC initializes a software reset of the MEMS chip, then set up the accelerometer and gyroscope as follows:
-
-| Accelerometer                                                                                                                          | Gyroscope                      |
-|----------------------------------------------------------------------------------------------------------------------------------------|--------------------------------|
-| ODR 1.66KHz, full-scale ±8g, AA filter bandwidth 100Hz, low-pass filter enabled, slope filter enabled with cut-off frequency at 416Hz. | ODR 208Hz, full-scale 2000dps  |
-
-The Joycon then polls LSM6DS3 every 1.35ms(740Hz) for both accelerometer and gyroscope data in all axises, totaling 12 bytes(6 axises, each axis 2 bytes).
-
-Since the Joycon polls MEMS data every 1.35ms but only send out controller update every 15ms, there might be some internal averaging to smooth out the data, needs to go through the numbers to find out.
 
 ## Ending remarks
 
