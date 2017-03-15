@@ -168,7 +168,9 @@ Joycon uses STMicroelectronics 's LSM6DS3 6-axis MEMS accelerometer and gyroscop
 |----------------------------------------------------------------------------------------------------------------------------------------|--------------------------------|
 | ODR 1.66KHz, full-scale ±8g, AA filter bandwidth 100Hz, low-pass filter enabled, slope filter enabled with cut-off frequency at 416Hz. | ODR 208Hz, full-scale 2000dps  |
 
-The Joycon then polls LSM6DS3 every 1.35ms for both accelerometer and gyroscope data in all axises, totaling 12 bytes(6 axis, each axis 2 bytes).
+The Joycon then polls LSM6DS3 every 1.35ms(740Hz) for both accelerometer and gyroscope data in all axises, totaling 12 bytes(6 axises, each axis 2 bytes).
+
+Since the Joycon polls MEMS data every 1.35ms but only send out controller update every 15ms, there might be some internal averaging to smooth out the data, needs to go through the numbers to find out.
 
 ## Ending remarks
 
