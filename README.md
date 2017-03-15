@@ -125,9 +125,9 @@ Luckily here are some examples of the checksum, seeing it changes drastically wi
 19 81 03 07 00 94 11 00 00 0F 00 33
 ```
 
-It turns out if you drop the first two bytes and checksum the rest using a CRC-8 with polynomial of 0x8d and an initial value of 0x7a, you get the checksum byte at the end.
-
-There's some example code for calculating this using a lookup table in [packet_parse/joycon_crc.py](./packet_parse/joycon_crc.py). It only seems to be valid for shorter commands, like the above. The 4th byte in the above (and other) joycon commands seems to correspond to the remaining length, not counting the checksum.
+The first 4 bytes are a header, with the 4th byte being the length of the remaining packet (not counting the checksum). The next 7 bytes are some type of data, with the 8th byte being the CRC of that data. The CRC used is CRC-8 with a polynomial of 0x8D and an initial value of 0x00.
+ 
+There's some example code for calculating this CRC using a lookup table in [packet_parse/joycon_crc.py](./packet_parse/joycon_crc.py).
 
 ### Protocol
 
