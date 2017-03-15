@@ -169,7 +169,7 @@ Here is what I figured out:
 
 |   Byte #  |        Sample value       |               Remarks              |
 |:---------:|:-------------------------:|:----------------------------------:|
-|   0 to 8  | `19 81 03 38 00 92 00 31` |               Header               |
+|   0 to 8  | `19 81 03 38 00 92 00 31` |            Header, fixed           |
 | 16 and 17 |          `00 02`          |  Button status, see section below  |
 |     19    |            `f7`           | Joystick X value, reversed nibble? |
 |     20    |            `81`           |          Joystick Y value          |
@@ -190,7 +190,7 @@ The 16th and 17th byte (on line 5, before `65 f7`) are the button status, when a
 
 ### Joystick value
 
-Byte 19 and 20 (`f7 81` between 5th and 6th line) are the Joystick values, most likely the raw 8-bit ADC data. Byte 19 is X while byte 20 is Y. Again, bizarrely, the X value is reversed, as in the `f7` should actually be `7f` (127 at neutral position). The Y value is correct though (`0x81` is 129).
+Byte 19 and 20 (`f7 81` between 5th and 6th line) are the Joystick values, most likely the raw 8-bit ADC data. Byte 19 is X while byte 20 is Y. Again, bizarrely, the X nibble is reversed, as in the `f7` should actually be `7f` (127 at neutral position). The Y value is correct though (`0x81` is 129).
 
 ### The rest of them
 
