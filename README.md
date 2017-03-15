@@ -160,9 +160,13 @@ Byte 19 and 20 (`f7 81` between 5th and 6th line) are the Joystick values, most 
 
 Still working on decoding those... It has to contain battery level, button status, joystick position, accelerometer and gyroscope data, and maybe more.
 
-## Joycon spoofing
+## Accelerometer and gyroscope setup
 
-Right now I'm working on spoofing Joycon with a microcontroller, it's basically a replay attack. It's sort of working now but still needs some refinement. I'll do a detailed writeup when it's finished but feel free to take a look at the code (it's a mess).
+Joycon uses STMicroelectronics 's LSM6DS3 6-axis MEMS accelerometer and gyroscope. It operates in SPI modes and shares the same SPI bus with the flash memory. Upon connection the uC initializes a software reset of the MEMS chip, then set up the accelerometer and gyroscope as follows:
+
+| Accelerometer                                                                                                                          | Gyroscope                      |
+|----------------------------------------------------------------------------------------------------------------------------------------|--------------------------------|
+| ODR 1.66KHz, full-scale ±8g, AA filter bandwidth 100Hz, low-pass filter enabled, slope filter enabled with cut-off frequency at 416Hz. | ODR 208Hz, full-scale 2000dps  |
 
 ## Ending remarks
 
