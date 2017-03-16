@@ -1,3 +1,66 @@
+void get_packet(uint16_t size)
+{
+  HAL_UART_Receive_IT(&huart2, switch_bf, size);
+  while(rx_complete == 0)
+    ;
+  HAL_UART_AbortReceive_IT(&huart2);
+  rx_complete = 0;
+}
+
+void attach()
+{
+  HAL_UART_MspDeInit(&huart2);
+  GPIO_InitTypeDef GPIO_InitStruct;
+  GPIO_InitStruct.Pin = GPIO_PIN_3;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+  HAL_Delay(1000);
+  HAL_GPIO_DeInit(GPIOA, GPIO_PIN_3);
+  HAL_UART_MspInit(&huart2);
+  MX_USART2_UART_Init();
+
+  get_packet(16);
+  if(memcmp(switch_bf, connect_request, 16) != 0)
+    fatal_error();
+  transmit_with_cts(connect_request_response, 12);
+
+  get_packet(12);
+  if(memcmp(switch_bf, cmd2, 12) != 0)
+    fatal_error();
+  transmit_with_cts(cmd2_response, 20);
+
+  // Here we get the insertion animation
+  // so I guess cmd2_response is where the color of the joycon is
+
+  get_packet(20);
+  if(memcmp(switch_bf, cmd3, 20) != 0)
+    fatal_error();
+  transmit_with_cts(cmd3_response, 12);
+
+  usart2_init_3125000();
+  memset(switch_bf, 0, SWITCH_BUF_SIZE);
+  HAL_Delay(2);
+  transmit_with_cts(cmd4_response, 12);
+  HAL_UART_AbortReceive_IT(&huart2);
+
+  get_packet(13);
+  if(memcmp(switch_bf, cmd5, 13) != 0)
+    fatal_error();
+  transmit_with_cts(cmd5_response, 12);
+
+  get_packet(12);
+  if(memcmp(switch_bf, cmd6, 12) != 0)
+    fatal_error();
+  transmit_with_cts(cmd6_response, 12);
+
+  while(1)
+  {
+    transmit_with_cts(update_request_reponse, 61);
+    HAL_Delay(15);
+  }
+}
+
   
 void attach()
 {

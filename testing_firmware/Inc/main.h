@@ -51,8 +51,10 @@
 
 /* Private define ------------------------------------------------------------*/
 
-#define UART2_RTS_H_Pin GPIO_PIN_0
-#define UART2_RTS_H_GPIO_Port GPIOA
+#define FC_JC_TX_EN_Pin GPIO_PIN_0
+#define FC_JC_TX_EN_GPIO_Port GPIOA
+#define FC_NS_TX_EN_Pin GPIO_PIN_1
+#define FC_NS_TX_EN_GPIO_Port GPIOA
 #define STM32_DAC_X_Pin GPIO_PIN_4
 #define STM32_DAC_X_GPIO_Port GPIOA
 #define STM32_DAC_Y_Pin GPIO_PIN_5

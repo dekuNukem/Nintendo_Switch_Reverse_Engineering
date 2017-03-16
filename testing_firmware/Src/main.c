@@ -57,7 +57,8 @@
 #include "delay_us.h"
 
 #define SWITCH_BUF_SIZE 64
-
+#define NSTX_ENABLE() HAL_GPIO_WritePin(FC_NS_TX_EN_GPIO_Port, FC_NS_TX_EN_Pin, GPIO_PIN_RESET)
+#define NSTX_DISABLE() HAL_GPIO_WritePin(FC_NS_TX_EN_GPIO_Port, FC_NS_TX_EN_Pin, GPIO_PIN_SET)
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -74,7 +75,7 @@ UART_HandleTypeDef huart2;
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
 int32_t next_iwdg_kick;
-uint8_t switch_bf[SWITCH_BUF_SIZE];
+uint8_t switch_bb[1];
 volatile uint8_t rx_complete = 0;
 /* USER CODE END PV */
 
@@ -168,22 +169,7 @@ void blink(void)
   }
 }
 
-void print_packet(void)
-{
-  for (int i = 1; i <= SWITCH_BUF_SIZE; ++i)
-    printf("%02x ", switch_bf[i-1]);
-  printf("\n");
-  memset(switch_bf, 0, SWITCH_BUF_SIZE);
-}
 
-void get_packet(uint16_t size)
-{
-  HAL_UART_Receive_IT(&huart2, switch_bf, size);
-  while(rx_complete == 0)
-    ;
-  HAL_UART_AbortReceive_IT(&huart2);
-  rx_complete = 0;
-}
 
 void usart2_init_3125000(void)
 {
@@ -208,7 +194,7 @@ void transmit_with_cts(uint8_t *data, uint16_t size)
 {
   for (int i = 0; i < size; ++i)
   {
-    while(HAL_GPIO_ReadPin(GPIOA, UART2_RTS_H_Pin) == GPIO_PIN_RESET)
+    while(HAL_GPIO_ReadPin(GPIOA, FC_JC_TX_EN_Pin) == GPIO_PIN_RESET)
       ;
     HAL_UART_Transmit(&huart2, data + i, 1, 1000);
   }
@@ -222,8 +208,19 @@ void fatal_error()
     HAL_Delay(100);
     HAL_GPIO_WritePin(DEBUG_LED_GPIO_Port, DEBUG_LED_Pin, GPIO_PIN_RESET);
     HAL_Delay(400);
-    print_packet();
   }
+}
+
+void recv_1b()
+{
+  NSTX_ENABLE();
+  HAL_UART_Receive_IT(&huart2, switch_bb, 1);
+  delay_us(2);
+  NSTX_DISABLE();
+  while(rx_complete == 0)
+    ;
+  rx_complete = 0;
+  delay_us(200);
 }
 
 void attach()
@@ -239,44 +236,9 @@ void attach()
   HAL_UART_MspInit(&huart2);
   MX_USART2_UART_Init();
 
-  get_packet(16);
-  if(memcmp(switch_bf, connect_request, 16) != 0)
-    fatal_error();
-  transmit_with_cts(connect_request_response, 12);
-
-  get_packet(12);
-  if(memcmp(switch_bf, cmd2, 12) != 0)
-    fatal_error();
-  transmit_with_cts(cmd2_response, 20);
-
-  // Here we get the insertion animation
-  // so I guess cmd2_response is where the color of the joycon is
-
-  get_packet(20);
-  if(memcmp(switch_bf, cmd3, 20) != 0)
-    fatal_error();
-  transmit_with_cts(cmd3_response, 12);
-
-  usart2_init_3125000();
-  memset(switch_bf, 0, SWITCH_BUF_SIZE);
-  HAL_Delay(2);
-  transmit_with_cts(cmd4_response, 12);
-  HAL_UART_AbortReceive_IT(&huart2);
-
-  get_packet(13);
-  if(memcmp(switch_bf, cmd5, 13) != 0)
-    fatal_error();
-  transmit_with_cts(cmd5_response, 12);
-
-  get_packet(12);
-  if(memcmp(switch_bf, cmd6, 12) != 0)
-    fatal_error();
-  transmit_with_cts(cmd6_response, 12);
-
   while(1)
   {
-    transmit_with_cts(update_request_reponse, 61);
-    HAL_Delay(15);
+    recv_1b();
   }
 }
 
@@ -306,6 +268,7 @@ int main(void)
   MX_TIM2_Init();
 
   /* USER CODE BEGIN 2 */
+  NSTX_DISABLE();
   blink();
   // spi_cs_high();
   delay_us_init(&htim2);
@@ -313,7 +276,6 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  memset(switch_bf, 0, SWITCH_BUF_SIZE);
   while (1)
   {
   /* USER CODE END WHILE */
@@ -321,9 +283,11 @@ int main(void)
   /* USER CODE BEGIN 3 */
     if(HAL_GPIO_ReadPin(USER_BUTTON_GPIO_Port, USER_BUTTON_Pin) == GPIO_PIN_RESET)
     {
+      HAL_GPIO_WritePin(DEBUG_LED_GPIO_Port, DEBUG_LED_Pin, GPIO_PIN_RESET);
       printf("%d\n", HAL_GetTick());
       attach();
       HAL_Delay(1000);
+      HAL_GPIO_WritePin(DEBUG_LED_GPIO_Port, DEBUG_LED_Pin, GPIO_PIN_SET);
     }
   }
   /* USER CODE END 3 */
@@ -536,16 +500,26 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOC_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(FC_NS_TX_EN_GPIO_Port, FC_NS_TX_EN_Pin, GPIO_PIN_SET);
+
+  /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(SPI2_CS_GPIO_Port, SPI2_CS_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(DEBUG_LED_GPIO_Port, DEBUG_LED_Pin, GPIO_PIN_SET);
 
-  /*Configure GPIO pins : UART2_RTS_H_Pin JOYCON_CTS_Pin */
-  GPIO_InitStruct.Pin = UART2_RTS_H_Pin|JOYCON_CTS_Pin;
+  /*Configure GPIO pins : FC_JC_TX_EN_Pin JOYCON_CTS_Pin */
+  GPIO_InitStruct.Pin = FC_JC_TX_EN_Pin|JOYCON_CTS_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : FC_NS_TX_EN_Pin */
+  GPIO_InitStruct.Pin = FC_NS_TX_EN_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(FC_NS_TX_EN_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : SPI2_CS_Pin */
   GPIO_InitStruct.Pin = SPI2_CS_Pin;

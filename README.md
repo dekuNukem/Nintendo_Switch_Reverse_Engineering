@@ -73,12 +73,12 @@ Looking at the pins on the left Joycon, the left most one is Pin 1, and the righ
 |            -           |           2          |              GND              |                                                          -                                                          |
 |            0           |           3          |           BT status?          | Only high when connected to console via bluetooth, low when unpaired, sleeping, or attached to the console directly |
 |            1           |           4          |               5V              |                                              Joycon power and charging                                              |
-|            2           |           5          | Serial data, console to Joycon |                                             Inverted level (idle at GND)                                            |
-|            3           |           6          |         Attach status?        |                     GND only when directly attached to console and not sleeping, 1.8V otherwise.                    |
+|            2           |           5          | Serial data console to Joycon |                                             Inverted level (idle at GND)                                            |
+|            3           |           6          |          Flow control         |                             Console will only send data to Joycon when this line is LOW                             |
 |            -           |           7          |              GND              |                                                          -                                                          |
-|            4           |           8          | Serial data, Joycon to console |                                            Standard level (idle at 1.8V)                                            |
+|            4           |           8          | Serial data Joycon to console |                                            Standard level (idle at 1.8V)                                            |
 |            5           |           9          |               ?               |                                                    Always at GND                                                    |
-|            6           |          10          |          Flow control         |                        Looks like RTS line, Joycon will only send data when this line is high                       |
+|            6           |          10          |          Flow control         |                             Joycon will only send data to console when this line is HIGH                            |                  |
 
 * When first connected the baud rate is at 1000000bps(!), after the initial handshake the speed is then switched to 3125000bps(!!). The handshake probably exchanges information about the side of the Joycon, the color, and bluetooth address etc.
 
