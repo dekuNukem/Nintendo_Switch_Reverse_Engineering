@@ -202,6 +202,10 @@ I did a capture of the command sent from console to initiate a rumble on the Joy
 
 You can see the console sends longer commands (17 bytes vs 8 bytes) during the rumble period. I'm yet to look into this, but of course you can.
 
+## Touchscreen controller
+
+
+
 ## Ending remarks
 
 Right now I only took apart left Joycons and yet to tear into the console itself, because I want to finish the Zelda first. But so far it looks like Nintendo make some really weird design decisions both in software and in hardware, probably to make what I'm doing more difficult. Anyway, I'll update this from time to time when I have new discoveries. Please share if you find this useful.
