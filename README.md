@@ -196,6 +196,12 @@ Byte 19 and 20 (`f7 81` between 5th and 6th line) are the Joystick values, most 
 
 Still working on decoding those... It has to contain battery level, button status, joystick position, accelerometer and gyroscope data, and maybe more.
 
+### Rumble commands
+
+I did a capture of the command sent from console to initiate a rumble on the Joycon. It was captured by pressing L to set off a bomb in BotW, which results in a fairly short rumble. [Here is a capture](./logic_captures/left_grey_joycon_botw_rumble.txt)
+
+You can see the console sends a longer command (17 bytes vs 8 bytes). I'm yet to look into this, but of course you can.
+
 ## Ending remarks
 
 Right now I only took apart left Joycons and yet to tear into the console itself, because I want to finish the Zelda first. But so far it looks like Nintendo make some really weird design decisions both in software and in hardware, probably to make what I'm doing more difficult. Anyway, I'll update this from time to time when I have new discoveries. Please share if you find this useful.
