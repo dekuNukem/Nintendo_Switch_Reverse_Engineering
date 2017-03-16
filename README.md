@@ -206,11 +206,11 @@ You can see the console sends longer commands (17 bytes vs 8 bytes) during the r
 
 ![Alt text](http://i.imgur.com/ZZWBv5d.jpg)
 
-The console itself uses a FT9CJ capacitive touchscreen controller. And [according to techinsights](http://www.techinsights.com/about-techinsights/overview/blog/nintendo-switch-teardown/) it's a custom part by STMicroelectronics for the Nintendo Switch. After looking at the communication it appears to use I2C for communication, which is on par with other touchscreen controller chips. [Here is a capture](./logic_captures/left_grey_joycon_botw_rumble.txt) of the I2C communication on power-up.
+The console itself uses a FT9CJ capacitive touchscreen controller. And [according to techinsights](http://www.techinsights.com/about-techinsights/overview/blog/nintendo-switch-teardown/) it's a custom part by STMicroelectronics for the Nintendo Switch. After looking at the communication it appears to use I2C, which is on par with other touchscreen controller chips. [Here is a capture](./logic_captures/left_grey_joycon_botw_rumble.txt) of the I2C bus on power-up.
 
 The 7-bit I2C address of the chip is 0x49 (0x92 write, 0x93 read), and it's polled around every 4ms for update.
 
 ## Ending remarks
 
-Right now I only took apart left Joycons and yet to tear into the console itself, because I want to finish the Zelda first. But so far it looks like Nintendo make some really weird design decisions both in software and in hardware, probably to make what I'm doing more difficult. Anyway, I'll update this from time to time when I have new discoveries. Please share if you find this useful.
+So far it looks like Nintendo make some really weird design decisions both in software and in hardware, probably to make what I'm doing more difficult. Anyway, I'll update this from time to time when I have new discoveries. Please share if you find this useful.
 
