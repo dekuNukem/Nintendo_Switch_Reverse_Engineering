@@ -198,9 +198,9 @@ Still working on decoding those... It has to contain battery level, button statu
 
 ### Rumble commands
 
-I did a capture of the command sent from console to initiate a rumble on the Joycon. It was captured by pressing L to set off a bomb in BotW, which results in a fairly short rumble. [Here is a capture](./logic_captures/left_grey_joycon_botw_rumble.txt)
+I did a capture of the command sent from console to initiate a rumble on the Joycon. It was captured by pressing L to set off a bomb in BotW, which results in a fairly short rumble. [Here is the capture](./logic_captures/left_grey_joycon_botw_rumble.txt).
 
-You can see the console sends a longer command (17 bytes vs 8 bytes). I'm yet to look into this, but of course you can.
+You can see the console sends longer commands (17 bytes vs 8 bytes) during the rumble period. I'm yet to look into this, but of course you can.
 
 ## Ending remarks
 
