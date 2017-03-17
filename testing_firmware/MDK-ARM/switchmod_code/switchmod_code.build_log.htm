@@ -27,14 +27,16 @@ Project File Date:  03/17/2017
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 1 (build 61)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
 Build target 'switchmod_code'
-compiling main.c...
-../Src/main.c(286): warning:  #128-D: loop is not reachable
+compiling joycon_cmd.c...
+..\Src\joycon_cmd.c(166): warning:  #128-D: loop is not reachable
     for (int i = 0; i < 32; ++i)
-../Src/main.c(438): warning:  #177-D: function "MX_IWDG_Init" was declared but never referenced
+..\Src\joycon_cmd.c: 1 warning, 0 errors
+compiling main.c...
+../Src/main.c(258): warning:  #177-D: function "MX_IWDG_Init" was declared but never referenced
   static void MX_IWDG_Init(void)
-../Src/main.c: 2 warnings, 0 errors
+../Src/main.c: 1 warning, 0 errors
 linking...
-Program Size: Code=16240 RO-data=248 RW-data=620 ZI-data=4772  
+Program Size: Code=16240 RO-data=248 RW-data=616 ZI-data=4776  
 "switchmod_code\switchmod_code.axf" - 0 Error(s), 2 Warning(s).
 
 <h2>Software Packages used:</h2>
@@ -53,7 +55,7 @@ Package Vendor: ARM
 <h2>Collection of Component Files used:</h2>
 
    * Component: ARM::CMSIS:CORE:4.3.0
-Build Time Elapsed:  00:00:04
+Build Time Elapsed:  00:00:05
 </pre>
 </body>
 </html>

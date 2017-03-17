@@ -16,7 +16,11 @@ extern DAC_HandleTypeDef hdac;
 extern IWDG_HandleTypeDef hiwdg;
 #define stm32_iwdg_ptr (&hiwdg)
 
+extern UART_HandleTypeDef huart2;
+#define stm32_uart2_ptr (&huart2)
+
 extern int32_t next_iwdg_kick;
+extern volatile uint8_t uart_status;
 
 #define spi_cs_low() do { HAL_GPIO_WritePin(SPI2_CS_GPIO_Port, SPI2_CS_Pin, GPIO_PIN_RESET); } while (0)
 #define spi_cs_high() do { HAL_GPIO_WritePin(SPI2_CS_GPIO_Port, SPI2_CS_Pin, GPIO_PIN_SET); } while (0)

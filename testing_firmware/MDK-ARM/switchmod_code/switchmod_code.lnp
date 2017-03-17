@@ -13,6 +13,7 @@
 "switchmod_code\my_usb.o"
 "switchmod_code\cmd_parser.o"
 "switchmod_code\delay_us.o"
+"switchmod_code\joycon_cmd.o"
 "switchmod_code\stm32f0xx_hal_rcc_ex.o"
 "switchmod_code\stm32f0xx_hal_i2c_ex.o"
 "switchmod_code\stm32f0xx_hal_spi.o"

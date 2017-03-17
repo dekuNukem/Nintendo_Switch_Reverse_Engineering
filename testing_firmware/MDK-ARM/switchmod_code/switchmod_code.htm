@@ -3,7 +3,7 @@
 <title>Static Call Graph - [switchmod_code\switchmod_code.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image switchmod_code\switchmod_code.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060061: Last Updated: Fri Mar 17 15:59:33 2017
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060061: Last Updated: Fri Mar 17 16:48:40 2017
 <BR><P>
 <H3>Maximum Stack Usage =        228 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -249,11 +249,11 @@ Global Symbols
 <BR><BR>[Calls]<UL><LI><a href="#[43]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memset
 </UL>
 
-<P><STRONG><a name="[d2]"></a>memcmp</STRONG> (Thumb, 26 bytes, Stack size 12 bytes, memcmp.o(.text))
+<P><STRONG><a name="[d3]"></a>memcmp</STRONG> (Thumb, 26 bytes, Stack size 12 bytes, memcmp.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 12<LI>Call Chain = memcmp
 </UL>
-<BR>[Called By]<UL><LI><a href="#[d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;get_msg
-<LI><a href="#[d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;attach
+<BR>[Called By]<UL><LI><a href="#[d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;attach
+<LI><a href="#[d2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;get_msg
 </UL>
 
 <P><STRONG><a name="[45]"></a>__aeabi_uldivmod</STRONG> (Thumb, 96 bytes, Stack size 48 bytes, uldiv.o(.text), UNUSED)
@@ -312,9 +312,9 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[49]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GetTick
 </UL>
-<BR>[Called By]<UL><LI><a href="#[d6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fatal_error
+<BR>[Called By]<UL><LI><a href="#[d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;attach
 <LI><a href="#[d7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;blink
-<LI><a href="#[d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;attach
+<LI><a href="#[d6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fatal_error
 </UL>
 
 <P><STRONG><a name="[93]"></a>HAL_GPIO_DeInit</STRONG> (Thumb, 202 bytes, Stack size 20 bytes, stm32f0xx_hal_gpio.o(i.HAL_GPIO_DeInit))
@@ -327,16 +327,16 @@ Global Symbols
 <P><STRONG><a name="[78]"></a>HAL_GPIO_Init</STRONG> (Thumb, 314 bytes, Stack size 24 bytes, stm32f0xx_hal_gpio.o(i.HAL_GPIO_Init))
 <BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = HAL_GPIO_Init
 </UL>
-<BR>[Called By]<UL><LI><a href="#[77]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_SPI_MspInit
-<LI><a href="#[8e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UART_MspInit
+<BR>[Called By]<UL><LI><a href="#[8e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UART_MspInit
+<LI><a href="#[77]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_SPI_MspInit
 <LI><a href="#[d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;attach
 <LI><a href="#[99]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MX_GPIO_Init
 </UL>
 
-<P><STRONG><a name="[d4]"></a>HAL_GPIO_ReadPin</STRONG> (Thumb, 10 bytes, Stack size 0 bytes, stm32f0xx_hal_gpio.o(i.HAL_GPIO_ReadPin))
-<BR><BR>[Called By]<UL><LI><a href="#[d3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;transmit_with_cts
+<P><STRONG><a name="[d5]"></a>HAL_GPIO_ReadPin</STRONG> (Thumb, 10 bytes, Stack size 0 bytes, stm32f0xx_hal_gpio.o(i.HAL_GPIO_ReadPin))
+<BR><BR>[Called By]<UL><LI><a href="#[d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;attach
 <LI><a href="#[3b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
-<LI><a href="#[d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;attach
+<LI><a href="#[d4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;transmit_with_cts
 </UL>
 
 <P><STRONG><a name="[d8]"></a>HAL_GPIO_TogglePin</STRONG> (Thumb, 8 bytes, Stack size 0 bytes, stm32f0xx_hal_gpio.o(i.HAL_GPIO_TogglePin))
@@ -345,21 +345,21 @@ Global Symbols
 
 <P><STRONG><a name="[96]"></a>HAL_GPIO_WritePin</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, stm32f0xx_hal_gpio.o(i.HAL_GPIO_WritePin))
 <BR><BR>[Called By]<UL><LI><a href="#[3b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
+<LI><a href="#[95]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UART_RxCpltCallback
+<LI><a href="#[99]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MX_GPIO_Init
 <LI><a href="#[e0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;get_payload
 <LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;get_header
 <LI><a href="#[d6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fatal_error
-<LI><a href="#[95]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UART_RxCpltCallback
-<LI><a href="#[99]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MX_GPIO_Init
 </UL>
 
 <P><STRONG><a name="[49]"></a>HAL_GetTick</STRONG> (Thumb, 6 bytes, Stack size 0 bytes, stm32f0xx_hal.o(i.HAL_GetTick))
 <BR><BR>[Called By]<UL><LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;linear_buf_add
-<LI><a href="#[97]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UART_Transmit
 <LI><a href="#[75]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_RCC_OscConfig
 <LI><a href="#[73]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_RCC_ClockConfig
 <LI><a href="#[72]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_RCCEx_PeriphCLKConfig
 <LI><a href="#[51]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_Delay
 <LI><a href="#[3b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
+<LI><a href="#[97]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UART_Transmit
 <LI><a href="#[2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CDC_Control_FS
 <LI><a href="#[98]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UART_WaitOnFlagUntilTimeout
 <LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UART_CheckIdleState
@@ -412,8 +412,8 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[59]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;NVIC_SetPriority
 </UL>
-<BR>[Called By]<UL><LI><a href="#[54]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_MspInit
-<LI><a href="#[8e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UART_MspInit
+<BR>[Called By]<UL><LI><a href="#[8e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UART_MspInit
+<LI><a href="#[54]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_MspInit
 <LI><a href="#[6c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SystemClock_Config
 <LI><a href="#[68]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_PCD_MspInit
 <LI><a href="#[53]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_InitTick
@@ -726,8 +726,8 @@ Global Symbols
 <LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UART_CheckIdleState
 <LI><a href="#[90]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UART_AdvFeatureConfig
 </UL>
-<BR>[Called By]<UL><LI><a href="#[d5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;usart2_init_3125000
-<LI><a href="#[9d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MX_USART2_UART_Init
+<BR>[Called By]<UL><LI><a href="#[9d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MX_USART2_UART_Init
+<LI><a href="#[d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;usart2_init
 </UL>
 
 <P><STRONG><a name="[92]"></a>HAL_UART_MspDeInit</STRONG> (Thumb, 40 bytes, Stack size 8 bytes, stm32f0xx_hal_msp.o(i.HAL_UART_MspDeInit))
@@ -746,8 +746,8 @@ Global Symbols
 <LI><a href="#[58]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_NVIC_SetPriority
 <LI><a href="#[78]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_Init
 </UL>
-<BR>[Called By]<UL><LI><a href="#[8d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UART_Init
-<LI><a href="#[d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;attach
+<BR>[Called By]<UL><LI><a href="#[d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;attach
+<LI><a href="#[8d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UART_Init
 </UL>
 
 <P><STRONG><a name="[de]"></a>HAL_UART_Receive_IT</STRONG> (Thumb, 154 bytes, Stack size 20 bytes, stm32f0xx_hal_uart.o(i.HAL_UART_Receive_IT))
@@ -772,7 +772,7 @@ Global Symbols
 <BR>[Calls]<UL><LI><a href="#[49]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GetTick
 <LI><a href="#[98]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UART_WaitOnFlagUntilTimeout
 </UL>
-<BR>[Called By]<UL><LI><a href="#[d3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;transmit_with_cts
+<BR>[Called By]<UL><LI><a href="#[d4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;transmit_with_cts
 </UL>
 
 <P><STRONG><a name="[a7]"></a>HAL_UART_TxCpltCallback</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, stm32f0xx_hal_uart.o(i.HAL_UART_TxCpltCallback))
@@ -1005,10 +1005,10 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[b1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USBD_LL_Transmit
 </UL>
-<BR>[Called By]<UL><LI><a href="#[d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USBD_CDC_Setup
-<LI><a href="#[b9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USBD_GetDescriptor
+<BR>[Called By]<UL><LI><a href="#[b9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USBD_GetDescriptor
 <LI><a href="#[c6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USBD_StdEPReq
 <LI><a href="#[c4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USBD_StdDevReq
+<LI><a href="#[d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USBD_CDC_Setup
 </UL>
 
 <P><STRONG><a name="[b7]"></a>USBD_CtlSendStatus</STRONG> (Thumb, 24 bytes, Stack size 8 bytes, usbd_ioreq.o(i.USBD_CtlSendStatus))
@@ -1156,10 +1156,10 @@ Global Symbols
 </UL>
 <BR>[Called By]<UL><LI><a href="#[4d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USBD_CDC_ReceivePacket
 <LI><a href="#[5b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USBD_LL_DataInStage
-<LI><a href="#[b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USBD_CDC_Init
 <LI><a href="#[b6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USBD_CtlReceiveStatus
 <LI><a href="#[af]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USBD_CtlPrepareRx
 <LI><a href="#[b2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USBD_CtlContinueRx
+<LI><a href="#[b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USBD_CDC_Init
 </UL>
 
 <P><STRONG><a name="[6b]"></a>USBD_LL_Reset</STRONG> (Thumb, 70 bytes, Stack size 16 bytes, usbd_core.o(i.USBD_LL_Reset))
@@ -1336,21 +1336,20 @@ Global Symbols
 
 <P><STRONG><a name="[f7]"></a>__scatterload_zeroinit</STRONG> (Thumb, 14 bytes, Stack size unknown bytes, handlers.o(i.__scatterload_zeroinit), UNUSED)
 
-<P><STRONG><a name="[d0]"></a>attach</STRONG> (Thumb, 314 bytes, Stack size 24 bytes, main.o(i.attach))
+<P><STRONG><a name="[d0]"></a>attach</STRONG> (Thumb, 316 bytes, Stack size 24 bytes, joycon_cmd.o(i.attach))
 <BR><BR>[Stack]<UL><LI>Max Depth = 136<LI>Call Chain = attach &rArr; transmit_with_cts &rArr; HAL_UART_Transmit &rArr; UART_WaitOnFlagUntilTimeout
 </UL>
-<BR>[Calls]<UL><LI><a href="#[8e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UART_MspInit
+<BR>[Calls]<UL><LI><a href="#[93]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_DeInit
+<LI><a href="#[8e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UART_MspInit
 <LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UART_MspDeInit
-<LI><a href="#[d4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_ReadPin
+<LI><a href="#[d5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_ReadPin
 <LI><a href="#[78]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_Init
-<LI><a href="#[93]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_DeInit
 <LI><a href="#[51]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_Delay
-<LI><a href="#[d5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;usart2_init_3125000
-<LI><a href="#[d3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;transmit_with_cts
-<LI><a href="#[d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;get_msg
+<LI><a href="#[d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;usart2_init
+<LI><a href="#[d4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;transmit_with_cts
+<LI><a href="#[d2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;get_msg
 <LI><a href="#[d6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fatal_error
-<LI><a href="#[9d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MX_USART2_UART_Init
-<LI><a href="#[d2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;memcmp
+<LI><a href="#[d3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;memcmp
 </UL>
 <BR>[Called By]<UL><LI><a href="#[3b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
@@ -1372,7 +1371,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[3b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[d6]"></a>fatal_error</STRONG> (Thumb, 68 bytes, Stack size 0 bytes, main.o(i.fatal_error))
+<P><STRONG><a name="[d6]"></a>fatal_error</STRONG> (Thumb, 68 bytes, Stack size 0 bytes, joycon_cmd.o(i.fatal_error))
 <BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = fatal_error &rArr; __2printf
 </UL>
 <BR>[Calls]<UL><LI><a href="#[96]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_WritePin
@@ -1380,6 +1379,7 @@ Global Symbols
 <LI><a href="#[db]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
 </UL>
 <BR>[Called By]<UL><LI><a href="#[d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;attach
+<LI><a href="#[d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;usart2_init
 </UL>
 
 <P><STRONG><a name="[3f]"></a>fputc</STRONG> (Thumb, 14 bytes, Stack size 8 bytes, main.o(i.fputc))
@@ -1389,33 +1389,33 @@ Global Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> printf5.o(i.__0printf$5)
 </UL>
-<P><STRONG><a name="[dd]"></a>get_header</STRONG> (Thumb, 64 bytes, Stack size 16 bytes, main.o(i.get_header))
+<P><STRONG><a name="[dd]"></a>get_header</STRONG> (Thumb, 62 bytes, Stack size 16 bytes, joycon_cmd.o(i.get_header))
 <BR><BR>[Stack]<UL><LI>Max Depth = 36<LI>Call Chain = get_header &rArr; HAL_UART_Receive_IT
 </UL>
-<BR>[Calls]<UL><LI><a href="#[de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UART_Receive_IT
-<LI><a href="#[96]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_WritePin
+<BR>[Calls]<UL><LI><a href="#[96]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_WritePin
+<LI><a href="#[de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UART_Receive_IT
 </UL>
-<BR>[Called By]<UL><LI><a href="#[d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;get_msg
+<BR>[Called By]<UL><LI><a href="#[d2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;get_msg
 </UL>
 
-<P><STRONG><a name="[d1]"></a>get_msg</STRONG> (Thumb, 38 bytes, Stack size 8 bytes, main.o(i.get_msg))
+<P><STRONG><a name="[d2]"></a>get_msg</STRONG> (Thumb, 38 bytes, Stack size 8 bytes, joycon_cmd.o(i.get_msg))
 <BR><BR>[Stack]<UL><LI>Max Depth = 44<LI>Call Chain = get_msg &rArr; get_payload &rArr; HAL_UART_Receive_IT
 </UL>
 <BR>[Calls]<UL><LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;linear_buf_reset
 <LI><a href="#[e0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;get_payload
 <LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;get_header
-<LI><a href="#[d2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;memcmp
+<LI><a href="#[d3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;memcmp
 </UL>
 <BR>[Called By]<UL><LI><a href="#[d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;attach
 </UL>
 
-<P><STRONG><a name="[e0]"></a>get_payload</STRONG> (Thumb, 72 bytes, Stack size 16 bytes, main.o(i.get_payload))
+<P><STRONG><a name="[e0]"></a>get_payload</STRONG> (Thumb, 70 bytes, Stack size 16 bytes, joycon_cmd.o(i.get_payload))
 <BR><BR>[Stack]<UL><LI>Max Depth = 36<LI>Call Chain = get_payload &rArr; HAL_UART_Receive_IT
 </UL>
-<BR>[Calls]<UL><LI><a href="#[de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UART_Receive_IT
-<LI><a href="#[96]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_WritePin
+<BR>[Calls]<UL><LI><a href="#[96]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_WritePin
+<LI><a href="#[de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UART_Receive_IT
 </UL>
-<BR>[Called By]<UL><LI><a href="#[d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;get_msg
+<BR>[Called By]<UL><LI><a href="#[d2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;get_msg
 </UL>
 
 <P><STRONG><a name="[e1]"></a>linear_buf_add</STRONG> (Thumb, 38 bytes, Stack size 8 bytes, helpers.o(i.linear_buf_add))
@@ -1448,23 +1448,21 @@ Global Symbols
 <BR>[Calls]<UL><LI><a href="#[e3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
 </UL>
 <BR>[Called By]<UL><LI><a href="#[e2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;linear_buf_init
-<LI><a href="#[3b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
-<LI><a href="#[d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;get_msg
+<LI><a href="#[d2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;get_msg
 </UL>
 
-<P><STRONG><a name="[3b]"></a>main</STRONG> (Thumb, 122 bytes, Stack size 0 bytes, main.o(i.main))
+<P><STRONG><a name="[3b]"></a>main</STRONG> (Thumb, 112 bytes, Stack size 0 bytes, main.o(i.main))
 <BR><BR>[Stack]<UL><LI>Max Depth = 196<LI>Call Chain = main &rArr; SystemClock_Config &rArr; HAL_RCC_ClockConfig &rArr; HAL_RCC_GetSysClockFreq &rArr; __aeabi_uidivmod
 </UL>
 <BR>[Calls]<UL><LI><a href="#[e4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;my_usb_init
-<LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;linear_buf_reset
 <LI><a href="#[d9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_us_init
+<LI><a href="#[d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;attach
 <LI><a href="#[9e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MX_USB_DEVICE_Init
 <LI><a href="#[52]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_Init
 <LI><a href="#[49]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GetTick
 <LI><a href="#[96]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_WritePin
-<LI><a href="#[d4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_ReadPin
+<LI><a href="#[d5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_ReadPin
 <LI><a href="#[d7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;blink
-<LI><a href="#[d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;attach
 <LI><a href="#[6c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SystemClock_Config
 <LI><a href="#[9d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MX_USART2_UART_Init
 <LI><a href="#[9b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MX_TIM2_Init
@@ -1490,19 +1488,20 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[3f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fputc
 </UL>
 
-<P><STRONG><a name="[d3]"></a>transmit_with_cts</STRONG> (Thumb, 48 bytes, Stack size 24 bytes, main.o(i.transmit_with_cts))
+<P><STRONG><a name="[d4]"></a>transmit_with_cts</STRONG> (Thumb, 48 bytes, Stack size 24 bytes, joycon_cmd.o(i.transmit_with_cts))
 <BR><BR>[Stack]<UL><LI>Max Depth = 112<LI>Call Chain = transmit_with_cts &rArr; HAL_UART_Transmit &rArr; UART_WaitOnFlagUntilTimeout
 </UL>
-<BR>[Calls]<UL><LI><a href="#[97]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UART_Transmit
-<LI><a href="#[d4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_ReadPin
+<BR>[Calls]<UL><LI><a href="#[d5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_ReadPin
+<LI><a href="#[97]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UART_Transmit
 </UL>
 <BR>[Called By]<UL><LI><a href="#[d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;attach
 </UL>
 
-<P><STRONG><a name="[d5]"></a>usart2_init_3125000</STRONG> (Thumb, 50 bytes, Stack size 8 bytes, main.o(i.usart2_init_3125000))
-<BR><BR>[Stack]<UL><LI>Max Depth = 108<LI>Call Chain = usart2_init_3125000 &rArr; HAL_UART_Init &rArr; UART_SetConfig &rArr; HAL_RCC_GetSysClockFreq &rArr; __aeabi_uidivmod
+<P><STRONG><a name="[d1]"></a>usart2_init</STRONG> (Thumb, 52 bytes, Stack size 8 bytes, joycon_cmd.o(i.usart2_init))
+<BR><BR>[Stack]<UL><LI>Max Depth = 108<LI>Call Chain = usart2_init &rArr; HAL_UART_Init &rArr; UART_SetConfig &rArr; HAL_RCC_GetSysClockFreq &rArr; __aeabi_uidivmod
 </UL>
 <BR>[Calls]<UL><LI><a href="#[8d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UART_Init
+<LI><a href="#[d6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fatal_error
 </UL>
 <BR>[Called By]<UL><LI><a href="#[d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;attach
 </UL>
@@ -1543,7 +1542,6 @@ Local Symbols
 <BR>[Calls]<UL><LI><a href="#[8d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UART_Init
 </UL>
 <BR>[Called By]<UL><LI><a href="#[3b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
-<LI><a href="#[d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;attach
 </UL>
 
 <P><STRONG><a name="[2]"></a>CDC_Control_FS</STRONG> (Thumb, 50 bytes, Stack size 8 bytes, usbd_cdc_if.o(i.CDC_Control_FS))
