@@ -12,9 +12,9 @@
 typedef struct
 {
 	int32_t last_recv;
-	int32_t last_reset;
 	int32_t curr_index;
-	char buf[LB_SIZE];
+	int32_t msg_complete;
+	uint8_t buf[LB_SIZE];
 } linear_buf;
 
 int32_t linear_buf_init(linear_buf *lb);

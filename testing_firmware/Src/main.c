@@ -58,6 +58,8 @@
 
 #define NSTX_ENABLE() HAL_GPIO_WritePin(FC_NS_TX_EN_GPIO_Port, FC_NS_TX_EN_Pin, GPIO_PIN_RESET)
 #define NSTX_DISABLE() HAL_GPIO_WritePin(FC_NS_TX_EN_GPIO_Port, FC_NS_TX_EN_Pin, GPIO_PIN_SET)
+#define UART_WAITING 0
+#define UART_RECEIVED 1
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -74,8 +76,34 @@ UART_HandleTypeDef huart2;
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
 int32_t next_iwdg_kick;
-uint8_t switch_bb[1];
+uint8_t handshake_header[4] = {0xa1, 0xa2, 0xa3, 0xa4};
 linear_buf switch_lb;
+volatile uint8_t uart_status;
+
+uint8_t connect_request[12] = {0x19, 0x01, 0x03, 0x07, 0x00, 0xA5, 0x02, 0x01, 0x7E, 0x00, 0x00, 0x00};
+uint8_t connect_request_response[12] = {0x19, 0x81, 0x03, 0x07, 0x00, 0xA5, 0x02, 0x02, 0x7D, 0x00, 0x00, 0x64};
+
+uint8_t cmd2[12] = {0x19, 0x01, 0x03, 0x07, 0x00, 0x91, 0x01, 0x00, 0x00, 0x00, 0x00, 0x24};
+// grey
+uint8_t cmd2_response[20] = {0x19, 0x81, 0x03, 0x0F, 0x00, 0x94, 0x01, 0x08, 0x00, 0x00, 0xFA, 0xE8, 0x01, 0x31, 0x67, 0x9C, 0x8A, 0xBB, 0x7C, 0x00};
+// red
+// uint8_t cmd2_response[20] = {0x19, 0x81, 0x03, 0x0F, 0x00, 0x94, 0x01, 0x08, 0x00, 0x00, 0x8F, 0x87, 0x01, 0xE6, 0x4C, 0x5F, 0xB9, 0xE6, 0x98, 0x00};
+
+uint8_t cmd3[20] = {0x19, 0x01, 0x03, 0x0F, 0x00, 0x91, 0x20, 0x08, 0x00, 0x00, 0xBD, 0xB1, 0xC0, 0xC6, 0x2D, 0x00, 0x00, 0x00, 0x00, 0x00};
+uint8_t cmd3_response[12] = {0x19, 0x81, 0x03, 0x07, 0x00, 0x94, 0x20, 0x00, 0x00, 0x00, 0x00, 0xA8};
+
+uint8_t cmd4[12] = {0x19, 0x01, 0x03, 0x07, 0x00, 0x91, 0x11, 0x00, 0x00, 0x00, 0x00, 0x0E};
+uint8_t cmd4_response[12] = {0x19, 0x81, 0x03, 0x07, 0x00, 0x94, 0x11, 0x00, 0x00, 0x0F, 0x00, 0x33};
+
+uint8_t cmd5[12] = {0x19, 0x01, 0x03, 0x07, 0x00, 0x91, 0x10, 0x00, 0x00, 0x00, 0x00, 0x3D};
+uint8_t cmd5_response[12] = {0x19, 0x81, 0x03, 0x07, 0x00, 0x94, 0x10, 0x00, 0x00, 0x00, 0x00, 0xD6};
+
+uint8_t cmd6[16] = {0x19, 0x01, 0x03, 0x0B, 0x00, 0x91, 0x12, 0x04, 0x00, 0x00, 0x12, 0xA6, 0x0F, 0x00, 0x00, 0x00};
+uint8_t cmd6_response[12] = {0x19, 0x81, 0x03, 0x07, 0x00, 0x94, 0x12, 0x00, 0x00, 0x00, 0x00, 0xB0};
+
+uint8_t update_request[13] = {0x19, 0x01, 0x03, 0x08, 0x00, 0x92, 0x00, 0x01, 0x00, 0x00, 0x69, 0x2D, 0x1F};
+uint8_t update_request_reponse[61] = {0x19, 0x81, 0x03, 0x38, 0x00, 0x92, 0x00, 0x31, 0x00, 0x00, 0xD2, 0xD2, 0x30, 0xCA, 0x50, 0x00, 0x80, 0x00, 0x6F, 0x67, 0x84, 0x00, 0x00, 0x00, 0x90, 0x4D, 0x00, 0x2E, 0x00, 0x71, 0x10, 0xF7, 0xFF, 0xDD, 0xFF, 0xA5, 0x00, 0x9B, 0x00, 0x49, 0x00, 0x4A, 0x10, 0x36, 0x00, 0xD9, 0xFF, 0xA7, 0x00, 0x05, 0x01, 0x56, 0x00, 0xA3, 0x10, 0x3E, 0x00, 0xDE, 0xFF, 0xA7, 0x00};
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -116,6 +144,21 @@ void blink(void)
   }
 }
 
+void fatal_error()
+{
+  while(1)
+  {
+    HAL_GPIO_WritePin(DEBUG_LED_GPIO_Port, DEBUG_LED_Pin, GPIO_PIN_SET);
+    HAL_Delay(400);
+    HAL_GPIO_WritePin(DEBUG_LED_GPIO_Port, DEBUG_LED_Pin, GPIO_PIN_RESET);
+    HAL_Delay(100);
+
+    for (int i = 0; i < 32; ++i)
+    printf("0x%x ", switch_lb.buf[i]);
+    printf("\n\n");
+  }
+}
+
 void usart2_init_3125000(void)
 {
   huart2.Instance = USART2;
@@ -145,21 +188,35 @@ void transmit_with_cts(uint8_t *data, uint16_t size)
   }
 }
 
-void fatal_error()
+void get_header()
 {
-  while(1)
-  {
-    HAL_GPIO_WritePin(DEBUG_LED_GPIO_Port, DEBUG_LED_Pin, GPIO_PIN_SET);
-    HAL_Delay(100);
-    HAL_GPIO_WritePin(DEBUG_LED_GPIO_Port, DEBUG_LED_Pin, GPIO_PIN_RESET);
-    HAL_Delay(400);
-  }
+  HAL_UART_Receive_IT(&huart2, switch_lb.buf, 4);
+  NSTX_ENABLE();
+  uart_status = UART_WAITING;
+  while(uart_status != UART_RECEIVED)
+    if(huart2.RxXferCount <= 1)
+      NSTX_DISABLE();
 }
 
-void recv_1b()
+void get_payload()
 {
+  uint8_t* buf_start = switch_lb.buf + 4;
+  uint8_t recv_size = switch_lb.buf[3] + 1;
+  HAL_UART_Receive_IT(&huart2, buf_start, recv_size);
   NSTX_ENABLE();
-  HAL_UART_Receive_IT(&huart2, switch_bb, 1);
+  uart_status = UART_WAITING;
+  while(uart_status != UART_RECEIVED)
+    if(huart2.RxXferCount <= 1)
+      NSTX_DISABLE();
+}
+
+void get_msg()
+{
+  linear_buf_reset(&switch_lb);
+  get_header();
+  if(memcmp(switch_lb.buf, handshake_header, 4) == 0)
+    get_header();
+  get_payload();
 }
 
 void attach()
@@ -175,13 +232,55 @@ void attach()
   HAL_UART_MspInit(&huart2);
   MX_USART2_UART_Init();
 
-  while(switch_lb.curr_index < 16)
-    recv_1b();
+  get_msg();
+  if(memcmp(switch_lb.buf, connect_request, 12) != 0)
+    fatal_error();
+  transmit_with_cts(connect_request_response, 12);
+  
+  get_msg();
+  if(memcmp(switch_lb.buf, cmd2, 12) != 0)
+    fatal_error();
+  transmit_with_cts(cmd2_response, 20);
 
-  for (int i = 0; i < 16; ++i)
+  get_msg();
+  if(memcmp(switch_lb.buf, cmd3, 20) != 0)
+    fatal_error();
+  transmit_with_cts(cmd3_response, 12);
+
+  HAL_UART_MspDeInit(&huart2);
+  while(HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_3) == GPIO_PIN_RESET)
+    ;
+  while(HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_3) == GPIO_PIN_SET)
+    ;
+  HAL_UART_MspInit(&huart2);
+  usart2_init_3125000();
+
+  get_msg();
+  if(memcmp(switch_lb.buf, cmd4, 12) != 0)
+    fatal_error();
+  transmit_with_cts(cmd4_response, 12);
+
+  get_msg();
+  if(memcmp(switch_lb.buf, cmd5, 12) != 0)
+    fatal_error();
+  transmit_with_cts(cmd5_response, 12);
+
+  get_msg();
+  if(memcmp(switch_lb.buf, cmd6, 16) != 0)
+    fatal_error();
+  transmit_with_cts(cmd6_response, 12);
+
+  while(1)
+  {
+    get_msg();
+    if(memcmp(switch_lb.buf, update_request, 13) == 0)
+      transmit_with_cts(update_request_reponse, 61);
+  }
+
+  for (int i = 0; i < 32; ++i)
     printf("0x%x ", switch_lb.buf[i]);
-
   printf("\ndone!\n");
+
 }
 
 /* USER CODE END 0 */
@@ -210,11 +309,12 @@ int main(void)
   MX_TIM2_Init();
 
   /* USER CODE BEGIN 2 */
-  NSTX_DISABLE();
+  NSTX_ENABLE();
   linear_buf_reset(&switch_lb);
   blink();
   // spi_cs_high();
   delay_us_init(&htim2);
+  uart_status = UART_RECEIVED;
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -229,7 +329,6 @@ int main(void)
       HAL_GPIO_WritePin(DEBUG_LED_GPIO_Port, DEBUG_LED_Pin, GPIO_PIN_RESET);
       printf("%d\n", HAL_GetTick());
       attach();
-      HAL_Delay(1000);
       HAL_GPIO_WritePin(DEBUG_LED_GPIO_Port, DEBUG_LED_Pin, GPIO_PIN_SET);
     }
   }
@@ -490,7 +589,8 @@ static void MX_GPIO_Init(void)
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
   NSTX_DISABLE();
-  linear_buf_add(&switch_lb, switch_bb[0]);
+  HAL_UART_AbortReceive(huart);
+  uart_status = UART_RECEIVED;
 }
 
 void HAL_UART_ErrorCallback(UART_HandleTypeDef *huart)

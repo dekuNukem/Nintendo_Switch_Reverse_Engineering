@@ -12,7 +12,7 @@ int32_t linear_buf_init(linear_buf *lb)
     return 1;
   linear_buf_reset(lb);
   lb->last_recv = 0;
-  lb->last_reset = 0;
+  lb->msg_complete = 0;
   return 0;
 }
 
@@ -22,7 +22,7 @@ int32_t linear_buf_reset(linear_buf *lb)
     return 1;
   lb->curr_index = 0;
   memset(lb->buf, 0, LB_SIZE);
-  lb->last_reset = HAL_GetTick();
+  lb->msg_complete = 0;
   return 0;
 }
 

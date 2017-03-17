@@ -1,3 +1,82 @@
+void get_header()
+{
+  HAL_UART_Receive_IT(&huart2, switch_bb, SWITCH_BB_SIZE);
+  NSTX_ENABLE();
+  uart_status = UART_WAIT_4BHEADER;
+  while(uart_status != UART_4BHEADER_RECEIVED)
+  {
+    if(huart2.RxXferCount <= 1)
+      NSTX_DISABLE();
+  }
+}
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+  NSTX_DISABLE();
+  HAL_UART_AbortReceive(huart);
+  if(uart_status == UART_WAIT_4BHEADER)
+  {
+    linear_buf_add_str(&switch_lb, switch_bb, 4);
+    uart_status = UART_4BHEADER_RECEIVED;
+  }
+}
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+  NSTX_DISABLE();
+  linear_buf_add(&switch_lb, switch_bb[0]);
+  HAL_UART_AbortReceive(&huart2);
+  if(switch_lb.curr_index < 4)
+    return;
+  if(memcmp(switch_lb.buf, handshake_header, 4) == 0)
+  {
+    linear_buf_reset(&switch_lb);
+    return;
+  }
+  if(switch_lb.curr_index >= switch_lb.buf[3] + 5)
+    switch_lb.msg_complete = 1;
+  return;
+}
+
+int32_t get_msg()
+{
+  NSTX_ENABLE();
+  HAL_UART_Receive_IT(&huart2, switch_bb, 1);
+  uint8_t* msg_start = switch_lb.buf;
+  if(memcmp(switch_lb.buf, handshake_header, 4) == 0)
+  {
+    linear_buf_reset(&switch_lb);
+    return 1;
+  }
+  if(switch_lb.curr_index < 4 || switch_lb.buf[3] < 7)
+    return 2;
+  if(switch_lb.curr_index < switch_lb.buf[3] + 4)
+    return 3;
+  return 0;
+}
+int32_t get_msg_blocking()
+{
+  int32_t now = HAL_GetTick();
+  while(get_msg() == 0)
+  {
+    if(HAL_GetTick() - now > 1000)
+    {
+      for (int i = 0; i < 32; ++i)
+        printf("0x%x ", switch_lb.buf[i]);
+      printf("\ndone!\n");
+      return 1;
+    }
+  }
+  return 0;
+}
+
+
+void recv_1b()
+{
+  NSTX_ENABLE();
+  HAL_UART_Receive_IT(&huart2, switch_bb, 1);
+}
+  for (int i = 0; i < 32; ++i)
+    printf("0x%x ", switch_lb.buf[i]);
+  printf("\ndone!\n");
 
 checksum
 {0x19, 0x01, 0x03, 0x07, 0x00, 0x91, 0x10, 0x00, 0x00, 0x00, 0x00, 0x3D}
@@ -6,7 +85,6 @@ checksum
 
 {0x19, 0x81, 0x03, 0x07, 0x00, 0x94, 0x10, 0x00, 0x00, 0x00, 0x00, 0xD6}
 {0x19, 0x81, 0x03, 0x07, 0x00, 0x94, 0x11, 0x00, 0x00, 0x0F, 0x00, 0x33}
-*/
 
 
 uint8_t connect_request[16] = {0xA1, 0xA2, 0xA3, 0xA4, 0x19, 0x01, 0x03, 0x07, 0x00, 0xA5, 0x02, 0x01, 0x7E, 0x00, 0x00, 0x00};
