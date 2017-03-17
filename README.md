@@ -206,7 +206,7 @@ You can see the console sends longer commands (17 bytes vs 8 bytes) during the r
 
 ![Alt text](http://i.imgur.com/ZZWBv5d.jpg)
 
-The console itself uses a FT9CJ capacitive touchscreen controller. And [according to techinsights](http://www.techinsights.com/about-techinsights/overview/blog/nintendo-switch-teardown/) it's a custom part by STMicroelectronics for the Nintendo Switch. After looking at the communication it appears to use I2C, which is on par with other touchscreen controller chips. [Here is a capture](./logic_captures/left_grey_joycon_botw_rumble.txt) of the I2C bus on power-up.
+The console itself uses a FT9CJ capacitive touchscreen controller. And [according to techinsights](http://www.techinsights.com/about-techinsights/overview/blog/nintendo-switch-teardown/) it's a custom part by STMicroelectronics for the Nintendo Switch. After looking at the communication it appears to use I2C, which is on par with other touchscreen controller chips. [Here is a capture](./logic_captures/touchscreen_controller_poweron_i2c.logicdata) of the I2C bus on power-up.
 
 The 7-bit I2C address of the chip is 0x49 (0x92 write, 0x93 read), and it's polled around every 4ms for update.
 
