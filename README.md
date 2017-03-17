@@ -210,6 +210,12 @@ The console itself uses a FT9CJ capacitive touchscreen controller. And [accordin
 
 The 7-bit I2C address of the chip is 0x49 (0x92 write, 0x93 read), and it's polled around every 4ms for update.
 
+## Docking station firmware dump
+
+The docking station uses a STM32F048 microcontroller. It's actually labeled as STM32P048 because it uses the FASTROM option where ST pre-programs the flash memory inside the factory. It has 32KB flash memory and 6KB RAM, runs at 48MHz. 
+
+It uses SWD as debug and program interface, and interestingly the programming testpoints are on the PCB and clearly labeled. After connecting a ST-Link programmer to it reveals that the chip is not read-protected as well. So a firmware dump was easily made. I'm not going to post it in the repo, but if you want it just ask.
+
 ## Ending remarks
 
 So far it looks like Nintendo make some really weird design decisions both in software and in hardware, probably to make what I'm doing more difficult. Anyway, I'll update this from time to time when I have new discoveries. Please share if you find this useful.
