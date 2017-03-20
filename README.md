@@ -2,7 +2,7 @@
 
 I'm just going to dump all my discoveries here, and hopefully they would be useful to the Nintendo Switch community.
 
-If you think something is wrong, have some observations that I might have missed, stuff you want to contribute, or just general questions please feel free to post here.
+If you think something is wrong, have some observations that I might have missed, stuff you want to contribute, or just general questions please feel free to post here, or email me at dekunukem gmail com.
 
 If you want to use the information here somewhere else, feel free to do so, but do please credit me (dekuNukem).
 
