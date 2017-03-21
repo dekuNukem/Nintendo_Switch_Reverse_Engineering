@@ -186,7 +186,7 @@ Each accelerometer and gyroscope axis data is 2 bytes long and forms a int16_t, 
 
 The 16th and 17th byte (on line 5, before `65 f7`) are the button status, when a button is pressed the corresponding bit is set to 1.
 
-![Alt text](http://i.imgur.com/H7DUmCx.png)
+![Alt text](http://i.imgur.com/QXBaCIe.png)
 
 ### Joystick value
 
