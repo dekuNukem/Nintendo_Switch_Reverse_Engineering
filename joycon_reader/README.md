@@ -1,6 +1,6 @@
 # Joycon reader
 
-A simple program that pretends to be the console and complete a handshake with the Joycon then read its button and MEMS status.
+A simple program that pretends to be the console. It initializes a handshake with the Joycon, then read its button and MEMS status.
 
 ## Connections
 
