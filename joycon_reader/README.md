@@ -22,4 +22,6 @@ A simple program that pretends to be the console. It initializes a handshake wit
 
 * Joycon seems to not send accelerometer and gyroscope data by default, it needs some special commands to enable it. Needs to look into this.
 
-* A simple python parser script is included to print button presses.
+* A simple [python parser script](./parse.py) is included to print button presses.
+
+* See [joycon_cmd.c](./Src/joycon_cmd.c) for details
