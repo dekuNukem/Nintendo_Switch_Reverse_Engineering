@@ -34,10 +34,6 @@ void fatal_error()
     HAL_Delay(400);
     HAL_GPIO_WritePin(DEBUG_LED_GPIO_Port, DEBUG_LED_Pin, GPIO_PIN_RESET);
     HAL_Delay(100);
-
-    for (int i = 0; i < 32; ++i)
-    printf("0x%x ", switch_lb.buf[i]);
-    printf("\n\n");
   }
 }
 
@@ -60,20 +56,23 @@ void usart2_init_as_console(uint32_t baud)
   }
 }
 
+// transmit to joycon via serial with flow control
 void transmit_as_console(uint8_t *data, uint16_t size)
 {
   for (int i = 0; i < size; ++i)
   {
+    // first, look at flow control line, wait if TX not allowed
     while(HAL_GPIO_ReadPin(GPIOA, FC_NS_TX_EN_Pin) == GPIO_PIN_SET)
       ;
+    // now send one byte
     HAL_UART_Transmit(stm32_uart2_ptr, data + i, 1, 1000);
   }
 }
 
 void init_as_console(void)
 {
-  // PA0, FC_JC_TX_EN, is purple, Joycon will only send data to this when this line is HIGH, should be output
-  // PA1, FC_NS_TX_EN, is green, this will only send data to Joycon when this line is LOW, should be input
+  // PA0, FC_JC_TX_EN, purple wire, Joycon will only send data to this board when this line is HIGH, should be output
+  // PA1, FC_NS_TX_EN, green wire, this board will only send data to Joycon when this line is LOW, should be input
 
   GPIO_InitTypeDef GPIO_InitStruct;
   GPIO_InitStruct.Pin = FC_JC_TX_EN_Pin;
@@ -90,23 +89,36 @@ void init_as_console(void)
   HAL_UART_MspDeInit(stm32_uart2_ptr);
   HAL_UART_MspInit(stm32_uart2_ptr);
   usart2_init_as_console(1000000);
+  // enable flow control line, now Joycon can send commands
   JCTX_ENABLE();
 }
 
 void get_header_as_console()
 {
+  // every message exchange starts with a 4-byte header, so we'll get those first
+  // receive 4 byte via interrupt, when complete the HAL_UART_RxCpltCallback()
+  // in main.c is called
   HAL_UART_Receive_IT(stm32_uart2_ptr, switch_lb.buf, 4);
   JCTX_ENABLE();
   uart_status = UART_WAITING;
+  // wait until received all 4 bytes
   while(uart_status != UART_RECEIVED)
+  {
+    // stop Joycon from further transmitting when receiving the last byte 
+    // of the header so we have time to process it
     if(stm32_uart2_ptr->RxXferCount <= 1)
       JCTX_DISABLE();
+  }
+    
 }
 
 void get_payload_as_console()
 {
+  // now we have the header, we know how much more data to expect
   uint8_t* buf_start = switch_lb.buf + 4;
+  // payload length is the last byte of the header, plus 1 byte of checksum
   uint8_t recv_size = switch_lb.buf[3] + 1;
+  // now we just need to receive that amount
   HAL_UART_Receive_IT(stm32_uart2_ptr, buf_start, recv_size);
   JCTX_ENABLE();
   uart_status = UART_WAITING;
@@ -117,6 +129,7 @@ void get_payload_as_console()
 
 void get_msg_as_console()
 {
+  // clear receive buffer
   linear_buf_reset(&switch_lb);
   get_header_as_console();
   get_payload_as_console();
@@ -126,7 +139,6 @@ void read_joycon(void)
 {
   init_as_console();
   HAL_Delay(1);
-
 
   transmit_as_console(handshake_header, 4);
   transmit_as_console(connect_request, 12);
@@ -162,6 +174,7 @@ void read_joycon(void)
   if(memcmp(switch_lb.buf, cmd6_response, 12) != 0)
     fatal_error();
 
+  // now handshake is complete, ask for updates periodically
   while(1)
   {
     transmit_as_console(update_request, 13);

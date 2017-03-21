@@ -129,7 +129,7 @@ I (../Inc/max572x.h)(0x58C001E3)
 I (../Inc/my_usb.h)(0x58C001E3)
 I (../Inc/cmd_parser.h)(0x58C001E3)
 I (../Inc/delay_us.h)(0x58C00319)
-I (../Inc/joycon_cmd.h)(0x58D0FFE2)
+I (../Inc/joycon_cmd.h)(0x58D136AF)
 F (../Src/stm32f0xx_hal_msp.c)(0x58CBF384)(-c --cpu Cortex-M0 -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I../Inc -I../Drivers/STM32F0xx_HAL_Driver/Inc -I../Drivers/STM32F0xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F0xx/Include -I../Drivers/CMSIS/Include -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc --C99-I C:\Users\Allen\Desktop\switch\Nintendo_Switch_Reverse_Engineering\joycon_reader\MDK-ARM\RTE-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\1.5.0\Device\Include-D__UVISION_VERSION="517" -D_RTE_ -DSTM32F072xB -DUSE_HAL_DRIVER -DSTM32F072xB-o switchmod_code\stm32f0xx_hal_msp.o --omf_browse switchmod_code\stm32f0xx_hal_msp.crf --depend switchmod_code\stm32f0xx_hal_msp.d)
 I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal.h)(0x58410E72)
 I (../Inc/stm32f0xx_hal_conf.h)(0x58CBF385)
@@ -590,11 +590,11 @@ I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_tim_ex.h)(0x58410E72)
 I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_uart.h)(0x58410E72)
 I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_uart_ex.h)(0x58410E72)
 I (../Inc/delay_us.h)(0x58C00319)
-F (..\Src\joycon_cmd.c)(0x58D1268A)(-c --cpu Cortex-M0 -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I../Inc -I../Drivers/STM32F0xx_HAL_Driver/Inc -I../Drivers/STM32F0xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F0xx/Include -I../Drivers/CMSIS/Include -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc --C99-I C:\Users\Allen\Desktop\switch\Nintendo_Switch_Reverse_Engineering\joycon_reader\MDK-ARM\RTE-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\1.5.0\Device\Include-D__UVISION_VERSION="517" -D_RTE_ -DSTM32F072xB -DUSE_HAL_DRIVER -DSTM32F072xB-o switchmod_code\joycon_cmd.o --omf_browse switchmod_code\joycon_cmd.crf --depend switchmod_code\joycon_cmd.d)
+F (..\Src\joycon_cmd.c)(0x58D13749)(-c --cpu Cortex-M0 -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I../Inc -I../Drivers/STM32F0xx_HAL_Driver/Inc -I../Drivers/STM32F0xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F0xx/Include -I../Drivers/CMSIS/Include -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc --C99-I C:\Users\Allen\Desktop\switch\Nintendo_Switch_Reverse_Engineering\joycon_reader\MDK-ARM\RTE-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\1.5.0\Device\Include-D__UVISION_VERSION="517" -D_RTE_ -DSTM32F072xB -DUSE_HAL_DRIVER -DSTM32F072xB-o switchmod_code\joycon_cmd.o --omf_browse switchmod_code\joycon_cmd.crf --depend switchmod_code\joycon_cmd.d)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x55DB1D66)
 I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x55DB1D68)
 I (C:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x55DB1D68)
-I (../Inc/joycon_cmd.h)(0x58D0FFE2)
+I (../Inc/joycon_cmd.h)(0x58D136AF)
 I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal.h)(0x58410E72)
 I (../Inc/stm32f0xx_hal_conf.h)(0x58CBF385)
 I (../Inc/main.h)(0x58CC0F1E)
@@ -634,7 +634,7 @@ I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_uart.h)(0x58410E72)
 I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_uart_ex.h)(0x58410E72)
 I (../Inc/helpers.h)(0x58CBE953)
 I (../Inc/shared.h)(0x58CC108E)
-F (..\Inc\joycon_cmd.h)(0x58D0FFE2)()
+F (..\Inc\joycon_cmd.h)(0x58D136AF)()
 F (../Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_rcc_ex.c)(0x58410E73)(-c --cpu Cortex-M0 -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I../Inc -I../Drivers/STM32F0xx_HAL_Driver/Inc -I../Drivers/STM32F0xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F0xx/Include -I../Drivers/CMSIS/Include -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc --C99-I C:\Users\Allen\Desktop\switch\Nintendo_Switch_Reverse_Engineering\joycon_reader\MDK-ARM\RTE-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\1.5.0\Device\Include-D__UVISION_VERSION="517" -D_RTE_ -DSTM32F072xB -DUSE_HAL_DRIVER -DSTM32F072xB-o switchmod_code\stm32f0xx_hal_rcc_ex.o --omf_browse switchmod_code\stm32f0xx_hal_rcc_ex.crf --depend switchmod_code\stm32f0xx_hal_rcc_ex.d)
 I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal.h)(0x58410E72)
 I (../Inc/stm32f0xx_hal_conf.h)(0x58CBF385)

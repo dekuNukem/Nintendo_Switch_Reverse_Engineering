@@ -19,7 +19,6 @@
 #define UART_WAITING 0
 #define UART_RECEIVED 1
 
-void attach(void);
 void read_joycon(void);
 
 #ifdef __cplusplus

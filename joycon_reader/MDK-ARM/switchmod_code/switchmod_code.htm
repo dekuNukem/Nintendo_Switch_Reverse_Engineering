@@ -3,7 +3,7 @@
 <title>Static Call Graph - [switchmod_code\switchmod_code.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image switchmod_code\switchmod_code.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060061: Last Updated: Tue Mar 21 13:11:52 2017
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060061: Last Updated: Tue Mar 21 14:23:19 2017
 <BR><P>
 <H3>Maximum Stack Usage =        228 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -239,8 +239,8 @@ Global Symbols
 <BR><BR>[Calls]<UL><LI><a href="#[43]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memset
 </UL>
 
-<P><STRONG><a name="[df]"></a>__aeabi_memclr4</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, memseta.o(.text))
-<BR><BR>[Called By]<UL><LI><a href="#[d9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;linear_buf_reset
+<P><STRONG><a name="[de]"></a>__aeabi_memclr4</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, memseta.o(.text))
+<BR><BR>[Called By]<UL><LI><a href="#[d8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;linear_buf_reset
 </UL>
 
 <P><STRONG><a name="[ef]"></a>__aeabi_memclr8</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, memseta.o(.text), UNUSED)
@@ -249,10 +249,10 @@ Global Symbols
 <BR><BR>[Calls]<UL><LI><a href="#[43]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memset
 </UL>
 
-<P><STRONG><a name="[e3]"></a>memcmp</STRONG> (Thumb, 26 bytes, Stack size 12 bytes, memcmp.o(.text))
+<P><STRONG><a name="[e2]"></a>memcmp</STRONG> (Thumb, 26 bytes, Stack size 12 bytes, memcmp.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 12<LI>Call Chain = memcmp
 </UL>
-<BR>[Called By]<UL><LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;read_joycon
+<BR>[Called By]<UL><LI><a href="#[e0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;read_joycon
 </UL>
 
 <P><STRONG><a name="[45]"></a>__aeabi_uldivmod</STRONG> (Thumb, 96 bytes, Stack size 48 bytes, uldiv.o(.text), UNUSED)
@@ -286,7 +286,7 @@ Global Symbols
 <BR>[Calls]<UL><LI><a href="#[4f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USBD_CDC_TransmitPacket
 <LI><a href="#[4a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USBD_CDC_SetTxBuffer
 </UL>
-<BR>[Called By]<UL><LI><a href="#[d5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;my_usb_putchar
+<BR>[Called By]<UL><LI><a href="#[d4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;my_usb_putchar
 </UL>
 
 <P><STRONG><a name="[50]"></a>Error_Handler</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, main.o(i.Error_Handler))
@@ -311,7 +311,7 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[49]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GetTick
 </UL>
-<BR>[Called By]<UL><LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;read_joycon
+<BR>[Called By]<UL><LI><a href="#[e0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;read_joycon
 <LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;blink
 <LI><a href="#[d3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fatal_error
 </UL>
@@ -328,29 +328,29 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[8e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UART_MspInit
 <LI><a href="#[77]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_SPI_MspInit
 <LI><a href="#[99]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MX_GPIO_Init
-<LI><a href="#[db]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;init_as_console
+<LI><a href="#[da]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;init_as_console
 </UL>
 
 <P><STRONG><a name="[e4]"></a>HAL_GPIO_ReadPin</STRONG> (Thumb, 10 bytes, Stack size 0 bytes, stm32f0xx_hal_gpio.o(i.HAL_GPIO_ReadPin))
-<BR><BR>[Called By]<UL><LI><a href="#[e2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;transmit_as_console
+<BR><BR>[Called By]<UL><LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;transmit_as_console
 </UL>
 
 <P><STRONG><a name="[d0]"></a>HAL_GPIO_TogglePin</STRONG> (Thumb, 8 bytes, Stack size 0 bytes, stm32f0xx_hal_gpio.o(i.HAL_GPIO_TogglePin))
-<BR><BR>[Called By]<UL><LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;read_joycon
+<BR><BR>[Called By]<UL><LI><a href="#[e0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;read_joycon
 <LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;blink
 </UL>
 
 <P><STRONG><a name="[96]"></a>HAL_GPIO_WritePin</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, stm32f0xx_hal_gpio.o(i.HAL_GPIO_WritePin))
 <BR><BR>[Called By]<UL><LI><a href="#[95]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UART_RxCpltCallback
 <LI><a href="#[99]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MX_GPIO_Init
-<LI><a href="#[db]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;init_as_console
-<LI><a href="#[da]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;get_payload_as_console
-<LI><a href="#[d6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;get_header_as_console
+<LI><a href="#[da]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;init_as_console
+<LI><a href="#[d9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;get_payload_as_console
+<LI><a href="#[d5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;get_header_as_console
 <LI><a href="#[d3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fatal_error
 </UL>
 
 <P><STRONG><a name="[49]"></a>HAL_GetTick</STRONG> (Thumb, 6 bytes, Stack size 0 bytes, stm32f0xx_hal.o(i.HAL_GetTick))
-<BR><BR>[Called By]<UL><LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;linear_buf_add
+<BR><BR>[Called By]<UL><LI><a href="#[dc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;linear_buf_add
 <LI><a href="#[75]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_RCC_OscConfig
 <LI><a href="#[73]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_RCC_ClockConfig
 <LI><a href="#[72]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_RCCEx_PeriphCLKConfig
@@ -692,7 +692,7 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[84]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_DMA_Abort
 </UL>
-<BR>[Called By]<UL><LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;read_joycon
+<BR>[Called By]<UL><LI><a href="#[e0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;read_joycon
 <LI><a href="#[95]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UART_RxCpltCallback
 </UL>
 
@@ -723,7 +723,7 @@ Global Symbols
 <LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UART_CheckIdleState
 <LI><a href="#[90]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UART_AdvFeatureConfig
 </UL>
-<BR>[Called By]<UL><LI><a href="#[dc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;usart2_init_as_console
+<BR>[Called By]<UL><LI><a href="#[db]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;usart2_init_as_console
 </UL>
 
 <P><STRONG><a name="[92]"></a>HAL_UART_MspDeInit</STRONG> (Thumb, 40 bytes, Stack size 8 bytes, stm32f0xx_hal_msp.o(i.HAL_UART_MspDeInit))
@@ -732,7 +732,7 @@ Global Symbols
 <BR>[Calls]<UL><LI><a href="#[94]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_NVIC_DisableIRQ
 <LI><a href="#[93]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_DeInit
 </UL>
-<BR>[Called By]<UL><LI><a href="#[db]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;init_as_console
+<BR>[Called By]<UL><LI><a href="#[da]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;init_as_console
 </UL>
 
 <P><STRONG><a name="[8e]"></a>HAL_UART_MspInit</STRONG> (Thumb, 78 bytes, Stack size 32 bytes, stm32f0xx_hal_msp.o(i.HAL_UART_MspInit))
@@ -743,14 +743,14 @@ Global Symbols
 <LI><a href="#[78]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_Init
 </UL>
 <BR>[Called By]<UL><LI><a href="#[8d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UART_Init
-<LI><a href="#[db]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;init_as_console
+<LI><a href="#[da]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;init_as_console
 </UL>
 
-<P><STRONG><a name="[d7]"></a>HAL_UART_Receive_IT</STRONG> (Thumb, 154 bytes, Stack size 20 bytes, stm32f0xx_hal_uart.o(i.HAL_UART_Receive_IT))
+<P><STRONG><a name="[d6]"></a>HAL_UART_Receive_IT</STRONG> (Thumb, 154 bytes, Stack size 20 bytes, stm32f0xx_hal_uart.o(i.HAL_UART_Receive_IT))
 <BR><BR>[Stack]<UL><LI>Max Depth = 20<LI>Call Chain = HAL_UART_Receive_IT
 </UL>
-<BR>[Called By]<UL><LI><a href="#[da]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;get_payload_as_console
-<LI><a href="#[d6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;get_header_as_console
+<BR>[Called By]<UL><LI><a href="#[d9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;get_payload_as_console
+<LI><a href="#[d5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;get_header_as_console
 </UL>
 
 <P><STRONG><a name="[95]"></a>HAL_UART_RxCpltCallback</STRONG> (Thumb, 30 bytes, Stack size 8 bytes, main.o(i.HAL_UART_RxCpltCallback))
@@ -768,7 +768,7 @@ Global Symbols
 <BR>[Calls]<UL><LI><a href="#[49]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GetTick
 <LI><a href="#[98]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UART_WaitOnFlagUntilTimeout
 </UL>
-<BR>[Called By]<UL><LI><a href="#[e2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;transmit_as_console
+<BR>[Called By]<UL><LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;transmit_as_console
 </UL>
 
 <P><STRONG><a name="[a6]"></a>HAL_UART_TxCpltCallback</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, stm32f0xx_hal_uart.o(i.HAL_UART_TxCpltCallback))
@@ -1312,11 +1312,10 @@ Global Symbols
 
 <P><STRONG><a name="[f4]"></a>__1printf$5</STRONG> (Thumb, 0 bytes, Stack size 24 bytes, printf5.o(i.__0printf$5), UNUSED)
 
-<P><STRONG><a name="[d4]"></a>__2printf</STRONG> (Thumb, 0 bytes, Stack size 24 bytes, printf5.o(i.__0printf$5))
+<P><STRONG><a name="[e3]"></a>__2printf</STRONG> (Thumb, 0 bytes, Stack size 24 bytes, printf5.o(i.__0printf$5))
 <BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = __2printf
 </UL>
-<BR>[Called By]<UL><LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;read_joycon
-<LI><a href="#[d3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fatal_error
+<BR>[Called By]<UL><LI><a href="#[e0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;read_joycon
 </UL>
 
 <P><STRONG><a name="[b9]"></a>__ARM_common_switch8</STRONG> (Thumb, 26 bytes, Stack size 8 bytes, stm32f0xx_hal_tim.o(i.__ARM_common_switch8))
@@ -1349,65 +1348,64 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[3b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[d3]"></a>fatal_error</STRONG> (Thumb, 68 bytes, Stack size 0 bytes, joycon_cmd.o(i.fatal_error))
-<BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = fatal_error &rArr; __2printf
+<P><STRONG><a name="[d3]"></a>fatal_error</STRONG> (Thumb, 44 bytes, Stack size 0 bytes, joycon_cmd.o(i.fatal_error))
+<BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = fatal_error &rArr; HAL_Delay
 </UL>
 <BR>[Calls]<UL><LI><a href="#[96]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_WritePin
 <LI><a href="#[51]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_Delay
-<LI><a href="#[d4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
 </UL>
-<BR>[Called By]<UL><LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;read_joycon
-<LI><a href="#[dc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;usart2_init_as_console
+<BR>[Called By]<UL><LI><a href="#[e0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;read_joycon
+<LI><a href="#[db]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;usart2_init_as_console
 </UL>
 
 <P><STRONG><a name="[3f]"></a>fputc</STRONG> (Thumb, 14 bytes, Stack size 8 bytes, main.o(i.fputc))
 <BR><BR>[Stack]<UL><LI>Max Depth = 76<LI>Call Chain = fputc &rArr; my_usb_putchar &rArr; CDC_Transmit_FS &rArr; USBD_CDC_TransmitPacket &rArr; USBD_LL_Transmit &rArr; HAL_PCD_EP_Transmit &rArr; PCD_WritePMA
 </UL>
-<BR>[Calls]<UL><LI><a href="#[d5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;my_usb_putchar
+<BR>[Calls]<UL><LI><a href="#[d4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;my_usb_putchar
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> printf5.o(i.__0printf$5)
 </UL>
-<P><STRONG><a name="[d6]"></a>get_header_as_console</STRONG> (Thumb, 62 bytes, Stack size 16 bytes, joycon_cmd.o(i.get_header_as_console))
+<P><STRONG><a name="[d5]"></a>get_header_as_console</STRONG> (Thumb, 62 bytes, Stack size 16 bytes, joycon_cmd.o(i.get_header_as_console))
 <BR><BR>[Stack]<UL><LI>Max Depth = 36<LI>Call Chain = get_header_as_console &rArr; HAL_UART_Receive_IT
 </UL>
 <BR>[Calls]<UL><LI><a href="#[96]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_WritePin
-<LI><a href="#[d7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UART_Receive_IT
+<LI><a href="#[d6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UART_Receive_IT
 </UL>
-<BR>[Called By]<UL><LI><a href="#[d8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;get_msg_as_console
+<BR>[Called By]<UL><LI><a href="#[d7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;get_msg_as_console
 </UL>
 
-<P><STRONG><a name="[d8]"></a>get_msg_as_console</STRONG> (Thumb, 18 bytes, Stack size 8 bytes, joycon_cmd.o(i.get_msg_as_console))
+<P><STRONG><a name="[d7]"></a>get_msg_as_console</STRONG> (Thumb, 18 bytes, Stack size 8 bytes, joycon_cmd.o(i.get_msg_as_console))
 <BR><BR>[Stack]<UL><LI>Max Depth = 44<LI>Call Chain = get_msg_as_console &rArr; get_payload_as_console &rArr; HAL_UART_Receive_IT
 </UL>
-<BR>[Calls]<UL><LI><a href="#[d9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;linear_buf_reset
-<LI><a href="#[da]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;get_payload_as_console
-<LI><a href="#[d6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;get_header_as_console
+<BR>[Calls]<UL><LI><a href="#[d8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;linear_buf_reset
+<LI><a href="#[d9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;get_payload_as_console
+<LI><a href="#[d5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;get_header_as_console
 </UL>
-<BR>[Called By]<UL><LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;read_joycon
+<BR>[Called By]<UL><LI><a href="#[e0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;read_joycon
 </UL>
 
-<P><STRONG><a name="[da]"></a>get_payload_as_console</STRONG> (Thumb, 70 bytes, Stack size 16 bytes, joycon_cmd.o(i.get_payload_as_console))
+<P><STRONG><a name="[d9]"></a>get_payload_as_console</STRONG> (Thumb, 70 bytes, Stack size 16 bytes, joycon_cmd.o(i.get_payload_as_console))
 <BR><BR>[Stack]<UL><LI>Max Depth = 36<LI>Call Chain = get_payload_as_console &rArr; HAL_UART_Receive_IT
 </UL>
 <BR>[Calls]<UL><LI><a href="#[96]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_WritePin
-<LI><a href="#[d7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UART_Receive_IT
+<LI><a href="#[d6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UART_Receive_IT
 </UL>
-<BR>[Called By]<UL><LI><a href="#[d8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;get_msg_as_console
+<BR>[Called By]<UL><LI><a href="#[d7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;get_msg_as_console
 </UL>
 
-<P><STRONG><a name="[db]"></a>init_as_console</STRONG> (Thumb, 76 bytes, Stack size 32 bytes, joycon_cmd.o(i.init_as_console))
+<P><STRONG><a name="[da]"></a>init_as_console</STRONG> (Thumb, 76 bytes, Stack size 32 bytes, joycon_cmd.o(i.init_as_console))
 <BR><BR>[Stack]<UL><LI>Max Depth = 140<LI>Call Chain = init_as_console &rArr; usart2_init_as_console &rArr; HAL_UART_Init &rArr; UART_SetConfig &rArr; HAL_RCC_GetSysClockFreq &rArr; __aeabi_uidivmod
 </UL>
 <BR>[Calls]<UL><LI><a href="#[8e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UART_MspInit
 <LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UART_MspDeInit
 <LI><a href="#[96]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_WritePin
 <LI><a href="#[78]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_Init
-<LI><a href="#[dc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;usart2_init_as_console
+<LI><a href="#[db]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;usart2_init_as_console
 </UL>
-<BR>[Called By]<UL><LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;read_joycon
+<BR>[Called By]<UL><LI><a href="#[e0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;read_joycon
 </UL>
 
-<P><STRONG><a name="[dd]"></a>linear_buf_add</STRONG> (Thumb, 38 bytes, Stack size 8 bytes, helpers.o(i.linear_buf_add))
+<P><STRONG><a name="[dc]"></a>linear_buf_add</STRONG> (Thumb, 38 bytes, Stack size 8 bytes, helpers.o(i.linear_buf_add))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = linear_buf_add
 </UL>
 <BR>[Calls]<UL><LI><a href="#[49]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GetTick
@@ -1418,33 +1416,33 @@ Global Symbols
 <P><STRONG><a name="[4c]"></a>linear_buf_add_str</STRONG> (Thumb, 46 bytes, Stack size 24 bytes, helpers.o(i.linear_buf_add_str))
 <BR><BR>[Stack]<UL><LI>Max Depth = 32<LI>Call Chain = linear_buf_add_str &rArr; linear_buf_add
 </UL>
-<BR>[Calls]<UL><LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;linear_buf_add
+<BR>[Calls]<UL><LI><a href="#[dc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;linear_buf_add
 </UL>
 <BR>[Called By]<UL><LI><a href="#[3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CDC_Receive_FS
 </UL>
 
-<P><STRONG><a name="[de]"></a>linear_buf_init</STRONG> (Thumb, 22 bytes, Stack size 8 bytes, helpers.o(i.linear_buf_init))
+<P><STRONG><a name="[dd]"></a>linear_buf_init</STRONG> (Thumb, 22 bytes, Stack size 8 bytes, helpers.o(i.linear_buf_init))
 <BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = linear_buf_init &rArr; linear_buf_reset
 </UL>
-<BR>[Calls]<UL><LI><a href="#[d9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;linear_buf_reset
+<BR>[Calls]<UL><LI><a href="#[d8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;linear_buf_reset
 </UL>
-<BR>[Called By]<UL><LI><a href="#[e0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;my_usb_init
+<BR>[Called By]<UL><LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;my_usb_init
 </UL>
 
-<P><STRONG><a name="[d9]"></a>linear_buf_reset</STRONG> (Thumb, 32 bytes, Stack size 16 bytes, helpers.o(i.linear_buf_reset))
+<P><STRONG><a name="[d8]"></a>linear_buf_reset</STRONG> (Thumb, 32 bytes, Stack size 16 bytes, helpers.o(i.linear_buf_reset))
 <BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = linear_buf_reset
 </UL>
-<BR>[Calls]<UL><LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
+<BR>[Calls]<UL><LI><a href="#[de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
 </UL>
-<BR>[Called By]<UL><LI><a href="#[de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;linear_buf_init
-<LI><a href="#[d8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;get_msg_as_console
+<BR>[Called By]<UL><LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;linear_buf_init
+<LI><a href="#[d7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;get_msg_as_console
 </UL>
 
 <P><STRONG><a name="[3b]"></a>main</STRONG> (Thumb, 44 bytes, Stack size 0 bytes, main.o(i.main))
 <BR><BR>[Stack]<UL><LI>Max Depth = 196<LI>Call Chain = main &rArr; SystemClock_Config &rArr; HAL_RCC_ClockConfig &rArr; HAL_RCC_GetSysClockFreq &rArr; __aeabi_uidivmod
 </UL>
-<BR>[Calls]<UL><LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;read_joycon
-<LI><a href="#[e0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;my_usb_init
+<BR>[Calls]<UL><LI><a href="#[e0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;read_joycon
+<LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;my_usb_init
 <LI><a href="#[d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_us_init
 <LI><a href="#[9d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MX_USB_DEVICE_Init
 <LI><a href="#[52]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_Init
@@ -1456,15 +1454,15 @@ Global Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> entry9a.o(.ARM.Collect$$$$0000000B)
 </UL>
-<P><STRONG><a name="[e0]"></a>my_usb_init</STRONG> (Thumb, 16 bytes, Stack size 8 bytes, my_usb.o(i.my_usb_init))
+<P><STRONG><a name="[df]"></a>my_usb_init</STRONG> (Thumb, 16 bytes, Stack size 8 bytes, my_usb.o(i.my_usb_init))
 <BR><BR>[Stack]<UL><LI>Max Depth = 32<LI>Call Chain = my_usb_init &rArr; linear_buf_init &rArr; linear_buf_reset
 </UL>
-<BR>[Calls]<UL><LI><a href="#[de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;linear_buf_init
+<BR>[Calls]<UL><LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;linear_buf_init
 </UL>
 <BR>[Called By]<UL><LI><a href="#[3b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[d5]"></a>my_usb_putchar</STRONG> (Thumb, 28 bytes, Stack size 16 bytes, my_usb.o(i.my_usb_putchar))
+<P><STRONG><a name="[d4]"></a>my_usb_putchar</STRONG> (Thumb, 28 bytes, Stack size 16 bytes, my_usb.o(i.my_usb_putchar))
 <BR><BR>[Stack]<UL><LI>Max Depth = 68<LI>Call Chain = my_usb_putchar &rArr; CDC_Transmit_FS &rArr; USBD_CDC_TransmitPacket &rArr; USBD_LL_Transmit &rArr; HAL_PCD_EP_Transmit &rArr; PCD_WritePMA
 </UL>
 <BR>[Calls]<UL><LI><a href="#[4e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CDC_Transmit_FS
@@ -1472,40 +1470,40 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[3f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fputc
 </UL>
 
-<P><STRONG><a name="[e1]"></a>read_joycon</STRONG> (Thumb, 280 bytes, Stack size 0 bytes, joycon_cmd.o(i.read_joycon))
+<P><STRONG><a name="[e0]"></a>read_joycon</STRONG> (Thumb, 280 bytes, Stack size 0 bytes, joycon_cmd.o(i.read_joycon))
 <BR><BR>[Stack]<UL><LI>Max Depth = 140<LI>Call Chain = read_joycon &rArr; init_as_console &rArr; usart2_init_as_console &rArr; HAL_UART_Init &rArr; UART_SetConfig &rArr; HAL_RCC_GetSysClockFreq &rArr; __aeabi_uidivmod
 </UL>
 <BR>[Calls]<UL><LI><a href="#[83]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UART_AbortReceive
 <LI><a href="#[d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_TogglePin
 <LI><a href="#[51]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_Delay
-<LI><a href="#[dc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;usart2_init_as_console
-<LI><a href="#[e2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;transmit_as_console
-<LI><a href="#[db]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;init_as_console
-<LI><a href="#[d8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;get_msg_as_console
+<LI><a href="#[db]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;usart2_init_as_console
+<LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;transmit_as_console
+<LI><a href="#[da]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;init_as_console
+<LI><a href="#[d7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;get_msg_as_console
 <LI><a href="#[d3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fatal_error
-<LI><a href="#[d4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
-<LI><a href="#[e3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;memcmp
+<LI><a href="#[e3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
+<LI><a href="#[e2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;memcmp
 </UL>
 <BR>[Called By]<UL><LI><a href="#[3b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[e2]"></a>transmit_as_console</STRONG> (Thumb, 48 bytes, Stack size 24 bytes, joycon_cmd.o(i.transmit_as_console))
+<P><STRONG><a name="[e1]"></a>transmit_as_console</STRONG> (Thumb, 48 bytes, Stack size 24 bytes, joycon_cmd.o(i.transmit_as_console))
 <BR><BR>[Stack]<UL><LI>Max Depth = 112<LI>Call Chain = transmit_as_console &rArr; HAL_UART_Transmit &rArr; UART_WaitOnFlagUntilTimeout
 </UL>
 <BR>[Calls]<UL><LI><a href="#[97]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UART_Transmit
 <LI><a href="#[e4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_ReadPin
 </UL>
-<BR>[Called By]<UL><LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;read_joycon
+<BR>[Called By]<UL><LI><a href="#[e0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;read_joycon
 </UL>
 
-<P><STRONG><a name="[dc]"></a>usart2_init_as_console</STRONG> (Thumb, 52 bytes, Stack size 8 bytes, joycon_cmd.o(i.usart2_init_as_console))
+<P><STRONG><a name="[db]"></a>usart2_init_as_console</STRONG> (Thumb, 52 bytes, Stack size 8 bytes, joycon_cmd.o(i.usart2_init_as_console))
 <BR><BR>[Stack]<UL><LI>Max Depth = 108<LI>Call Chain = usart2_init_as_console &rArr; HAL_UART_Init &rArr; UART_SetConfig &rArr; HAL_RCC_GetSysClockFreq &rArr; __aeabi_uidivmod
 </UL>
 <BR>[Calls]<UL><LI><a href="#[8d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UART_Init
 <LI><a href="#[d3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fatal_error
 </UL>
-<BR>[Called By]<UL><LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;read_joycon
-<LI><a href="#[db]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;init_as_console
+<BR>[Called By]<UL><LI><a href="#[e0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;read_joycon
+<LI><a href="#[da]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;init_as_console
 </UL>
 <P>
 <H3>
