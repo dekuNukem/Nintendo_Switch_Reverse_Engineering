@@ -1,6 +1,6 @@
 # Joycon reader
 
-A simple program that completes a handshake with the Joycon and then read its button and MEMS status.
+A simple program that pretends to be the console and complete a handshake with the Joycon then read its button and MEMS status.
 
 ## Connections
 
@@ -12,7 +12,7 @@ A simple program that completes a handshake with the Joycon and then read its bu
 |           8          |            Serial data Joycon to console           |  PA3 (USART2_RX)  |
 |          10          | Flow Control, Joycon may send to console when HIGH | PA0 (GPIO OUTPUT) |
 
-* The STM32 board I used it my [NintenDAC dev board](https://github.com/dekuNukem/NintenDAC), it has some special features but for this application you can use any dev board you like.
+* The STM32 board I used is my [NintenDAC dev board](https://github.com/dekuNukem/NintenDAC), it has some special features but for this application you can use any dev board you like.
 
 * Joycon runs 1.8V logic, however I ran my STM32 at 3.0V and have no problem transmitting or receiving.
 
