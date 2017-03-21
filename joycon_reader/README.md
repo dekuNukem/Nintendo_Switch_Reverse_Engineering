@@ -14,12 +14,12 @@ A simple program that pretends to be the console and complete a handshake with t
 
 * The STM32 board I used is my [NintenDAC dev board](https://github.com/dekuNukem/NintenDAC), it has some special features but for this application you can use any dev board you like.
 
-* Joycon runs 1.8V logic, however I ran my STM32 at 3.0V and have no problem transmitting or receiving.
+* Joycon uses 1.8V logic, however I ran my STM32 at 3.0V and have no problem transmitting or receiving.
 
-* Pin3 needs to be connected to GND otherwise Joycon will not respond to status update commands.
+* Pin3 needs to be connected to GND, otherwise Joycon will not respond to status update commands.
 
 * The firmware completes the handshake, then polls the Joycon every 100ms. The board appears as an USB serial device and simply prints the 61-byte packet through the serial port.
 
-* Joycon seems to not sent accelerometer and gyroscope data by default, it needs some special commands to enable it. Needs to look into this.
+* Joycon seems to not send accelerometer and gyroscope data by default, it needs some special commands to enable it. Needs to look into this.
 
 * A simple python parser script is included to print button presses.
