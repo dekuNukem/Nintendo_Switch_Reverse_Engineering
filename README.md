@@ -2,7 +2,11 @@
 
 I'm just going to dump all my discoveries here, and hopefully they would be useful to the Nintendo Switch community.
 
-If you think something is wrong, have some observations that I might have missed, stuff you want to contribute, or just general questions please feel free to post here, or email me at dekunukem gmail com.
+## Contact Information
+
+If you think something is wrong, have some observations that I might have missed, stuff you want to contribute, or just general questions please feel free to post here or contact me by email:
+
+`dekunukem_gmail_com`
 
 If you want to use the information here somewhere else, feel free to do so, but do please credit me (dekuNukem).
 
@@ -24,7 +28,7 @@ The "JC" is for the 10-pin Joycon connector, see below for details.
 
 * The only button that's not part of the keypad is the joystick button, which is still activated by pulling it down to ground.
 
-## SPI peripherals
+## SPI Peripherals
 
 ![Alt text](https://i.imgur.com/2c3tmyd.png)
 
