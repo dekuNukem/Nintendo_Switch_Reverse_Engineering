@@ -14,7 +14,7 @@ If you want to use the information here somewhere else, feel free to do so, but 
 
 ![Alt text](http://i.imgur.com/7Ui8lFv.jpg)
 
-[Full-size PDF](./joycon_left_pcb.pdf).
+[Full-size PDF](./joycon_pcb.pdf) of Joycon pinouts, both left and right.
 
 The "JC" is for the 10-pin Joycon connector, see below for details.
 
