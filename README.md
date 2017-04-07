@@ -62,9 +62,13 @@ When attached to the console, the Joycon talks to it through a physical connecti
 
 ![Alt text](https://i.imgur.com/52xjlRb.jpg)
 
-Looking at the pins on the left Joycon, the left most one is Pin 1, and the right most one is Pin 10. I simply removed the rumble motor, burned a hole on the back cover, and routed all the wires out through that.
+![Alt text](https://i.imgur.com/LIFiq8X.jpg)
+
+Looking at the pins on both Joycon facing towards you, the left most one is Pin 1, and the right most one is Pin 10. I simply removed the rumble motor, burned a hole on the back cover, and routed all the wires out through that.
 
 [And here](./logic_captures/left_grey_joycon_docking_controllers_screen.logicdata) is a capture of the docking of the left Joycon.
+
+[Here](./logic_captures/right_grey_joycon_docking_controllers_screen.logicdata) is for the right Joycon.
 
 ![Alt text](https://i.imgur.com/iUq5RNG.png)
 
@@ -84,7 +88,7 @@ Looking at the pins on the left Joycon, the left most one is Pin 1, and the righ
 |            5           |           9          |               ?               |                                                    Always at GND                                                    |
 |            6           |          10          |          Flow control         |                             Joycon will only send data to console when this line is HIGH                            |                  |
 
-* When first connected the baud rate is at 1000000bps(!), after the initial handshake the speed is then switched to 3125000bps(!!). The handshake probably exchanges information about the side of the Joycon, the color, and bluetooth address etc.
+* When first connected the baud rate is at 1000000bps(!), after the initial handshake the speed is then switched to 3125000bps(!!). 
 
 ### Handshake procedure
 
