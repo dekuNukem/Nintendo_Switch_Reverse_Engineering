@@ -10,7 +10,7 @@ If you think something is wrong, have some observations that I might have missed
 
 If you want to use the information here somewhere else, feel free to do so, but do please credit me (dekuNukem).
 
-## Left Joycon PCB Layout and test points
+## Joycon PCB Layout and test points
 
 ![Alt text](http://i.imgur.com/7Ui8lFv.jpg)
 
@@ -24,7 +24,7 @@ The "JC" is for the 10-pin Joycon connector, see below for details.
 
 * There is no silkscreen marking component and test point numbers, maybe Nintendo is trying to discourage people from doing funky things to the Joycon?
 
-* Also, in a bizarre move, Nintendo didn't use the traditional "one side pulled-up and other side to ground" way of reading buttons, instead they used a keypad configuration where buttons are arranged to rows and columns. They used the keypad scanner built-in inside the BCM20734 with 128KHz clock for reading the buttons. That means it would be extremely hard to spoof button presses for TAS and twitch-plays. Maybe the Pro controller is different, need to buy one though.
+* Also, in a bizarre move, Nintendo didn't use the traditional "one side pulled-up other side to ground" way of reading buttons, instead they used a keypad configuration where buttons are arranged to rows and columns. They used the keypad scanner built-in inside the BCM20734 with 128KHz clock for reading the buttons. That means it would be extremely hard to spoof button presses for TAS and twitch-plays. Maybe the Pro controller is different, need to buy one though.
 
 * The only button that's not part of the keypad is the joystick button, which is still activated by pulling it down to ground.
 
