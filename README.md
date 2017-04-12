@@ -99,7 +99,7 @@ I took apart 2 left Joycons, one grey one red. Below you can see the difference 
 **Console to Joycon**|**GREY Joycon response**|**RED Joycon response**|**Different?**|**Remarks**
 :-----:|:-----:|:-----:|:-----:|:-----:
 `A1 A2 A3 A4 19 01 03 07 00 A5 02 01 7E 00 00 00`|`19 81 03 07 00 A5 02 02 7D 00 00 64`|`19 81 03 07 00 A5 02 02 7D 00 00 64`|Same|Handshake start; 1000000bps
-`19 01 03 07 00 91 01 00 00 00 00 24`|`19 81 03 0F 00 94 01 08 00 00 FA E8 01 31 67 9C 8A BB 7C 00`|`19 81 03 0F 00 94 01 08 00 00 8F 87 01 E6 4C 5F B9 E6 98 00`|Different|Joycon MAC, color data(?)
+`19 01 03 07 00 91 01 00 00 00 00 24`|`19 81 03 0F 00 94 01 08 00 00 FA E8 01 31 67 9C 8A BB 7C 00`|`19 81 03 0F 00 94 01 08 00 00 8F 87 01 E6 4C 5F B9 E6 98 00`|Different|Joycon MAC
 `19 01 03 0F 00 91 20 08 00 00 BD B1 C0 C6 2D 00 00 00 00 00`|`19 81 03 07 00 94 20 00 00 00 00 A8`|`19 81 03 07 00 94 20 00 00 00 00 A8`|Same|Command to switch to 3125000bps
 `19 01 03 07 00 91 11 00 00 00 00 0E`|`19 81 03 07 00 94 11 00 00 0F 00 33`|`19 81 03 07 00 94 11 00 00 0F 00 33`|Same|?; 3125000 bps from now on
 `19 01 03 07 00 91 10 00 00 00 00 3D`|`19 81 03 07 00 94 10 00 00 00 00 D6`|`19 81 03 07 00 94 10 00 00 00 00 D6`|Same|?
@@ -112,7 +112,7 @@ I took apart 2 left Joycons, one grey one red. Below you can see the difference 
 
 * Handshake starts at 1000000bps, and the console will send a 4-byte start sequence of `A1 A2 A3 A4`, followed by 12 byte command of `19 01 03 07 00 A5 02 01 7E 00 00 00`. It will send those commands repeatedly every 100ms (10Hz) for 3 seconds. Joycon respond with `19 81 03 07 00 A5 02 02 7D 00 00 64`. If no response is received it gives up and wait for another event on the line.
 
-* The console then sends `19 01 03 07 00 91 01 00 00 00 00 24`, to which Joycon respond with a 20-byte MAC (and possibly color?) response used to pair the Joy-Con to the console. After the response is received the little Joycon insertion animation starts on the screen.
+* The console then sends `19 01 03 07 00 91 01 00 00 00 00 24`, to which Joycon respond with a 20-byte MAC response used to pair the Joy-Con to the console. After the response is received the little Joycon insertion animation starts on the screen. The color for this animation is cached on the console after a Joy-Con has been connected for the first time and the color has been retrieved from SPI flash.
 
 * They console sends `19 01 03 0F 00 91 20 08 00 00 BD B1 C0 C6 2D 00 00 00 00 00`, a command that switches baud rate from 1000000 to 3125000. Joycon respond with `19 81 03 07 00 94 20 00 00 00 00 A8`. Note that the faster baud rate takes effect from the next command. This command is not required for pairing to complete.
 
