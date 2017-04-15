@@ -118,3 +118,31 @@ stick_vertical = data[2];
 Not quite sure what the other 2 nibbles are for.
 
 Also, these are **uncalibrated** stick data. In an experiment, the console was able to grab the calibration data from a controller it'd never seen before, so that's probably available through a command using one of the 0x10, 0x11, or 0x12.
+
+## OUTPUT 16
+
+Unknown.
+
+## OUTPUT 17
+
+Unknown.
+
+## OUTPUT 18
+
+Unknown.
+
+## INPUT 48
+
+Unknown.
+
+## INPUT 49
+
+Unknown.
+
+## INPUT 50
+
+Unknown.
+
+## INPUT 51
+
+Unknown.
