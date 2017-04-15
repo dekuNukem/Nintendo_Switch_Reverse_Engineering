@@ -4,13 +4,15 @@ Please add your findings to this document!
 
 First chunk of data starts at x0000 and ends at x03c0. No further data until the x2000 section.
 
+Bluetooth MAC is at x0015-x001a, reversed
+
 ## x2000
 
 Motion control calibration data seems to be entirely located around x008000 in the SPI flash, while calibrating the control stick changed two locations in the flash.
 
 ```
 00001ff0: ffff ffff aa55 f00f 68e5 97d2 0080 0200
-00002000: 0022 0c96 98b6 e92a b0cb b7ed f1ab b4a6
+00002000: 0022 0c96[98b6 e92a b0cb]b7ed f1ab b4a6  ; Last connected console
 00002010: 39e2 4876 4615 62f2 0be8 0000 0000 0000
 00002020: 0000 0000 6800[9522 634f 3402 8662 b86b  ; Marked section also changed after calibrating control sticks
 00002030: 3623 5b57 8ff0 16b4 a05f fbc0 b99d 6227
