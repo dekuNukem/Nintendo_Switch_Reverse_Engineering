@@ -72,6 +72,7 @@ Packet format:
 | 11-14        | `03 80 00 03` | Unknown |
 | 15-49        | Zero       | Unknown |
 
+Battery level: 8 is full, 9 is charging. 2 is considered low.
 
 ### Button status format
 
