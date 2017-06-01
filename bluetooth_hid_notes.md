@@ -191,3 +191,15 @@ Response: INPUT 21
 ```
 
 ### Subcommand 0x18
+
+### Subcommand 0x30: Set player lights
+
+First argument byte is a 4-bit bitfield for which lights to turn on.
+
+### Subcommand 0x38: HOME Light
+
+Structure TODO - involves timers / lighting patterns
+
+### Subcommand 0x50
+
+Just replies with `[4E 06]` ?
