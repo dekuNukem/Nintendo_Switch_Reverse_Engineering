@@ -194,7 +194,15 @@ Response: INPUT 21
 
 ### Subcommand 0x30: Set player lights
 
-First argument byte is a 4-bit bitfield for which lights to turn on.
+First argument byte is a bitfield:
+
+```
+aaaa bbbb
+     3210 - keep player light on
+3210 - flash player light
+```
+
+On overrides flashing.
 
 ### Subcommand 0x38: HOME Light
 
