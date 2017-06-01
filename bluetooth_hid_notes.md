@@ -70,7 +70,7 @@ Packet format:
 | 5-7          | `E3 56 9D` | Left stick data, see below |
 | 8-10         | `DF 86 A4` | Right stick data, see below |
 | 11           | `03`, `0B` | Unknown |
-| 12           | `80`       | Terminator - no more data <br> if 0x90, more data follows |
+| 12           | `80`       | Terminator - subcommand reply follows. Removing the 0x80 bit gives the subcommand ID |
 | 13-49        | Zero, garbage       | Filler |
 
 ### Button status format
@@ -146,3 +146,44 @@ Unknown.
 ## INPUT 51
 
 Unknown.
+
+
+## Subcommands
+
+### Subcommand 0x01: Rumble data.
+
+A timing byte, then 8 bytes of rumble data. [0 1 x40 x40 0 1 x40 x40] is neutral.
+
+### Subcommand 0x03: Request input
+
+Starts pushing input data at 60Hz.
+
+### Subcommand 0x04: Invalid?
+
+```
+Request:
+[01 .. .. .. .. .. .. .. .. 04]
+
+Response: INPUT 21
+[xx .E .. .. .. .. .. .. .. .. .. 0. 83 04]
+```
+
+### Subcommand 0x10: SPI flash read.
+Little-endian int32 address, int8 size.
+Subcommand reply echos the request info, followed by `size` bytes of data.
+
+```
+Request:
+[01 .. .. .. .. .. .. .. .. 10 80 60 00 00 18]
+                            ^ subcommand
+                               ^~~~~~~~~~~ address x6080
+                                           ^ length = 0x18 bytes
+Response: INPUT 21
+[xx .E .. .. .. .. .. .. .. .. .. 0. 90 80 60 00 00 18 .. .. .. ....]
+                                     ^ subcommand reply
+                                        ^~~~~~~~~~~ address
+                                                    ^ length = 0x18 bytes
+                                                       ^~~~~ data
+```
+
+### Subcommand 0x18
