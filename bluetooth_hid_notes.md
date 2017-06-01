@@ -63,7 +63,7 @@ Packet format:
 
 |    Byte #    |        Sample value            | Remarks |
 |:------------:|:------------------------------:|:-----:|
-|   0          | `8D`, `A6`, `41` | Unknown, changes rapidly (checksum?)
+|   0          | `8D`, `A6`, `41` | Extremely fast timer |
 |   1 high nibble  | `9`, `8`, `5`, `2`    | Battery level - 9=charging 8=full 2=low |
 |   1 low nibble   | `E`              | Unknown |
 | 2-4          | `25 02 00` | Button status, see below |
@@ -167,6 +167,10 @@ Request:
 Response: INPUT 21
 [xx .E .. .. .. .. .. .. .. .. .. 0. 83 04]
 ```
+
+### Subcommand 0x06: Disconnect
+
+Causes the controller to disconnect the Bluetooth connection.
 
 ### Subcommand 0x10: SPI flash read.
 Little-endian int32 address, int8 size.
