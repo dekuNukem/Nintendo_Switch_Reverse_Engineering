@@ -69,8 +69,9 @@ Packet format:
 | 2-4          | `25 02 00` | Button status, see below |
 | 5-7          | `E3 56 9D` | Left stick data, see below |
 | 8-10         | `DF 86 A4` | Right stick data, see below |
-| 11-14        | `03 80 00 03` | Unknown |
-| 15-49        | Zero       | Unknown |
+| 11           | `03`, `0B` | Unknown |
+| 12           | `80`       | Terminator - no more data <br> if 0x90, more data follows |
+| 13-49        | Zero, garbage       | Filler |
 
 Battery level: 8 is full, 9 is charging. 2 is considered low.
 
