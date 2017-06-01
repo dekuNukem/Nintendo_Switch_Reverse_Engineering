@@ -64,7 +64,7 @@ Packet format:
 |    Byte #    |        Sample value            | Remarks |
 |:------------:|:------------------------------:|:-----:|
 |   0          | `8D`, `A6`, `41` | Unknown, changes rapidly (checksum?)
-|   1 high nibble  | `8`, `6`, `5`, `2`    | Battery level |
+|   1 high nibble  | `9`, `8`, `5`, `2`    | Battery level - 9=charging 8=full 2=low |
 |   1 low nibble   | `E`              | Unknown |
 | 2-4          | `25 02 00` | Button status, see below |
 | 5-7          | `E3 56 9D` | Left stick data, see below |
@@ -72,8 +72,6 @@ Packet format:
 | 11           | `03`, `0B` | Unknown |
 | 12           | `80`       | Terminator - no more data <br> if 0x90, more data follows |
 | 13-49        | Zero, garbage       | Filler |
-
-Battery level: 8 is full, 9 is charging. 2 is considered low.
 
 ### Button status format
 
