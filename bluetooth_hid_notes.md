@@ -206,7 +206,21 @@ On overrides flashing.
 
 ### Subcommand 0x38: HOME Light
 
-Structure TODO - involves timers / lighting patterns
+|    Nibble #    |        Sample value            | Remarks |
+|:------------:|:------------------------------:|:-----:|
+|   High nibble  | `5` | Time OFF - Based on Time ON value. 0=always on |
+|   Low nibble   | `E` | Time ON  - 0=OFF - F=200ms |
+
+Time ON value starts has a base 16ms and increments by 12ms. 0 value disables the light
+
+Time OFF value is a multiplier of the Time ON time (ms). 0 value keeps the light always on.
+
+|    Time OFF value #    |        Multiplier             | Remarks |
+|:------------:|:------------------------------:|:-----:|
+|   `0` | 0 | Always ON |
+|   `1` | 1 | Same as Time ON time |
+|   `8`   | 21 ||
+|   `F`   | 30 ||
 
 ### Subcommand 0x50
 
