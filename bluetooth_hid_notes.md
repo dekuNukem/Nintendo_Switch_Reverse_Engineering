@@ -152,7 +152,18 @@ Unknown.
 
 ### Subcommand 0x01: Rumble data.
 
-A timing byte, then 8 bytes of rumble data. [0 1 x40 x40 0 1 x40 x40] is neutral.
+A timing byte, then 4 bytes of rumble data for left Joy-Con, followed by 4 bytes for right Joy-Con. 
+[0 1 x40 x40 0 1 x40 x40] is neutral.
+The rumble data structure contains 1 byte values of LF Intensity, Low Band Frequency, HF Intensity and High Band Frequency.
+The values are encrypted. The order of them and the encryption type used is currently unknown.
+Unencrypted values for neutral states:
+
+|   Name    |        Neutral value            | Remarks |
+|:------------:|:------------------------------:|:-----:|
+|   LF Intensity  | `0.0f` | Maximum: 1.0f |
+|   Low Band Frequency  | `160.0f` | Value in Hz |
+|  HF Intensity  | `0.0f` | Maximum: 1.0f |
+|   High Band Frequency   | `320.0f` | Value in Hz |
 
 ### Subcommand 0x03: Request input
 
