@@ -153,17 +153,26 @@ Unknown.
 ### Subcommand 0x01: Rumble data.
 
 A timing byte, then 4 bytes of rumble data for left Joy-Con, followed by 4 bytes for right Joy-Con. 
-[0 1 x40 x40 0 1 x40 x40] is neutral.
-The rumble data structure contains 1 byte values of LF Intensity, Low Band Frequency, HF Intensity and High Band Frequency.
-The values are encrypted. The order of them and the encryption type used is currently unknown.
-Unencrypted values for neutral states:
+[00 01 40 40 00 01 40 40] is neutral.
+The rumble data structure contains 2 bytes High Band data and 2 bytes Low Band data.
+The values are encoded.
 
-|   Name    |        Neutral value            | Remarks |
+|   Byte #   |        Sample            | Remarks |
 |:------------:|:------------------------------:|:-----:|
-|   LF Intensity  | `0.0f` | Maximum: 1.0f |
-|   Low Band Frequency  | `160.0f` | Value in Hz |
-|  HF Intensity  | `0.0f` | Maximum: 1.0f |
-|   High Band Frequency   | `320.0f` | Value in Hz |
+|   0-1, 4-5  | `00 01` (320.0f 0.0f) | High Band Frequency + Intensity |
+|   2-3, 6-7  | `40 40` (160.0f 0.0f)| Low Band Frequency + Intensity |
+
+### Subcommand 0x02: Request device info
+
+Response data after 02 command byte:
+
+|   Byte #   |        Sample            | Remarks |
+|:------------:|:------------------------------:|:-----:|
+|   0-1  | `03 48` | Firmware Version. Latest is 3.48 |
+|   2  | `01` | 1=Left Joy-Con, 2=Right Joy-Con |
+|   3  | `02` | Unknown. Seems to be always 02 |
+|   4-9  | `57 30 EA 8A BB 7C` | Joy-Con MAC adrress 7C:BB:8A:EA:30:57 |
+|   10-1  | `01 01` | Unknown. Seems to be always 01 01 |
 
 ### Subcommand 0x03: Request input
 
