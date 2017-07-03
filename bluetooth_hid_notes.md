@@ -153,14 +153,31 @@ Unknown.
 ### Subcommand 0x01: Rumble data.
 
 A timing byte, then 4 bytes of rumble data for left Joy-Con, followed by 4 bytes for right Joy-Con. 
-[00 01 40 40 00 01 40 40] is neutral.
-The rumble data structure contains 2 bytes High Band data and 2 bytes Low Band data.
-The values are encoded.
+[00 01 40 40 00 01 40 40] (320Hz 0.0f 160Hz 0.0f) is neutral.
+The rumble data structure contains 2 bytes High Band data, 1 byte Low Band Frequency and 1 byte Low Band Amplitude.
+The values for HF Band are encoded.
 
-|   Byte #   |        Sample            | Remarks |
+|   Byte #   |        Range            | Remarks |
 |:------------:|:------------------------------:|:-----:|
-|   0-1, 4-5  | `00 01` (320.0f 0.0f) | High Band Frequency + Intensity |
-|   2-3, 6-7  | `40 40` (160.0f 0.0f)| Low Band Frequency + Intensity |
+|   0, 4 | `04` - `FC` (81.75Hz - 313.14Hz) | High Band Lower Frequency. Steps `+0x0004`. |
+|   0-1, 4-5 | `00 01` - `FC 01` (320.00Hz - 1252.57Hz) | Byte `1`,`5` LSB enables High Band Higher Frequency. Steps `+0x0400`. |
+|   1, 5 | `00 00` - `C8 00` (0.0f - 1.0f) | High Band Amplitude. Steps `+0x0200`. Real max: `FE`. |
+|   2, 6 | `00` - `7F` (40.87Hz - 626.28Hz) | Low Band Frequency. Range `80` - `FF` is the same. |
+|   3, 7  | `40` - `72` (0.0f - 1.0f) | Low Band Amplitude. Real max: `7F`. |
+
+An example of usage is:
+```
+hf = 0x01a8; //Set H.Frequency
+hf_amp = 0x8800; //Set H.Frequency amplitude
+hf_band = hf + hf_amp;
+//Byte swapping
+byte[0] = hf_band & 0xFF;
+byte[1] = (hf_band >> 8) & 0xFF;
+```
+The byte values for frequency raise the frequency in Hz exponentially and not linearly.
+
+Don't use real maximum values for Amplitude. Otherwise, they can damage the linear actuators. 
+These safe amplitude ranges are defined by Switch HID library.
 
 ### Subcommand 0x02: Request device info
 
