@@ -153,17 +153,43 @@ Unknown.
 ### Subcommand 0x01: Rumble data.
 
 A timing byte, then 4 bytes of rumble data for left Joy-Con, followed by 4 bytes for right Joy-Con. 
-[0 1 x40 x40 0 1 x40 x40] is neutral.
-The rumble data structure contains 1 byte values of LF Intensity, Low Band Frequency, HF Intensity and High Band Frequency.
-The values are encrypted. The order of them and the encryption type used is currently unknown.
-Unencrypted values for neutral states:
+[00 01 40 40 00 01 40 40] (320Hz 0.0f 160Hz 0.0f) is neutral.
+The rumble data structure contains 2 bytes High Band data, 1 byte Low Band Frequency and 1 byte Low Band Amplitude.
+The values for HF Band are encoded.
 
-|   Name    |        Neutral value            | Remarks |
+|   Byte #   |        Range            | Remarks |
 |:------------:|:------------------------------:|:-----:|
-|   LF Intensity  | `0.0f` | Maximum: 1.0f |
-|   Low Band Frequency  | `160.0f` | Value in Hz |
-|  HF Intensity  | `0.0f` | Maximum: 1.0f |
-|   High Band Frequency   | `320.0f` | Value in Hz |
+|   0, 4 | `04` - `FC` (81.75Hz - 313.14Hz) | High Band Lower Frequency. Steps `+0x0004`. |
+|   0-1, 4-5 | `00 01` - `FC 01` (320.00Hz - 1252.57Hz) | Byte `1`,`5` LSB enables High Band Higher Frequency. Steps `+0x0400`. |
+|   1, 5 | `00 00` - `C8 00` (0.0f - 1.0f) | High Band Amplitude. Steps `+0x0200`. Real max: `FE`. |
+|   2, 6 | `00` - `7F` (40.87Hz - 626.28Hz) | Low Band Frequency. Range `80` - `FF` is the same. |
+|   3, 7  | `40` - `72` (0.0f - 1.0f) | Low Band Amplitude. Real max: `7F`. |
+
+An example of usage is:
+```
+hf = 0x01a8; //Set H.Frequency
+hf_amp = 0x8800; //Set H.Frequency amplitude
+hf_band = hf + hf_amp;
+//Byte swapping
+byte[0] = hf_band & 0xFF;
+byte[1] = (hf_band >> 8) & 0xFF;
+```
+The byte values for frequency raise the frequency in Hz exponentially and not linearly.
+
+Don't use real maximum values for Amplitude. Otherwise, they can damage the linear actuators. 
+These safe amplitude ranges are defined by Switch HID library.
+
+### Subcommand 0x02: Request device info
+
+Response data after 02 command byte:
+
+|   Byte #   |        Sample            | Remarks |
+|:------------:|:------------------------------:|:-----:|
+|   0-1  | `03 48` | Firmware Version. Latest is 3.48 |
+|   2  | `01` | 1=Left Joy-Con, 2=Right Joy-Con |
+|   3  | `02` | Unknown. Seems to be always 02 |
+|   4-9  | `57 30 EA 8A BB 7C` | Joy-Con MAC adrress 7C:BB:8A:EA:30:57 |
+|   10-1  | `01 01` | Unknown. Seems to be always 01 01 |
 
 ### Subcommand 0x03: Request input
 
