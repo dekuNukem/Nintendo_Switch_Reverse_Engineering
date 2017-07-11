@@ -152,26 +152,20 @@ Unknown.
 
 A timing byte, then 4 bytes of rumble data for left Joy-Con, followed by 4 bytes for right Joy-Con. 
 [00 01 40 40 00 01 40 40] (320Hz 0.0f 160Hz 0.0f) is neutral.
-The rumble data structure contains 2 bytes High Band data, 1 byte Low Band Frequency and 1 byte Low Band Amplitude.
-The values for HF Band are encoded.
+The rumble data structure contains 2 bytes High Band data, 2 byte Low Band data.
+The values for HF Band frequency and LF amplitude are encoded.
 
 |   Byte #   |        Range            | Remarks |
 |:------------:|:------------------------------:|:-----:|
 |   0, 4 | `04` - `FC` (81.75Hz - 313.14Hz) | High Band Lower Frequency. Steps `+0x0004`. |
 |   0-1, 4-5 | `00 01` - `FC 01` (320.00Hz - 1252.57Hz) | Byte `1`,`5` LSB enables High Band Higher Frequency. Steps `+0x0400`. |
 |   1, 5 | `00 00` - `C8 00` (0.0f - 1.0f) | High Band Amplitude. Steps `+0x0200`. Real max: `FE`. |
-|   2, 6 | `00` - `7F` (40.87Hz - 626.28Hz) | Low Band Frequency. Range `80` - `FF` is the same. |
-|   3, 7  | `40` - `72` (0.0f - 1.0f) | Low Band Amplitude. Real max: `7F`. |
+|   2, 6 | `01` - `7F` (40.87Hz - 626.28Hz) | Low Band Frequency. |
+|   3, 7  | `40` - `72` (0.0f - 1.0f) | Low Band Amplitude. Safe max: `00 72`. |
+|   2-3, 6-7 | `80 40` - `80 71` (0.01f - 0.98f) | Byte `2`,`6` +0x80 enables intermediate LF amplitude. Real max: `80 FF`. |
 
-An example of usage is:
-```
-hf = 0x01a8; //Set H.Frequency
-hf_amp = 0x8800; //Set H.Frequency amplitude
-hf_band = hf + hf_amp;
-//Byte swapping
-byte[0] = hf_band & 0xFF;
-byte[1] = (hf_band >> 8) & 0xFF;
-```
+For a rumble values table, example and the algorithm for frequency, check rumble_data_table.md.
+
 The byte values for frequency raise the frequency in Hz exponentially and not linearly.
 
 Don't use real maximum values for Amplitude. Otherwise, they can damage the linear actuators. 
@@ -182,13 +176,11 @@ These safe amplitude ranges are defined by Switch HID library.
 
 ### Subcommand 0x01: Bluetooth Pairing
 
-One argument with valid values of `x01` to `x04`
-
-If device has `x01` @`x5000` at SPI flash, then it needs Pairing.
+One argument with valid values of `x00` to `x04`
 
 This command handles some of the BT pairing. It sends `x04` or `x01` for pairing and then `x02` or `x03` to handle pairing.
 
-This command happens once every BT host change.
+It happens once every BT host change. It seems that also happens some times with `x00` arg when MCU is configured for NFC or IR usage.
 
 ### Subcommand 0x02: Request device info
 
@@ -199,7 +191,7 @@ Response data after 02 command byte:
 |   0-1  | `03 48` | Firmware Version. Latest is 3.48 |
 |   2  | `01` | 1=Left Joy-Con, 2=Right Joy-Con |
 |   3  | `02` | Unknown. Seems to be always 02 |
-|   4-9  | `57 30 EA 8A BB 7C` | Joy-Con MAC adrress 7C:BB:8A:EA:30:57 |
+|   4-9  | `57 30 EA 8A BB 7C` | Joy-Con MAC address 7C:BB:8A:EA:30:57 |
 |   10-1  | `01 01` | Unknown. Seems to be always 01 01 |
 
 ### Subcommand 0x03: Set input report mode
@@ -208,8 +200,11 @@ One argument:
 
 |   Argument #   | Remarks |
 |:------------:|:-----:|
-|   `x01`  | Active polling mode. Probably this defaults to sth else by Joy-Con FW |
-|   `x23`  | Unknown mode, WIP |
+|   `x00`  | Active polling mode for IR camera data. Answers with more than 300 bytes ID 31 packet |
+|   `x01`  | Active polling mode |
+|   `x02`  | Active polling mode for IR camera data. Special IR mode or before configuring it? |
+|   `x21`  | Unknown. An input report with this ID has pairing or mcu data or serial flash data or device info |
+|   `x23`  | MCU update input report? |
 |   `30`  | NPad standard mode. Pushes current state @60Hz. Default in SDK if arg is not in the list |
 |   `31`  | NFC mode. Pushes large packets @60Hz |
 |   `33`  | Unknown mode, WIP |
@@ -242,7 +237,7 @@ Takes as argument `x00` or `x01`.
 
 If `x01` it writes `x01` @`x5000` of SPI flash. With `x00`, it resets to `xFF` @`x5000`.
 
-If `x01` is set, then Switch initiates pairing, if not, initialize the device.
+If `x01` is set, then Switch initiates pairing, if not, initializes connection with the device.
 
 Switch always sends `x08 00` after every initialization.
 
@@ -270,9 +265,7 @@ Response: INPUT 21
 
 ### Subcommand 0x21: Write to MCU
 
-Takes one byte or 11 bytes as argument. Real max is `x26` bytes.
-
-Unknown what configuration data it takes.
+Write configuration data to MCU. This data can be IR configuration, NFC configuration or data for the 512KB MCU firmware update.
 
 ### Subcommand 0x22: MCU Resume mode
 
@@ -282,8 +275,8 @@ Takes one argument:
 |   Argument #   | Remarks |
 |:------------:|:-----:|
 |   `00`  | Suspends |
-|   `01`  | Unknown mode, WIP |
-|   `02`  | NPad standard mode. Pushes current state @60Hz. Default in SDK if arg is not in the list |
+|   `01`  | Resume |
+|   `02`  | Resume for update |
 
 ### Subcommand 0x30: Set player lights
 
