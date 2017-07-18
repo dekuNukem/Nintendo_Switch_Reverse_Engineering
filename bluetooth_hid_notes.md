@@ -200,11 +200,11 @@ One argument:
 
 |   Argument #   | Remarks |
 |:------------:|:-----:|
-|   `x00`  | Active polling mode for IR camera data. Answers with more than 300 bytes ID 31 packet |
-|   `x01`  | Active polling mode |
-|   `x02`  | Active polling mode for IR camera data. Special IR mode or before configuring it? |
-|   `x21`  | Unknown. An input report with this ID has pairing or mcu data or serial flash data or device info |
-|   `x23`  | MCU update input report? |
+|   `00`  | Active polling mode for IR camera data. Answers with more than 300 bytes ID 31 packet |
+|   `01`  | Active polling mode |
+|   `02`  | Active polling mode for IR camera data. Special IR mode or before configuring it? |
+|   `21`  | Unknown. An input report with this ID has pairing or mcu data or serial flash data or device info |
+|   `23`  | MCU update input report? |
 |   `30`  | NPad standard mode. Pushes current state @60Hz. Default in SDK if arg is not in the list |
 |   `31`  | NFC mode. Pushes large packets @60Hz |
 |   `33`  | Unknown mode, WIP |
@@ -213,17 +213,23 @@ One argument:
 
 Starts pushing input data at 60Hz.
 
-### Subcommand 0x04: L R button detection
+### Subcommand 0x04: Trigger buttons elapsed time
 
-This sends a non-zero answer if L or R button is pressed.
+Replies with 7 little-endian uint16. The values are in 10ms.
 
 ```
-Request:
-[01 .. .. .. .. .. .. .. .. 04]
-
-Response: INPUT 21
-[xx .E .. .. .. .. .. .. .. .. .. 0. 83 04]
+Left_trigger_ms = ((byte[1] << 8) | byte[0]) * 10;
 ```
+
+|   Bytes #   | Remarks |
+|:------------:|:-----:|
+|   1-0  | L |
+|   3-2  | R |
+|   5-4  | ZL |
+|   7-6  | ZR |
+|   9-8  | SL |
+|   10-9  | SR |
+|   12-11  | HOME |
 
 ### Subcommand 0x06: Reset connection (Disconnect)
 
