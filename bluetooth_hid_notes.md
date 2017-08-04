@@ -2,7 +2,7 @@
 
 # Bluetooth HID Information
 
-## INPUT 63
+## INPUT 0x3F
 
 This input packet is pushed to the host when a button is pressed or released, and provides the "normal controller" interface for the OS.
 
@@ -44,7 +44,7 @@ Hold your controller sideways so that SL, SYNC, and SR line up with the screen. 
 | 2 | `40` | L / R |
 | 2 | `80` | ZL / ZR |
 
-## OUTPUT 1
+## OUTPUT 0x01
 
 The OUTPUT 1 report requests the current controller status. It takes no data, but you need to include 1 (zeroed) byte of data with the report to comply with the spec.
 
@@ -54,24 +54,6 @@ buf[0] = 1;
 buf[1] = 0;
 hid_write(handle, buf, 2);
 ```
-
-## INPUT 33
-
-The "Controller Status Report" packet is sent in reply to each OUTPUT 1 report.
-
-Packet format:
-
-|    Byte #    |        Sample value            | Remarks |
-|:------------:|:------------------------------:|:-----:|
-|   0          | `8D`, `A6`, `41` | Extremely fast timer |
-|   1 high nibble  | `9`, `8`, `5`, `2`    | Battery level - 9=charging 8=full 2=low |
-|   1 low nibble   | `E`              | Unknown |
-| 2-4          | `25 02 00` | Button status, see below |
-| 5-7          | `E3 56 9D` | Left stick data, see below |
-| 8-10         | `DF 86 A4` | Right stick data, see below |
-| 11           | `03`, `0B` | Unknown |
-| 12           | `80`       | Terminator - subcommand reply follows. Removing the 0x80 bit gives the subcommand ID |
-| 13-49        | Zero, garbage       | Filler |
 
 ### Button status format
 
@@ -119,36 +101,46 @@ Not quite sure what the other 2 nibbles are for.
 
 Also, these are **uncalibrated** stick data. In an experiment, the console was able to grab the calibration data from a controller it'd never seen before, so that's probably available through a command using one of the 0x10, 0x11, or 0x12.
 
-## OUTPUT 16
+## OUTPUT 0x03
+
+MCU FW Update packet
+
+## OUTPUT 0x10
 
 Unknown.
 
-## OUTPUT 17
+## OUTPUT 0x11
+
+Command to MCU.
+
+## OUTPUT 0x12
 
 Unknown.
 
-## OUTPUT 18
+## INPUT 0x23
+
+MCU update state report?
+
+## INPUT 0x30
+
+Standard full mode. Pushes current state @60Hz or @120Hz if Pro Controller.
+
+## INPUT 0x31
+
+NFC Mode. Pushes large Packets.
+
+## INPUT 0x32
 
 Unknown.
 
-## INPUT 48
-
-Unknown.
-
-## INPUT 49
-
-Unknown.
-
-## INPUT 50
-
-Unknown.
-
-## INPUT 51
+## INPUT 0x33
 
 Unknown.
 
 
-### Command 0x10: Rumble data
+### Command 0x01 or 0x10: Rumble data
+
+You can send rumble data and subcommand with `x01` command, otherwise only rumble with `x10` command.
 
 A timing byte, then 4 bytes of rumble data for left Joy-Con, followed by 4 bytes for right Joy-Con. 
 [00 01 40 40 00 01 40 40] (320Hz 0.0f 160Hz 0.0f) is neutral.
@@ -174,13 +166,19 @@ These safe amplitude ranges are defined by Switch HID library.
 
 ## Subcommands
 
-### Subcommand 0x01: Bluetooth Pairing
+### Subcommand 0x00: Get Only Controller State
+
+Replies with 2 bytes.
+
+### Subcommand 0x01 (With cmd 0x01 or 0x11): Bluetooth Pairing or Get MCU State
 
 One argument with valid values of `x00` to `x04`
 
 This command handles some of the BT pairing. It sends `x04` or `x01` for pairing and then `x02` or `x03` to handle pairing.
 
-It happens once every BT host change. It seems that also happens some times with `x00` arg when MCU is configured for NFC or IR usage.
+It happens once every BT host change. 
+
+If the command is `x11`, it polls the MCU State. Used with IR Camera or NFC?
 
 ### Subcommand 0x02: Request device info
 
@@ -189,7 +187,7 @@ Response data after 02 command byte:
 |   Byte #   |        Sample            | Remarks |
 |:------------:|:------------------------------:|:-----:|
 |   0-1  | `03 48` | Firmware Version. Latest is 3.48 |
-|   2  | `01` | 1=Left Joy-Con, 2=Right Joy-Con |
+|   2  | `01` | 1=Left Joy-Con, 2=Right Joy-Con, 3=Pro Controller |
 |   3  | `02` | Unknown. Seems to be always 02 |
 |   4-9  | `57 30 EA 8A BB 7C` | Joy-Con MAC address 7C:BB:8A:EA:30:57 |
 |   10-1  | `01 01` | Unknown. Seems to be always 01 01 |
@@ -200,12 +198,11 @@ One argument:
 
 |   Argument #   | Remarks |
 |:------------:|:-----:|
-|   `00`  | Active polling mode for IR camera data. Answers with more than 300 bytes ID 31 packet |
+|   `00`  | Used with cmd `x11`. Active polling mode for IR camera data. Answers with more than 300 bytes ID 31 packet |
 |   `01`  | Active polling mode |
 |   `02`  | Active polling mode for IR camera data. Special IR mode or before configuring it? |
-|   `21`  | Unknown. An input report with this ID has pairing or mcu data or serial flash data or device info |
-|   `23`  | MCU update input report? |
-|   `30`  | NPad standard mode. Pushes current state @60Hz. Default in SDK if arg is not in the list |
+|   `23`  | MCU update state report? |
+|   `30`  | Standard full mode. Pushes current state @60Hz |
 |   `31`  | NFC mode. Pushes large packets @60Hz |
 |   `33`  | Unknown mode, WIP |
 |   `35`  | Unknown mode, WIP |
@@ -231,6 +228,10 @@ Left_trigger_ms = ((byte[1] << 8) | byte[0]) * 10;
 |   10-9  | SR |
 |   12-11  | HOME |
 
+### Subcommand 0x05: Get page
+
+Replies a uint8 with a value of `x01`.
+
 ### Subcommand 0x06: Reset connection (Disconnect)
 
 Causes the controller to disconnect the Bluetooth connection.
@@ -248,7 +249,7 @@ If `x01` is set, then Switch initiates pairing, if not, initializes connection w
 Switch always sends `x08 00` after every initialization.
 
 ### Subcommand 0x10: SPI flash read
-Little-endian int32 address, int8 size. Max size is `x1D`.
+Little-endian int32 address, int8 size, max size is `x1D`.
 Subcommand reply echos the request info, followed by `size` bytes of data.
 
 ```
@@ -265,11 +266,18 @@ Response: INPUT 21
                                                        ^~~~~ data
 ```
 
+### Subcommand 0x11: SPI flash Write
+Little-endian int32 address, int8 size. Max size `x1D` data to write.
+Subcommand reply echos the request info.
+
+### Subcommand 0x12: SPI sector erase
+Erases a 4KB sector.
+
 ### Subcommand 0x18
 
 ### Subcommand 0x20: MCU (Microcontroller for Sensors and Peripherals) reset
 
-### Subcommand 0x21: Write to MCU
+### Subcommand 0x21: Write configuration to MCU
 
 Write configuration data to MCU. This data can be IR configuration, NFC configuration or data for the 512KB MCU firmware update.
 
@@ -323,6 +331,8 @@ One argument of `x00` Disable  or `x01` Enable.
 ### Subcommand 0x41: 6-Axis sensor configuration
 
 Two arguments of one byte. LO byte takes `x00` to `x03`, `x00` is error in config data and also sets HI byte to `x00`. HI byte takes `x00` to `x02`, `x00` is error.
+
+### Subcommand 0x42: 6-Axis sensor write
 
 ### Subcommand 0x48: Enable vibration
 
