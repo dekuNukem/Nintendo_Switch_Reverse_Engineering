@@ -83,7 +83,7 @@ This section holds user generated 6-Axis Motion Sensor and Analog Sticks calibra
 |  | `x801D - x8025` | Actual user Right Stick Calibration data |
 | `x8026`-`x803F` | ---------------- | User 6-Axis Motion Sensor calibration |
 |  | `x8026`, `x8027` | Magic `xB2 xA1` for user available calibration |
-|  | `x6083`-`x6085` | Actual 6-Axis Motion Sensor Calibration data |
+|  | `x8028`-`x803F` | Actual 6-Axis Motion Sensor Calibration data |
 
 ```
 00008000: ffff ffff ffff ffff ffff ffff ffff ffff
