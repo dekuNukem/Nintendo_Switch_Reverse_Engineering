@@ -52,7 +52,7 @@ User Motion Sensor and Analog stick calibration data is located around `x8000` i
 
 |  Section Range  |  Subsection Range  | Remarks |
 |:------------:|:------------------------------:|:-----:|
-| `x6000`-`x600F` | ---------------- | Serial number in ASCII. If first bytes are `00`, skip |
+| `x6000`-`x600F` | ---------------- | Serial number in non-extended ASCII. If first byte is >= `80`, no S/N. If a byte is `00` `NUL`, skip. Max 15 chars, if 16 chars last one is skipped.|
 | `x6012`-`x6013` | ---------------- | Left Joy-Con: `x01 A0`, Right Joy-Con: `x02 A0` |
 | `x6020`-`x603C` | ---------------- | Factory configuration & calibration 1 |
 |  | `x6020 - x6037` | 6-Axis motion sensor Factory calibration |
