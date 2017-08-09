@@ -166,9 +166,15 @@ These safe amplitude ranges are defined by Switch HID library.
 
 ## Subcommands
 
+### Subcommand 0x##: All unused subcommands
+
+All subcommands that do nothing, reply back with ACK `x80` `x##` and `x03`
+
 ### Subcommand 0x00: Get Only Controller State
 
-Replies with 2 bytes.
+Replies with `x03`
+
+Can be used to get Controller state only, like any subcommand that does nothing
 
 ### Subcommand 0x01 (With cmd 0x01 or 0x11): Bluetooth Pairing or Get MCU State
 
@@ -212,7 +218,7 @@ Starts pushing input data at 60Hz.
 
 ### Subcommand 0x04: Trigger buttons elapsed time
 
-Replies with 7 little-endian uint16. The values are in 10ms.
+Replies with 7 little-endian uint16. The values are in 10ms. They reset by turning off the controller.
 
 ```
 Left_trigger_ms = ((byte[1] << 8) | byte[0]) * 10;
@@ -237,6 +243,10 @@ Replies a uint8 with a value of `x01`.
 Causes the controller to disconnect the Bluetooth connection.
 
 Takes as argument `x00` or `x01`.
+
+### Subcommand 0x07: Unknown
+
+Replies with ACK `x80` `x07`.
 
 ### Subcommand 0x08: Set shipment
 
@@ -267,13 +277,13 @@ Response: INPUT 21
 ```
 
 ### Subcommand 0x11: SPI flash Write
+
 Little-endian int32 address, int8 size. Max size `x1D` data to write.
 Subcommand reply echos the request info.
 
 ### Subcommand 0x12: SPI sector erase
-Erases a 4KB sector.
 
-### Subcommand 0x18
+Erases a 4KB sector.
 
 ### Subcommand 0x20: MCU (Microcontroller for Sensors and Peripherals) reset
 
@@ -292,6 +302,23 @@ Takes one argument:
 |   `01`  | Resume |
 |   `02`  | Resume for update |
 
+### Subcommand 0x28: Set unknown data?
+
+Replies with ACK `x80` `x28`.
+
+### Subcommand 0x29: Get `x28` data and Set unknown data?
+
+Replies with ACK `xA8` `x29`. Normally these take an address and a size as an argument and give out data.
+
+### Subcommand 0x2A: Unknown
+
+Replies with ACK `x00` `x2A`.
+The only subcommand that does not have the ACK MSB (`x80`).
+
+### Subcommand 0x2B: Get `x29` data?
+
+Replies with ACK `xA9` `x2B`. Normally these take an address and a size as an argument and give out data.
+
 ### Subcommand 0x30: Set player lights
 
 First argument byte is a bitfield:
@@ -303,6 +330,11 @@ aaaa bbbb
 ```
 
 On overrides flashing. When on USB, flashing bits work like always on bits.
+
+
+### Subcommand 0x31: Get player lights
+
+Replies with ACK `xB0` `x31` and one byte that uses the same bitfield with `x30` subcommand
 
 ### Subcommand 0x38: HOME Light
 
@@ -334,12 +366,22 @@ Two arguments of one byte. LO byte takes `x00` to `x03`, `x00` is error in confi
 
 ### Subcommand 0x42: 6-Axis sensor write
 
+### Subcommand 0x43: Get 6-Axis sensor data?
+
+Replies with ACK `xC0` `x43`. Normally these take an address and a size as an argument and give out data.
+
 ### Subcommand 0x48: Enable vibration
 
 One argument of `x00` Disable  or `x01` Enable.
 
-### Subcommand 0x50
+### Subcommand 0x50: Set/get unknown data?
 
-Just replies with `[4E 06]` ?
+Replies with ACK `x80` `x50` and 2bytes `[4E 06]` or `[B5 05]` and maybe other.
 
-### Subcommand 0x70: BT OTA FW update?
+### Subcommand 0x51: Unknown
+
+Replies with ACK `x80` `x51`.
+
+### Subcommand 0x52: Unknown
+
+Replies with ACK `xD1` `x52` and one byte. Probably sets the data that you can get with `x51` subcmd.
