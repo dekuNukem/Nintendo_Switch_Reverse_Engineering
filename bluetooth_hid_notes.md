@@ -345,7 +345,7 @@ Replies with ACK `xB0` `x31` and one byte that uses the same bitfield with `x30`
 |   Byte `x00`, High nibble  | Number of Mini Cycles. 1-15. If number of cycles is > 0 then `x0` = `x1` |
 |   Byte `x00`, Low nibble   | Global Mini Cycle Duration. 8ms - 175ms. Value `x0` = 0ms/OFF  |
 |   Byte `x01`, High nibble  | LED Start Intensity. Value `x0`=0% - `xF`=100% |
-|   Byte `x01`, Low nibble   | Number of Full Cycles. 1-15. If value is `x0` then it does the 1st Mini Cycle and then the LED stays on with LED Start Intensity. |
+|   Byte `x01`, Low nibble   | Number of Full Cycles. 1-15. Value `x0` is repeat forever, but if also Byte `x00` High nibble is set to `x0`, it does the 1st Mini Cycle and then the LED stays on with LED Start Intensity. |
 
 When all selected Mini Cycles play and then end, this is a full cycle.
 
