@@ -366,6 +366,8 @@ The LED Duration Multiplier and the Fading Multiplier use the same algorithm: Gl
 
 Example: GMCD is set to `xF` = 175ms and LED Duration Multiplier is set to `x4`. The Duration that the LED will stay on it's configured intensity is then  175 * 4 = 700ms.
 
+Unused Mini Cycles can be skipped from the output packet.
+
 Table of Mini Cycle configuration:
 
 |   Byte #, Nibble #    | Remarks |
