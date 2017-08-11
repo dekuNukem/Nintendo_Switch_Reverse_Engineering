@@ -336,25 +336,58 @@ On overrides flashing. When on USB, flashing bits work like always on bits.
 
 Replies with ACK `xB0` `x31` and one byte that uses the same bitfield with `x30` subcommand
 
-### Subcommand 0x38: HOME Light
+### Subcommand 0x38: Set HOME Light
 
-|    Nibble #    |        Sample value            | Remarks |
-|:------------:|:------------------------------:|:-----:|
-|   High nibble  | `5` | Time OFF - Based on Time ON value. 0=always on |
-|   Low nibble   | `E` | Time ON  - 0=OFF - F=200ms |
+25 bytes argument that control 49 elements.
 
-Time ON value starts has a base 16ms and increments by 12ms. 0 value disables the light
+|   Byte #, Nibble #    | Remarks |
+|:------------:|:-----:|
+|   Byte `x00`, High nibble  | Number of Mini Cycles. 1-15. If number of cycles is > 0 then `x0` = `x1` |
+|   Byte `x00`, Low nibble   | Global Mini Cycle Duration. 8ms - 175ms. Value `x0` = 0ms/OFF  |
+|   Byte `x01`, High nibble  | LED Start Intensity. Value `x0`=0% - `xF`=100% |
+|   Byte `x01`, Low nibble   | Number of Full Cycles. 1-15. Value `x0` is repeat forever, but if also Byte `x00` High nibble is set to `x0`, it does the 1st Mini Cycle and then the LED stays on with LED Start Intensity. |
 
-Time OFF value is a multiplier of the Time ON time (ms). 0 value keeps the light always on.
+When all selected Mini Cycles play and then end, this is a full cycle.
 
-|    Time OFF value #    |        Multiplier             | Remarks |
-|:------------:|:------------------------------:|:-----:|
-|   `0` | 0 | Always ON |
-|   `1` | 1 | Same as Time ON time |
-|   `8`   | 21 ||
-|   `F`   | 30 ||
+The Mini Cycle configurations are grouped in two (except the 15th):
 
-The above behavior is for USB. In bluetooth it uses a PWM driver and acts as a breathing light, with slight different timing.
+|   Byte #, Nibble #    | Remarks |
+|:------------:|:-----:|
+|   Byte `x02`, High nibble  | Mini Cycle 1 LED Intensity |
+|   Byte `x02`, Low nibble   | Mini Cycle 2 LED Intensity  |
+|   Byte `x03`, High nibble  | Fading Transition Duration to Mini Cycle 1 (Uses PWM). Value is a Multiplier of Global Mini Cycle Duration |
+|   Byte `x03`, Low nibble   | LED Duration Multiplier of Mini Cycle 1. `x0` = `x1` = x1|
+|   Byte `x04`, High nibble  | Fading Transition Duration to Mini Cycle 2 (Uses PWM). Value is a Multiplier of Global Mini Cycle Duration |
+|   Byte `x04`, Low nibble   | LED Duration Multiplier of Mini Cycle 1. `x0` = `x1` = x1|
+
+The Fading Transition uses a PWM to increment the transition to the Mini Cycle. 
+
+The LED Duration Multiplier and the Fading Multiplier use the same algorithm: Global Mini Cycle Duration ms * Multiplier value. 
+
+Example: GMCD is set to `xF` = 175ms and LED Duration Multiplier is set to `x4`. The Duration that the LED will stay on it's configured intensity is then  175 * 4 = 700ms.
+
+Unused Mini Cycles can be skipped from the output packet.
+
+Table of Mini Cycle configuration:
+
+|   Byte #, Nibble #    | Remarks |
+|:------------:|:-----:|
+|   Byte `x02`, High nibble  | Mini Cycle 1 LED Intensity |
+|   Byte `x02`, Low nibble   | Mini Cycle 2 LED Intensity  |
+|   Byte `x03`  | Fading/LED Duration Multipliers for MC 1 |
+|   Byte `x04`  | Fading/LED Duration Multipliers for MC 2 |
+|   Byte `x05`, High nibble  | Mini Cycle 3 LED Intensity |
+|   Byte `x05`, Low nibble   | Mini Cycle 4 LED Intensity  |
+|   Byte `x06`  | Fading/LED Duration Multipliers for MC 3 |
+|   Byte `x06`  | Fading/LED Duration Multipliers for MC 4 |
+|   ...  | ... |
+|   Byte `x20`, High nibble  | Mini Cycle 13 LED Intensity |
+|   Byte `x20`, Low nibble   | Mini Cycle 14 LED Intensity  |
+|   Byte `x21`  | Fading/LED Duration Multipliers for MC 13 |
+|   Byte `x22`  | Fading/LED Duration Multipliers for MC 14 |
+|   Byte `x23`, High nibble  | Mini Cycle 15 LED Intensity |
+|   Byte `x23`, Low nibble   | Unused  |
+|   Byte `x24`  | Fading/LED Duration Multipliers for MC 15 |
 
 ### Subcommand 0x40: Enable 6-Axis sensor
 
