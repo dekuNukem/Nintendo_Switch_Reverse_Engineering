@@ -40,7 +40,7 @@ Command to MCU.
 
 Unknown.
 
-### Rumble data
+## Rumble data
 
 A timing byte, then 4 bytes of rumble data for left Joy-Con, followed by 4 bytes for right Joy-Con.
 [00 01 40 40 00 01 40 40] (320Hz 0.0f 160Hz 0.0f) is neutral.
@@ -116,7 +116,7 @@ Unknown. Sends standard input reports.
 
 Unknown. Sends standard input reports.
 
-### Standard input report format
+## Standard input report format
 
 The 2nd byte belongs entirely to the Right Joy-Con, while the 4th byte belongs entirely to the Left Joy-Con.
 The middle byte is shared between the controllers.
