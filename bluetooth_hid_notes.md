@@ -2,6 +2,64 @@
 
 # Bluetooth HID Information
 
+## OUTPUT 0x01
+
+Rumble and subcommand.
+
+The OUTPUT 1 report is how all normal subcommands are sent. It also includes rumble data.
+
+Sample C code for sending a subcommand:
+
+```
+uint8_t buf[0x40]; bzero(buf, 0x40);
+buf[0] = 1; // 0x10 for rumble only
+buf[1] = rumbleTimer; // Increment by 1 for each rumble frame.
+memcpy(buf + 2, rumbleData, 8);
+buf[10] = subcommandID;
+memcpy(buf + 11, subcommandData, subcommandDataLen);
+hid_write(handle, buf, 0x40);
+```
+
+You can send rumble data and subcommand with `x01` command, otherwise only rumble with `x10` command.
+
+A timing byte, then 4 bytes of rumble data for left Joy-Con, followed by 4 bytes for right Joy-Con.
+[00 01 40 40 00 01 40 40] (320Hz 0.0f 160Hz 0.0f) is neutral.
+The rumble data structure contains 2 bytes High Band data, 2 byte Low Band data.
+The values for HF Band frequency and LF amplitude are encoded.
+
+|   Byte #   |        Range            | Remarks |
+|:------------:|:------------------------------:|:-----:|
+|   0, 4 | `04` - `FC` (81.75Hz - 313.14Hz) | High Band Lower Frequency. Steps `+0x0004`. |
+|   0-1, 4-5 | `00 01` - `FC 01` (320.00Hz - 1252.57Hz) | Byte `1`,`5` LSB enables High Band Higher Frequency. Steps `+0x0400`. |
+|   1, 5 | `00 00` - `C8 00` (0.0f - 1.0f) | High Band Amplitude. Steps `+0x0200`. Real max: `FE`. |
+|   2, 6 | `01` - `7F` (40.87Hz - 626.28Hz) | Low Band Frequency. |
+|   3, 7  | `40` - `72` (0.0f - 1.0f) | Low Band Amplitude. Safe max: `00 72`. |
+|   2-3, 6-7 | `80 40` - `80 71` (0.01f - 0.98f) | Byte `2`,`6` +0x80 enables intermediate LF amplitude. Real max: `80 FF`. |
+
+For a rumble values table, example and the algorithm for frequency, check rumble_data_table.md.
+
+The byte values for frequency raise the frequency in Hz exponentially and not linearly.
+
+Don't use real maximum values for Amplitude. Otherwise, they can damage the linear actuators.
+These safe amplitude ranges are defined by Switch HID library.
+
+
+## OUTPUT 0x03
+
+MCU FW Update packet
+
+## OUTPUT 0x10
+
+Rumble only. See OUTPUT 0x01.
+
+## OUTPUT 0x11
+
+Command to MCU.
+
+## OUTPUT 0x12
+
+Unknown.
+
 ## INPUT 0x3F
 
 This input packet is pushed to the host when a button is pressed or released, and provides the "normal controller" interface for the OS.
@@ -25,69 +83,66 @@ Hold your controller sideways so that SL, SYNC, and SR line up with the screen. 
 
 ### Button status format
 
-| Byte | Bit | Value |
-|:--:|:---:|:---:|
-| 1 | `01` | Down |
-| 1 | `02` | Right |
-| 1 | `04` | Left |
-| 1 | `08` | Up |
-| 1 | `10` | SL |
-| 1 | `20` | SR |
-| 1 | `40` |  |
-| 1 | `80` |  |
-| 2 | `01` | Minus |
-| 2 | `02` | Plus |
-| 2 | `04` | Left Stick |
-| 2 | `08` | Right Stick |
-| 2 | `10` | Home |
-| 2 | `20` | Capture |
-| 2 | `40` | L / R |
-| 2 | `80` | ZL / ZR |
+| Byte | Bit `01` | `02` |`04`|`08`|`10`|`20`|`40`|`80`|
+|:--:|:---:|:---:|:------|:--:|:--:|:--:|:--:|:--:|:--:|
+| 1 |     Down | Right | Left | Up | SL | SR | -- | -- |
+| 2 | Minus | Plus | Left Stick | Right Stick | Home | Capture | L / R | ZL / ZR |
 
-## OUTPUT 0x01
+## INPUT 0x21
 
-The OUTPUT 1 report requests the current controller status. It takes no data, but you need to include 1 (zeroed) byte of data with the report to comply with the spec.
+Standard input reports used for subcommand replies when the current mode is set to 0x30.
 
-```
-uint8_t buf[2];
-buf[0] = 1;
-buf[1] = 0;
-hid_write(handle, buf, 2);
-```
+## INPUT 0x23
 
-### Button status format
+MCU update state report?
+
+## INPUT 0x30
+
+Standard full mode - input reports with IMU data instead of subcommand replies. Pushes current state @60Hz, or @120Hz if Pro Controller.
+
+## INPUT 0x31
+
+NFC Mode. Pushes large packets with standard input reports and subcommand replies.
+
+## INPUT 0x32
+
+Unknown. Sends standard input reports.
+
+## INPUT 0x33
+
+Unknown. Sends standard input reports.
+
+### Standard input report format
 
 The 2nd byte belongs entirely to the Right Joy-Con, while the 4th byte belongs entirely to the Left Joy-Con.
 The middle byte is shared between the controllers.
 
-| Byte |    Bit     |        Value |
-|:--:|:---:|:---:|
-| R | `01` | Y |
-| R | `02` | X |
-| R | `04` | B |
-| R | `08` | A |
-| R | `10` | SR |
-| R | `20` | SL |
-| R | `40` | R |
-| R | `80` | ZR |
-| M | `01` | Minus |
-| M | `02` | Plus |
-| M | `04` | Right Stick |
-| M | `08` | Left Stick |
-| M | `10` | Home |
-| M | `20` | Capture |
-| M | `40` | -- |
-| M | `80` | -- |
-| L | `01` | Down |
-| L | `02` | Up |
-| L | `04` | Right |
-| L | `08` | Left |
-| L | `10` | SR |
-| L | `20` | SL |
-| L | `40` | L |
-| L | `80` | ZL |
+(Note: in the following table, the byte with the packet ID is cut off, located at byte "-1".)
 
-### Stick data
+|   Byte #   |        Sample            | Remarks |
+|:------------:|:------------------------------:|:-----:|
+|   0        | `00` - `FF`      | Timer. Increments very fast. Can be used to estimate excess Bluetooth latency. |
+|   1 high nibble | `1` - `9`   | Battery level. 1 is low, 8 is full, and 9 is charging. |
+| 1 low nibble | `xE` | Unknown. |
+| 2, 3, 4 | `41 00 82` | Button status (see below table) |
+| 5, 6, 7 | -- | Left analog stick data |
+| 8, 9, 10 | -- | Right analog stick data |
+| 11 | `00`, `80` | ACK acknowledge subcommand reply |
+| 12 | `90`, `82`, `B3`, etc | Reply-to subcommand ID. For packet 0x21, `x80` is added to the subcommand ID. For packet `x31` through `x33`, the subcommand ID is used as-is. |
+| 13-39 (`x30` only) | -- | Gyroscope data. 3 frames of 6 Int16LE each. |
+| 13-EOF (Other) | -- | Subcommand reply data. |
+
+
+### Standard input report - buttons
+| Byte | Bit `01` | `02` | `04` | `08` | `10` | `20` | `40` | `80` |
+|:--:|:---:|:---:|:------|:--:|:--:|:--:|:--:|:--:|:--:|
+| 2 (Right) | Y | X | B | A | SR | SL | R | ZR |
+| 3 (Shared) | Minus | Plus | R Stick | L Stick | Home | Capture | -- | -- |
+| 4 (Left) | Down | Up | Right | Left | SR | SL | L | ZL |
+
+Note that the button status of the L and R Joy-Cons can be ORed together to get a complete button status.
+
+### Standard input report - Stick data
 
 The closest estimate I have right now is:
 
@@ -99,69 +154,7 @@ stick_vertical = data[2];
 
 Not quite sure what the other 2 nibbles are for.
 
-Also, these are **uncalibrated** stick data. In an experiment, the console was able to grab the calibration data from a controller it'd never seen before, so that's probably available through a command using one of the 0x10, 0x11, or 0x12.
-
-## OUTPUT 0x03
-
-MCU FW Update packet
-
-## OUTPUT 0x10
-
-Unknown.
-
-## OUTPUT 0x11
-
-Command to MCU.
-
-## OUTPUT 0x12
-
-Unknown.
-
-## INPUT 0x23
-
-MCU update state report?
-
-## INPUT 0x30
-
-Standard full mode. Pushes current state @60Hz or @120Hz if Pro Controller.
-
-## INPUT 0x31
-
-NFC Mode. Pushes large Packets.
-
-## INPUT 0x32
-
-Unknown.
-
-## INPUT 0x33
-
-Unknown.
-
-
-### Command 0x01 or 0x10: Rumble data
-
-You can send rumble data and subcommand with `x01` command, otherwise only rumble with `x10` command.
-
-A timing byte, then 4 bytes of rumble data for left Joy-Con, followed by 4 bytes for right Joy-Con. 
-[00 01 40 40 00 01 40 40] (320Hz 0.0f 160Hz 0.0f) is neutral.
-The rumble data structure contains 2 bytes High Band data, 2 byte Low Band data.
-The values for HF Band frequency and LF amplitude are encoded.
-
-|   Byte #   |        Range            | Remarks |
-|:------------:|:------------------------------:|:-----:|
-|   0, 4 | `04` - `FC` (81.75Hz - 313.14Hz) | High Band Lower Frequency. Steps `+0x0004`. |
-|   0-1, 4-5 | `00 01` - `FC 01` (320.00Hz - 1252.57Hz) | Byte `1`,`5` LSB enables High Band Higher Frequency. Steps `+0x0400`. |
-|   1, 5 | `00 00` - `C8 00` (0.0f - 1.0f) | High Band Amplitude. Steps `+0x0200`. Real max: `FE`. |
-|   2, 6 | `01` - `7F` (40.87Hz - 626.28Hz) | Low Band Frequency. |
-|   3, 7  | `40` - `72` (0.0f - 1.0f) | Low Band Amplitude. Safe max: `00 72`. |
-|   2-3, 6-7 | `80 40` - `80 71` (0.01f - 0.98f) | Byte `2`,`6` +0x80 enables intermediate LF amplitude. Real max: `80 FF`. |
-
-For a rumble values table, example and the algorithm for frequency, check rumble_data_table.md.
-
-The byte values for frequency raise the frequency in Hz exponentially and not linearly.
-
-Don't use real maximum values for Amplitude. Otherwise, they can damage the linear actuators. 
-These safe amplitude ranges are defined by Switch HID library.
+Also, these are **uncalibrated** stick data. The location of the calibration data in SPI flash is known, but not the formula for converting that to calibrated axes.
 
 
 ## Subcommands
