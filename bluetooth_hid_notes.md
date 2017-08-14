@@ -139,8 +139,8 @@ The middle byte is shared between the controllers.
 
 ### Standard input report - buttons
 | Byte | Bit `01` | `02` | `04` | `08` | `10` | `20` | `40` | `80` |
-|:--:|:---:|:---:|:------|:--:|:--:|:--:|:--:|:--:|:--:|
-| 2 (Right) | Y | X | B | A | SR | SL | R | ZR |
+|:---:|:---------:|:---:|:-----:|:----:|:----:|:----:|:----:|:---:|
+| 2 (Right) | Y   | X   |  B    | A    | SR   | SL   | R    | ZR |
 | 3 (Shared) | Minus | Plus | R Stick | L Stick | Home | Capture | -- | -- |
 | 4 (Left) | Down | Up | Right | Left | SR | SL | L | ZL |
 
