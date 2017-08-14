@@ -22,6 +22,26 @@ hid_write(handle, buf, 0x40);
 
 You can send rumble data and subcommand with `x01` command, otherwise only rumble with `x10` command.
 
+See "Rumble data" below.
+
+## OUTPUT 0x03
+
+MCU FW Update packet
+
+## OUTPUT 0x10
+
+Rumble only. See OUTPUT 0x01 and "Rumble data" below.
+
+## OUTPUT 0x11
+
+Command to MCU.
+
+## OUTPUT 0x12
+
+Unknown.
+
+### Rumble data
+
 A timing byte, then 4 bytes of rumble data for left Joy-Con, followed by 4 bytes for right Joy-Con.
 [00 01 40 40 00 01 40 40] (320Hz 0.0f 160Hz 0.0f) is neutral.
 The rumble data structure contains 2 bytes High Band data, 2 byte Low Band data.
@@ -43,22 +63,6 @@ The byte values for frequency raise the frequency in Hz exponentially and not li
 Don't use real maximum values for Amplitude. Otherwise, they can damage the linear actuators.
 These safe amplitude ranges are defined by Switch HID library.
 
-
-## OUTPUT 0x03
-
-MCU FW Update packet
-
-## OUTPUT 0x10
-
-Rumble only. See OUTPUT 0x01.
-
-## OUTPUT 0x11
-
-Command to MCU.
-
-## OUTPUT 0x12
-
-Unknown.
 
 ## INPUT 0x3F
 
