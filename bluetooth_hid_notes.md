@@ -133,7 +133,7 @@ The middle byte is shared between the controllers.
 | 8, 9, 10 | -- | Right analog stick data |
 | 11 | `00`, `80` | ACK acknowledge subcommand reply |
 | 12 | `90`, `82`, `B3`, etc | Reply-to subcommand ID. For packet 0x21, `x80` is added to the subcommand ID. For packet `x31` through `x33`, the subcommand ID is used as-is. |
-| 13-39 (`x30` only) | -- | Gyroscope data. 3 frames of 6 Int16LE each. |
+| 13-39 (`x30` only) | -- | 6-Axes data. 3 frames of 2 groups of 3 Int16LE each. Group is Gyro followed by Acc. |
 | 13-EOF (Other) | -- | Subcommand reply data. |
 
 
@@ -148,15 +148,13 @@ Note that the button status of the L and R Joy-Cons can be ORed together to get 
 
 ### Standard input report - Stick data
 
-The closest estimate I have right now is:
+The code below properly decodes the stick data:
 
 ```
 uint8_t *data = packet + (left ? 5 : 8);
-stick_horizontal = ((data[0] & 0xF0) >> 4) | ((data[1] & 0x0F) << 4);
-stick_vertical = data[2];
+uint16_t stick_horizontal = data[0] | ((data[1] & 0xF) << 8);
+uint16_t stick_vertical = (data[1] >> 4) | (data[2] << 4);
 ```
-
-Not quite sure what the other 2 nibbles are for.
 
 Also, these are **uncalibrated** stick data. The location of the calibration data in SPI flash is known, but not the formula for converting that to calibrated axes.
 
