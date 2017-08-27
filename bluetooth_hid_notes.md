@@ -87,14 +87,14 @@ Hold your controller sideways so that SL, SYNC, and SR line up with the screen. 
 
 ### Button status format
 
-| Byte | Bit `01` | `02` |`04`|`08`|`10`|`20`|`40`|`80`|
-|:--:|:---:|:---:|:------|:--:|:--:|:--:|:--:|:--:|:--:|
-| 1 |     Down | Right | Left | Up | SL | SR | -- | -- |
-| 2 | Minus | Plus | Left Stick | Right Stick | Home | Capture | L / R | ZL / ZR |
+| Byte | Bit `01` | `02`  |`04`        |`08`         |`10`  |`20`     |`40`   |`80`     |
+|:----:|:--------:|:-----:|:-----------|:-----------:|:----:|:-------:|:-----:|:-------:|
+| 1    | Down     | Right | Left       | Up          | SL   | SR      | --    | --      |
+| 2    | Minus    | Plus  | Left Stick | Right Stick | Home | Capture | L / R | ZL / ZR |
 
 ## INPUT 0x21
 
-Standard input reports used for subcommand replies when the current mode is set to 0x30.
+Standard input reports used for subcommand replies.
 
 ## INPUT 0x23
 
@@ -126,8 +126,8 @@ The middle byte is shared between the controllers.
 |   Byte #   |        Sample            | Remarks |
 |:------------:|:------------------------------:|:-----:|
 |   0        | `00` - `FF`      | Timer. Increments very fast. Can be used to estimate excess Bluetooth latency. |
-|   1 high nibble | `1` - `9`   | Battery level. 1 is low, 8 is full, and 9 is charging. |
-| 1 low nibble | `xE` | Unknown. |
+|   1 high nibble | `0` - `9`   | Battery level. 8=full, 6=medium, 4=low, 2=critical, 0=empty. LSB=Charging. |
+| 1 low nibble | `xE` | Connection info. `(con_info >> 1) & 3` - 3=BT, 0=USB. `con_info & 0x1` - 1=Charging Grip.  |
 | 2, 3, 4 | `41 00 82` | Button status (see below table) |
 | 5, 6, 7 | -- | Left analog stick data |
 | 8, 9, 10 | -- | Right analog stick data |
@@ -141,7 +141,7 @@ The middle byte is shared between the controllers.
 | Byte | Bit `01` | `02` | `04` | `08` | `10` | `20` | `40` | `80` |
 |:---:|:---------:|:---:|:-----:|:----:|:----:|:----:|:----:|:---:|
 | 2 (Right) | Y   | X   |  B    | A    | SR   | SL   | R    | ZR |
-| 3 (Shared) | Minus | Plus | R Stick | L Stick | Home | Capture | -- | -- |
+| 3 (Shared) | Minus | Plus | R Stick | L Stick | Home | Capture | -- | Charging Grip |
 | 4 (Left) | Down | Up | Right | Left | SR | SL | L | ZL |
 
 Note that the button status of the L and R Joy-Cons can be ORed together to get a complete button status.
