@@ -13,7 +13,7 @@ Sample C code for sending a subcommand:
 ```
 uint8_t buf[0x40]; bzero(buf, 0x40);
 buf[0] = 1; // 0x10 for rumble only
-buf[1] = rumbleTimer; // Increment by 1 for each rumble frame.
+buf[1] = GlobalPacketNumber; // Increment by 1 for each packet sent. It loops in 0x0 - 0xF range.
 memcpy(buf + 2, rumbleData, 8);
 buf[10] = subcommandID;
 memcpy(buf + 11, subcommandData, subcommandDataLen);
