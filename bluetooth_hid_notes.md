@@ -169,47 +169,49 @@ All subcommands that do nothing, reply back with ACK `x80` `x##` and `x03`
 
 ### Subcommand 0x00: Get Only Controller State
 
-Replies with `x03`
+Replies with `x80` `x00` `x03`
 
 Can be used to get Controller state only, like any subcommand that does nothing
 
 ### Subcommand 0x01 (With cmd 0x01 or 0x11): Bluetooth Pairing or Get MCU State
 
-One argument with valid values of `x00` to `x04`
+One argument with valid values of `x00` to `x04`.
 
-This command handles some of the BT pairing. It sends `x04` or `x01` for pairing and then `x02` or `x03` to handle pairing.
+With some trials, only `x01` and `x02` return some real data. With 1st one, the data is always the same. With 2nd seems random
+
+This subcommand handles some of the BT pairing.
 
 It happens once every BT host change. 
 
-If the command is `x11`, it polls the MCU State. Used with IR Camera or NFC?
+If the command is `x11`, it polls the MCU State? Used with IR Camera or NFC?
 
 ### Subcommand 0x02: Request device info
 
 Response data after 02 command byte:
 
-|   Byte #   |        Sample            | Remarks |
-|:------------:|:------------------------------:|:-----:|
-|   0-1  | `03 48` | Firmware Version. Latest is 3.48 |
-|   2  | `01` | 1=Left Joy-Con, 2=Right Joy-Con, 3=Pro Controller |
-|   3  | `02` | Unknown. Seems to be always 02 |
-|   4-9  | `57 30 EA 8A BB 7C` | Joy-Con MAC address 7C:BB:8A:EA:30:57 |
-|   10-1  | `01 01` | Unknown. Seems to be always 01 01 |
+| Byte # | Sample              | Remarks                                           |
+|:------:|:-------------------:| ------------------------------------------------- |
+|  0-1   | `03 48`             | Firmware Version. Latest is 3.48                  |
+|  2     | `01`                | 1=Left Joy-Con, 2=Right Joy-Con, 3=Pro Controller |
+|  3     | `02`                | Unknown. Seems to be always 02                    |
+|  4-9   | `57 30 EA 8A BB 7C` | Joy-Con MAC address 7C:BB:8A:EA:30:57             |
+|  10-1  | `01 01`             | Unknown. Seems to be always 01 01                 |
 
 ### Subcommand 0x03: Set input report mode
 
 One argument:
 
-|   Argument #   | Remarks |
-|:------------:|:-----:|
-|   `00`  | Used with cmd `x11`. Active polling mode for IR camera data. Answers with more than 300 bytes ID 31 packet |
-|   `01`  | Active polling mode |
-|   `02`  | Active polling mode for IR camera data. Special IR mode or before configuring it? |
-|   `23`  | MCU update state report? |
-|   `30`  | Standard full mode. Pushes current state @60Hz |
-|   `31`  | NFC mode. Pushes large packets @60Hz |
-|   `33`  | Unknown mode, WIP |
-|   `35`  | Unknown mode, WIP |
-|   `3F`  | Simple HID mode. Pushes updates with every button press |
+| Argument # | Remarks                                                                                               |
+|:----------:| ----------------------------------------------------------------------------------------------------- |
+|   `00`     | Used with cmd `x11`. Active polling for IR camera data. Answers with more than 300 bytes ID 31 packet |
+|   `01`     | Active polling mode                                                                                   |
+|   `02`     | Active polling mode for IR camera data. Special IR mode or before configuring it?                     |
+|   `23`     | MCU update state report?                                                                              |
+|   `30`     | Standard full mode. Pushes current state @60Hz                                                        |
+|   `31`     | NFC mode. Pushes large packets @60Hz                                                                  |
+|   `33`     | Unknown mode, WIP                                                                                     |
+|   `35`     | Unknown mode, WIP                                                                                     |
+|   `3F`     | Simple HID mode. Pushes updates with every button press                                               |
 
 Starts pushing input data at 60Hz.
 
@@ -221,15 +223,15 @@ Replies with 7 little-endian uint16. The values are in 10ms. They reset by turni
 Left_trigger_ms = ((byte[1] << 8) | byte[0]) * 10;
 ```
 
-|   Bytes #   | Remarks |
-|:------------:|:-----:|
-|   1-0  | L |
-|   3-2  | R |
-|   5-4  | ZL |
-|   7-6  | ZR |
-|   9-8  | SL |
-|   10-9  | SR |
-|   12-11  | HOME |
+| Bytes # | Remarks |
+|:-------:|:-------:|
+|   1-0   | L       |
+|   3-2   | R       |
+|   5-4   | ZL      |
+|   7-6   | ZR      |
+|   9-8   | SL      |
+|   10-9  | SR      |
+|   12-11 | HOME    |
 
 ### Subcommand 0x05: Get page
 
@@ -241,9 +243,9 @@ Causes the controller to disconnect the Bluetooth connection.
 
 Takes as argument `x00` or `x01`.
 
-### Subcommand 0x07: Unknown
+### Subcommand 0x07: Factory reset
 
-Replies with ACK `x80` `x07`.
+Does a factory reset and initialises the 0x2000 SPI region.
 
 ### Subcommand 0x08: Set shipment
 
@@ -276,11 +278,12 @@ Response: INPUT 21
 ### Subcommand 0x11: SPI flash Write
 
 Little-endian int32 address, int8 size. Max size `x1D` data to write.
-Subcommand reply echos the request info.
+Subcommand reply echos the address, size, plus a uint8 status. `x00` = success, `x01` = write protected.
 
 ### Subcommand 0x12: SPI sector erase
 
-Erases a 4KB sector.
+Takes a Little-endian uint32. Erases the whole 4KB in the specified address to 0xFF.
+Subcommand reply echos the address, plus a uint8 status. `x00` = success, `x01` = write protected.
 
 ### Subcommand 0x20: MCU (Microcontroller for Sensors and Peripherals) reset
 
@@ -293,24 +296,25 @@ Write configuration data to MCU. This data can be IR configuration, NFC configur
 Takes one argument:
 
 
-|   Argument #   | Remarks |
-|:------------:|:-----:|
-|   `00`  | Suspends |
-|   `01`  | Resume |
-|   `02`  | Resume for update |
+| Argument # | Remarks           |
+|:----------:| ----------------- |
+|   `00`     | Suspend           |
+|   `01`     | Resume            |
+|   `02`     | Resume for update |
 
 ### Subcommand 0x28: Set unknown data?
 
 Replies with ACK `x80` `x28`.
 
-### Subcommand 0x29: Get `x28` data and Set unknown data?
+### Subcommand 0x29: Get `x28` data
 
-Replies with ACK `xA8` `x29`. Normally these take an address and a size as an argument and give out data.
+Replies with ACK `xA8` `x29`. Sometimes these subcmd take arguments
 
 ### Subcommand 0x2A: Unknown
 
 Replies with ACK `x00` `x2A`.
-The only subcommand that does not have the ACK MSB (`x80`).
+
+`x00` as an ACK, means no data. Some commands if you send wrong arguments reply with this.
 
 ### Subcommand 0x2B: Get `x29` data?
 
@@ -333,29 +337,31 @@ On overrides flashing. When on USB, flashing bits work like always on bits.
 
 Replies with ACK `xB0` `x31` and one byte that uses the same bitfield with `x30` subcommand
 
+`xB1` is the 4 leds trail effect. But it can't be set via `x30`.
+
 ### Subcommand 0x38: Set HOME Light
 
 25 bytes argument that control 49 elements.
 
-|   Byte #, Nibble #    | Remarks |
-|:------------:|:-----:|
-|   Byte `x00`, High nibble  | Number of Mini Cycles. 1-15. If number of cycles is > 0 then `x0` = `x1` |
-|   Byte `x00`, Low nibble   | Global Mini Cycle Duration. 8ms - 175ms. Value `x0` = 0ms/OFF  |
-|   Byte `x01`, High nibble  | LED Start Intensity. Value `x0`=0% - `xF`=100% |
-|   Byte `x01`, Low nibble   | Number of Full Cycles. 1-15. Value `x0` is repeat forever, but if also Byte `x00` High nibble is set to `x0`, it does the 1st Mini Cycle and then the LED stays on with LED Start Intensity. |
+| Byte #, Nibble | Remarks                                                                  |
+|:--------------:| ------------------------------------------------------------------------ |
+| `x00`, High    | Number of Mini Cycles. 1-15. If number of cycles is > 0 then `x0` = `x1` |
+| `x00`, Low     | Global Mini Cycle Duration. 8ms - 175ms. Value `x0` = 0ms/OFF            |
+| `x01`, High    | LED Start Intensity. Value `x0`=0% - `xF`=100%                           |
+| `x01`, Low     | Number of Full Cycles. 1-15. Value `x0` is repeat forever, but if also Byte `x00` High nibble is set to `x0`, it does the 1st Mini Cycle and then the LED stays on with LED Start Intensity. |
 
 When all selected Mini Cycles play and then end, this is a full cycle.
 
 The Mini Cycle configurations are grouped in two (except the 15th):
 
-|   Byte #, Nibble #    | Remarks |
-|:------------:|:-----:|
-|   Byte `x02`, High nibble  | Mini Cycle 1 LED Intensity |
-|   Byte `x02`, Low nibble   | Mini Cycle 2 LED Intensity  |
-|   Byte `x03`, High nibble  | Fading Transition Duration to Mini Cycle 1 (Uses PWM). Value is a Multiplier of Global Mini Cycle Duration |
-|   Byte `x03`, Low nibble   | LED Duration Multiplier of Mini Cycle 1. `x0` = `x1` = x1|
-|   Byte `x04`, High nibble  | Fading Transition Duration to Mini Cycle 2 (Uses PWM). Value is a Multiplier of Global Mini Cycle Duration |
-|   Byte `x04`, Low nibble   | LED Duration Multiplier of Mini Cycle 1. `x0` = `x1` = x1|
+| Byte #, Nibble | Remarks                                                   |
+|:--------------:| --------------------------------------------------------- |
+| `x02`, High    | Mini Cycle 1 LED Intensity                                |
+| `x02`, Low     | Mini Cycle 2 LED Intensity                                |
+| `x03`, High    | Fading Transition Duration to Mini Cycle 1 (Uses PWM). Value is a Multiplier of Global Mini Cycle Duration |
+| `x03`, Low     | LED Duration Multiplier of Mini Cycle 1. `x0` = `x1` = x1 |
+| `x04`, High    | Fading Transition Duration to Mini Cycle 2 (Uses PWM). Value is a Multiplier of Global Mini Cycle Duration |
+| `x04`, Low     | LED Duration Multiplier of Mini Cycle 1. `x0` = `x1` = x1 |
 
 The Fading Transition uses a PWM to increment the transition to the Mini Cycle. 
 
@@ -367,24 +373,24 @@ Unused Mini Cycles can be skipped from the output packet.
 
 Table of Mini Cycle configuration:
 
-|   Byte #, Nibble #    | Remarks |
-|:------------:|:-----:|
-|   Byte `x02`, High nibble  | Mini Cycle 1 LED Intensity |
-|   Byte `x02`, Low nibble   | Mini Cycle 2 LED Intensity  |
-|   Byte `x03`  | Fading/LED Duration Multipliers for MC 1 |
-|   Byte `x04`  | Fading/LED Duration Multipliers for MC 2 |
-|   Byte `x05`, High nibble  | Mini Cycle 3 LED Intensity |
-|   Byte `x05`, Low nibble   | Mini Cycle 4 LED Intensity  |
-|   Byte `x06`  | Fading/LED Duration Multipliers for MC 3 |
-|   Byte `x06`  | Fading/LED Duration Multipliers for MC 4 |
-|   ...  | ... |
-|   Byte `x20`, High nibble  | Mini Cycle 13 LED Intensity |
-|   Byte `x20`, Low nibble   | Mini Cycle 14 LED Intensity  |
-|   Byte `x21`  | Fading/LED Duration Multipliers for MC 13 |
-|   Byte `x22`  | Fading/LED Duration Multipliers for MC 14 |
-|   Byte `x23`, High nibble  | Mini Cycle 15 LED Intensity |
-|   Byte `x23`, Low nibble   | Unused  |
-|   Byte `x24`  | Fading/LED Duration Multipliers for MC 15 |
+| Byte #, Nibble | Remarks                                   |
+| -------------- | ----------------------------------------- |
+| `x02`, High    | Mini Cycle 1 LED Intensity                |
+| `x02`, Low     | Mini Cycle 2 LED Intensity                |
+| `x03` High/Low | Fading/LED Duration Multipliers for MC 1  |
+| `x04` High/Low | Fading/LED Duration Multipliers for MC 2  |
+| `x05`, High    | Mini Cycle 3 LED Intensity                |
+| `x05`, Low     | Mini Cycle 4 LED Intensity                |
+| `x06` High/Low | Fading/LED Duration Multipliers for MC 3  |
+| `x06` High/Low | Fading/LED Duration Multipliers for MC 4  |
+| ...            | ...                                       |
+| `x20`, High    | Mini Cycle 13 LED Intensity               |
+| `x20`, Low     | Mini Cycle 14 LED Intensity               |
+| `x21` High/Low | Fading/LED Duration Multipliers for MC 13 |
+| `x22` High/Low | Fading/LED Duration Multipliers for MC 14 |
+| `x23`, High    | Mini Cycle 15 LED Intensity               |
+| `x23`, Low     | Unused                                    |
+| `x24` High/Low | Fading/LED Duration Multipliers for MC 15 |
 
 ### Subcommand 0x40: Enable 6-Axis sensor
 
@@ -398,20 +404,41 @@ Two arguments of one byte. LO byte takes `x00` to `x03`, `x00` is error in confi
 
 ### Subcommand 0x43: Get 6-Axis sensor data?
 
-Replies with ACK `xC0` `x43`. Normally these take an address and a size as an argument and give out data.
+It takes a 2 byte argument.
+
+Replies with ACK `xC0` `x43`.
+
+If the 2 bytes exceed `x12` and `x0E` accordingly, replies with `x00` `x43`: no data returned or out of range.
 
 ### Subcommand 0x48: Enable vibration
 
 One argument of `x00` Disable  or `x01` Enable.
 
-### Subcommand 0x50: Set/get unknown data?
+### Subcommand 0x50: Get regulated voltage
 
-Replies with ACK `x80` `x50` and 2bytes `[4E 06]` or `[B5 05]` and maybe other.
+Replies with ACK `xD0` `x50` and a little-endian uint16. Raises when charging a Joy-Con.
 
-### Subcommand 0x51: Unknown
+|   Range #            |   Range mV  | Reported battery |
+|:--------------------:|:-----------:| ---------------- |
+|   `x052B` - `x059F`  | 1323 - 1439 | 2 - Critical     |
+|   `x05A0` - `x05DF`  | 1440 - 1503 | 4 - Low          |
+|   `x05E0` - `x0617`  | 1504 - 1559 | 6 - Medium       |
+|   `x0618` - `x0690`  | 1560 - 1680 | 8 - Full         |
+
+Tests showed charging stops at around 1680mV and the controller turns off at arround 1323mV.
+
+### Subcommand 0x51: Set unknown data. Connection status?
 
 Replies with ACK `x80` `x51`.
 
-### Subcommand 0x52: Unknown
+It takes a uint8. Valid values are 0x00, 0x04, 0x10, 0x14. Other values result to these in groups of 4.
 
-Replies with ACK `xD1` `x52` and one byte. Probably sets the data that you can get with `x51` subcmd.
+E.g. 0x0->0x3 = 0x0, 0x4->0x7,0xC-0xF = 0x4, 0x8->0xB = 0x0, 0x10-0x13 = 0x10 and so on.
+
+### Subcommand 0x52: Get 0x51 unknown data
+
+Replies with ACK `xD1` `x52` and a uint8. 
+
+If the joy-cons are connected to a charging grip, the reply is `x17`. If you remove it from it, changes to `x14`.
+
+If you only connect or pair it from sleep mode, the reply is `x04`.
