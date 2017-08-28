@@ -47,15 +47,15 @@ A timing byte, then 4 bytes of rumble data for left Joy-Con, followed by 4 bytes
 The rumble data structure contains 2 bytes High Band data, 2 byte Low Band data.
 The values for HF Band frequency and LF amplitude are encoded.
 
-|   Byte #   |        Range            | Remarks |
-|:------------:|:------------------------------:|:-----:|
-|   0, 4 | `04` - `FC` (81.75Hz - 313.14Hz) | High Band Lower Frequency. Steps `+0x0004`. |
-|   0-1, 4-5 | `00 01` - `FC 01` (320.00Hz - 1252.57Hz) | Byte `1`,`5` LSB enables High Band Higher Frequency. Steps `+0x0400`. |
-|   1, 5 | `00 00` - `C8 00` (0.0f - 1.0f) | High Band Amplitude. Steps `+0x0200`. Real max: `FE`. |
-|   2, 6 | `01` - `7F` (40.87Hz - 626.28Hz) | Low Band Frequency. |
-|   3, 7  | `40` - `72` (0.0f - 1.0f) | Low Band Amplitude. Safe max: `00 72`. |
-|   2-3, 6-7 | `80 40` - `80 71` (0.01f - 0.98f) | Byte `2`,`6` +0x80 enables intermediate LF amplitude. Real max: `80 FF`. |
-
+|  Byte #  |        Range                             | Remarks |
+|:--------:|:----------------------------------------:| ------------------------------------------------------------------------ |
+| 0, 4     | `04` - `FC` (81.75Hz - 313.14Hz)         | High Band Lower Frequency. Steps `+0x0004`.                              |
+| 0-1, 4-5 | `00 01` - `FC 01` (320.00Hz - 1252.57Hz) | Byte `1`,`5` LSB enables High Band Higher Frequency. Steps `+0x0400`.    |
+| 1, 5     | `00 00` - `C8 00` (0.0f - 1.0f)          | High Band Amplitude. Steps `+0x0200`. Real max: `FE`.                    |
+| 2, 6     | `01` - `7F` (40.87Hz - 626.28Hz)         | Low Band Frequency.                                                      |
+| 3, 7     | `40` - `72` (0.0f - 1.0f)                | Low Band Amplitude. Safe max: `00 72`.                                   |
+| 2-3, 6-7 | `80 40` - `80 71` (0.01f - 0.98f)        | Byte `2`,`6` +0x80 enables intermediate LF amplitude. Real max: `80 FF`. |
+ 
 For a rumble values table, example and the algorithm for frequency, check rumble_data_table.md.
 
 The byte values for frequency raise the frequency in Hz exponentially and not linearly.
@@ -68,12 +68,12 @@ These safe amplitude ranges are defined by Switch HID library.
 
 This input packet is pushed to the host when a button is pressed or released, and provides the "normal controller" interface for the OS.
 
-|    Byte #    |        Sample value            | Remarks |
-|:------------:|:------------------------------:|:-----:|
-|   0          | `3F` | Header, same as report ID |
-|   1-2        | `28 CA` | Button status |
-|   3          | `08` | Stick hat data |
-|   4-11       | `00 80 00 80 00 80 00 80` | Filler data |
+|  Byte # |        Sample value       | Remarks                   |
+|:-------:|:-------------------------:|:-------------------------:|
+|  0      | `3F`                      | Header, same as report ID |
+|  1-2    | `28 CA`                   | Button status             |
+|  3      | `08`                      | Stick hat data            |
+|  4-11   | `00 80 00 80 00 80 00 80` | Filler data               |
 
 ### Stick hat data
 
@@ -123,26 +123,26 @@ The middle byte is shared between the controllers.
 
 (Note: in the following table, the byte with the packet ID is cut off, located at byte "-1".)
 
-|   Byte #   |        Sample            | Remarks |
-|:------------:|:------------------------------:|:-----:|
-|   0        | `00` - `FF`      | Timer. Increments very fast. Can be used to estimate excess Bluetooth latency. |
-|   1 high nibble | `0` - `9`   | Battery level. 8=full, 6=medium, 4=low, 2=critical, 0=empty. LSB=Charging. |
-| 1 low nibble | `xE` | Connection info. `(con_info >> 1) & 3` - 3=BT, 0=USB. `con_info & 0x1` - 1=Charging Grip.  |
-| 2, 3, 4 | `41 00 82` | Button status (see below table) |
-| 5, 6, 7 | -- | Left analog stick data |
-| 8, 9, 10 | -- | Right analog stick data |
-| 11 | `00`, `80` | ACK acknowledge subcommand reply |
-| 12 | `90`, `82`, `B3`, etc | Reply-to subcommand ID. For packet 0x21, `x80` is added to the subcommand ID. For packet `x31` through `x33`, the subcommand ID is used as-is. |
-| 13-39 (`x30` only) | -- | 6-Axes data. 3 frames of 2 groups of 3 Int16LE each. Group is Gyro followed by Acc. |
-| 13-EOF (Other) | -- | Subcommand reply data. |
+|   Byte #           |        Sample         | Remarks                                                                        |
+|:------------------:|:---------------------:|:------------------------------------------------------------------------------:|
+| 0                  | `00` - `FF`           | Timer. Increments very fast. Can be used to estimate excess Bluetooth latency. |
+| 1 high nibble      | `0` - `9`             | Battery level. 8=full, 6=medium, 4=low, 2=critical, 0=empty. LSB=Charging.     |
+| 1 low nibble       | `xE`                  | Connection info. `(con_info >> 1) & 3` - 3=BT, 0=USB. `con_info & 0x1` - 1=Charging Grip.  |
+| 2, 3, 4            | `41 00 82`            | Button status (see below table)                                                |
+| 5, 6, 7            | --                    | Left analog stick data                                                         |
+| 8, 9, 10           | --                    | Right analog stick data                                                        |
+| 11                 | `00`, `80`            | ACK acknowledge subcommand reply                                               |
+| 12                 | `90`, `82`, `B3`, etc | Reply-to subcommand ID. For packet 0x21, `x80` is added to the subcommand ID. For packet `x31` through `x33`, the subcommand ID is used as-is. |
+| 13-39 (`x30` only) | --                    | 6-Axes data. 3 frames of 2 groups of 3 Int16LE each. Group is Gyro followed by Acc. |
+| 13-EOF (Other)     | --                    | Subcommand reply data.                                                         |
 
 
 ### Standard input report - buttons
-| Byte | Bit `01` | `02` | `04` | `08` | `10` | `20` | `40` | `80` |
-|:---:|:---------:|:---:|:-----:|:----:|:----:|:----:|:----:|:---:|
-| 2 (Right) | Y   | X   |  B    | A    | SR   | SL   | R    | ZR |
-| 3 (Shared) | Minus | Plus | R Stick | L Stick | Home | Capture | -- | Charging Grip |
-| 4 (Left) | Down | Up | Right | Left | SR | SL | L | ZL |
+| Byte       | Bit `01` | `02` | `04`    | `08`    | `10` | `20`    | `40` | `80`          |
+|:----------:|:--------:|:----:|:-------:|:-------:|:----:|:-------:|:----:|:-------------:|
+| 2 (Right)  | Y        | X    | B       | A       | SR   | SL      | R    | ZR            |
+| 3 (Shared) | Minus    | Plus | R Stick | L Stick | Home | Capture | --   | Charging Grip |
+| 4 (Left)   | Down     | Up   | Right   | Left    | SR   | SL      | L    | ZL            |
 
 Note that the button status of the L and R Joy-Cons can be ORed together to get a complete button status.
 

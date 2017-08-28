@@ -126,6 +126,7 @@ data[5] = (stick_cal[8] << 4) | (stick_cal[7] >> 4);
 ```
 
 Left Stick:
+
 | uint16_t #| Sample | Remarks                 |
 |:---------:|:------:| ----------------------- |
 | `0`       | `x4F7` | X Axis Max above center |
@@ -136,6 +137,7 @@ Left Stick:
 | `5`       | `x479` | Y Axis Min below center |
 
 Right Stick:
+
 | uint16_t #| Sample | Remarks                 |
 |:---------:|:------:| ----------------------- |
 | `0`       | `x79F` | X Axis Center           |
@@ -166,6 +168,7 @@ Each group probably defines the X Y Z axis.
 Probably Gyroscope.
 
 Sample (Big-Endian):
+
 | 16-bit float #| Sample           | Remarks                                     |
 |:-------------:|:----------------:| ------------------------------------------- |
 | `0` - `2`     | `FFB0 FEB9 00E0` | Possibly XYZ origin position when on table |
