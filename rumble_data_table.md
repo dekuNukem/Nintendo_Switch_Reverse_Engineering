@@ -1,29 +1,33 @@
-The encoding algorithm for frequency is -32*(log(2)-log(freq/5))/log(2).
+The encoding algorithm for frequency is log2((double)freq/10.0)*32.0.
 The algorithm for amplitude is splitted in 3 range indexes (idx < 16, 16 <= idx < 32, idx < 128) and it's currently undecoded.
 
 An example of code using it is:
 
 ```
 //Float frequency to hex conversion
-uint16_t encoded_hex_freq = (uint16_t)floor(-32*(0.693147f-log(freq/5))/0.693147f+0.5f);
+if (freq < 0.0f)
+  freq = 0.0f;
+else if (freq > 1252.0f)
+  freq = 1252.0f
+uint8_t encoded_hex_freq = (uint8_t)round(log2((double)freq/10.0)*32.0);
 
 //Convert to Joy-Con HF range. Range in big-endian: 0x0004-0x01FC with +0x0004 steps.
 uint16_t hf = (encoded_hex_freq-0x60)*4;
-//Convert to Joy-Con LF range. Range: 0x0100-0x7F00.
-uint16_t lf = encoded_hex_freq-0x40;
+//Convert to Joy-Con LF range. Range: 0x01-0x7F.
+uint8_t lf = encoded_hex_freq-0x40;
 ```
 
 The high frequency and low amplitude are encoded and must always add the "control" byte to the HA/LF byte. An example is the following:
 ```
 //Left linear actuator
-hf = 0x01a8; //Set H.Frequency
-hf_amp = 0x88; //Set H.Frequency amplitude
+uint16_t hf = 0x01a8; //Set H.Frequency
+uint8_t hf_amp = 0x88; //Set H.Frequency amplitude
 //Byte swapping
 byte[0] = hf & 0xFF;
 byte[1] = hf_amp + ((hf >> 8) & 0xFF); //Add amp + 1st byte of frequency to amplitude byte
 
-lf = 0x63; //Set L.Frequency
-lf_amp = 0x804d; //Set L.Frequency amplitude
+uint8_t lf = 0x63; //Set L.Frequency
+uint16_t lf_amp = 0x804d; //Set L.Frequency amplitude
 //Byte swapping
 byte[2] = lf + ((lf_amp >> 8) & 0xFF); //Add freq + 1st byte of LF amplitude to the frequency byte
 byte[3] = lf_amp & 0xFF;
@@ -200,7 +204,7 @@ byte[3] = lf_amp & 0xFF;
 | HA Byte 1 # | LA Byte 3-4 # | Amplitude | Amplitude Rounded |
 |:--:|:---:|:---:|:---:|
 |	`0`	|	`00 40`	|	0.000000	|	0.000	|
-|	`2`	|	`80 40`	|	0.009942	|	0.010	|
+|	`2`	|	`80 40`	|	0.007843	|	0.010	|
 |	`4`	|	`00 41`	|	0.011823	|	0.012	|
 |	`6`	|	`80 41`	|	0.014061	|	0.014	|
 |	`8`	|	`00 42`	|	0.016720	|	0.017	|
