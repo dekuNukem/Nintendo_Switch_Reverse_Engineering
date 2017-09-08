@@ -156,8 +156,9 @@ uint16_t stick_horizontal = data[0] | ((data[1] & 0xF) << 8);
 uint16_t stick_vertical = (data[1] >> 4) | (data[2] << 4);
 ```
 
-Also, these are **uncalibrated** stick data. The location of the calibration data in SPI flash is known, but not the formula for converting that to calibrated axes.
+Also, these are **uncalibrated** stick data and must be converted to useful axes using the calibration data in the SPI flash.
 
+See [here](spi_flash_dump_notes.md#analog-stick-factory-and-user-calibration) for the calibration data format.
 
 ## Subcommands
 
