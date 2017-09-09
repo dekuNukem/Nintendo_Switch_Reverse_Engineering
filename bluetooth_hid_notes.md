@@ -200,17 +200,17 @@ Response data after 02 command byte:
 
 One argument:
 
-| Argument # | Remarks                                                                                               |
-|:----------:| ----------------------------------------------------------------------------------------------------- |
-|   `00`     | Used with cmd `x11`. Active polling for IR camera data. Answers with more than 300 bytes ID 31 packet |
-|   `01`     | Active polling mode                                                                                   |
-|   `02`     | Active polling mode for IR camera data. Special IR mode or before configuring it?                     |
-|   `23`     | MCU update state report?                                                                              |
-|   `30`     | Standard full mode. Pushes current state @60Hz                                                        |
-|   `31`     | NFC mode. Pushes large packets @60Hz                                                                  |
-|   `33`     | Unknown mode, WIP                                                                                     |
-|   `35`     | Unknown mode, WIP                                                                                     |
-|   `3F`     | Simple HID mode. Pushes updates with every button press                                               |
+| Argument # | Remarks                                                                                          |
+|:----------:| ------------------------------------------------------------------------------------------------ |
+|   `00`     | Used with cmd `x11`. Active polling for IR camera data. 0x31 data format must be set first       |
+|   `01`     | Same as `00`                                                                                     |
+|   `02`     | Same as `00`. Active polling mode for IR camera data. Special IR mode or before configuring it?  |
+|   `23`     | MCU update state report?                                                                         |
+|   `30`     | Standard full mode. Pushes current state @60Hz                                                   |
+|   `31`     | NFC/IR mode. Pushes large packets @60Hz                                                          |
+|   `33`     | Unknown mode.                                                                                    |
+|   `35`     | Unknown mode.                                                                                    |
+|   `3F`     | Simple HID mode. Pushes updates with every button press                                          |
 
 Starts pushing input data at 60Hz.
 

@@ -155,8 +155,8 @@ uint16_t rstick_center_x = data[0];
 uint16_t rstick_center_y = data[1];
 uint16_t rstick_x_min = rstick_center_x - data[2];
 uint16_t rstick_x_max = rstick_center_x + data[4];
-uint16_t rstick_y_min = rstick_center_x - data[3];
-uint16_t rstick_y_max = rstick_center_x + data[5];
+uint16_t rstick_y_min = rstick_center_y - data[3];
+uint16_t rstick_y_max = rstick_center_y + data[5];
 ```
 
 ## 6-Axis sensor factory and user calibration
