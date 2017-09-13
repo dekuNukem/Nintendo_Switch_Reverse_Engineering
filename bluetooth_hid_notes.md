@@ -104,6 +104,41 @@ MCU update state report?
 
 Standard full mode - input reports with IMU data instead of subcommand replies. Pushes current state @60Hz, or @120Hz if Pro Controller.
 
+If 6-axis sensor is enabled, the IMU data in an 0x30 input report is packaged like this (assuming the packet ID is located at byte -1):
+
+| Byte       | Remarks                                                    |
+|:----------:| ---------------------------------------------------------- |
+|   12-13    | accel_x (Int16LE)                                          |
+|   14-15    | accel_y (Int16LE)                                          |
+|   16-17    | accel_z (Int16LE)                                          |
+|   18-19    | gyro_1 (Int16LE)                                           |
+|   20-21    | gyro_2 (Int16LE)                                           |
+|   22-23    | gyro_3 (Int16LE)                                           |
+
+The axes are defined as follows:
+
+```
+_______
+|      \
+| Front |        +x +z
+|   R   |    -y __|/__ +y
+|       |        /|
+|       |     -z -x
+|______/
+
+```
+The following equation should scale an int16 IMU value into an acceleration vector component (measured in Gs):
+
+`acc_vector_component = acc_raw_component * 0.061 * (G_RANGE/2) / 1000`
+
+where `G_RANGE` is the sensitivity setting of the accelerometer, as explained [here](http://ozzmaker.com/accelerometer-to-g/).
+
+Through experiment it appears that the Joy-Cons are ranged to +/- 8 Gs, so the above equation can be simplified to:
+
+`acc_vector_component = acc_raw_component * 0.000244`
+
+The [SparkFun library for the LSM6DS3](https://github.com/sparkfun/SparkFun_LSM6DS3_Arduino_Library) will likely be a valuable resource for future IMU hacking.
+
 ## INPUT 0x31
 
 NFC Mode. Pushes large packets with standard input reports and subcommand replies.
@@ -133,7 +168,7 @@ The middle byte is shared between the controllers.
 | 8, 9, 10           | --                    | Right analog stick data                                                        |
 | 11                 | `00`, `80`            | ACK acknowledge subcommand reply                                               |
 | 12                 | `90`, `82`, `B3`, etc | Reply-to subcommand ID. For packet 0x21, `x80` is added to the subcommand ID. For packet `x31` through `x33`, the subcommand ID is used as-is. |
-| 13-39 (`x30` only) | --                    | 6-Axes data. 3 frames of 2 groups of 3 Int16LE each. Group is Gyro followed by Acc. |
+| 13-39 (`x30` only) | --                    | 6-Axes data. 3 frames of 2 groups of 3 Int16LE each. Group is Acc followed by Gyro. |
 | 13-EOF (Other)     | --                    | Subcommand reply data.                                                         |
 
 
@@ -262,16 +297,16 @@ Subcommand reply echos the request info, followed by `size` bytes of data.
 
 ```
 Request:
-[01 .. .. .. .. .. .. .. .. 10 80 60 00 00 18]
-                            ^ subcommand
-                               ^~~~~~~~~~~ address x6080
-                                           ^ length = 0x18 bytes
+[01 .. .. .. .. .. .. .. .. .. 10 80 60 00 00 18]
+                               ^ subcommand
+                                  ^~~~~~~~~~~ address x6080
+                                              ^ length = 0x18 bytes
 Response: INPUT 21
-[xx .E .. .. .. .. .. .. .. .. .. 0. 90 80 60 00 00 18 .. .. .. ....]
+[xx .E .. .. .. .. .. .. .. .. .. .. 0. 90 80 60 00 00 18 .. .. .. ....]
                                      ^ subcommand reply
-                                        ^~~~~~~~~~~ address
-                                                    ^ length = 0x18 bytes
-                                                       ^~~~~ data
+                                           ^~~~~~~~~~~ address
+                                                       ^ length = 0x18 bytes
+                                                          ^~~~~ data
 ```
 
 ### Subcommand 0x11: SPI flash Write
