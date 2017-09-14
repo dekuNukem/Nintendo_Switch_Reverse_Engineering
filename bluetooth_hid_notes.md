@@ -106,14 +106,14 @@ Standard full mode - input reports with IMU data instead of subcommand replies. 
 
 If 6-axis sensor is enabled, the IMU data in an 0x30 input report is packaged like this (assuming the packet ID is located at byte -1):
 
-| Byte       | Remarks                                                    |
-|:----------:| ---------------------------------------------------------- |
-|   12-13    | accel_x (Int16LE)                                          |
-|   14-15    | accel_y (Int16LE)                                          |
-|   16-17    | accel_z (Int16LE)                                          |
-|   18-19    | gyro_1 (Int16LE)                                           |
-|   20-21    | gyro_2 (Int16LE)                                           |
-|   22-23    | gyro_3 (Int16LE)                                           |
+| Byte       | Remarks                                               |
+|:----------:| ----------------------------------------------------- |
+|   12-13    | accel_x (Int16LE). This Axis is reversed in Left JC.  |
+|   14-15    | accel_y (Int16LE)                                     |
+|   16-17    | accel_z (Int16LE). This Axis is reversed in Right JC. |
+|   18-19    | gyro_1 (Int16LE)                                      |
+|   20-21    | gyro_2 (Int16LE)                                      |
+|   22-23    | gyro_3 (Int16LE)                                      |
 
 The axes are defined as follows:
 
@@ -129,13 +129,23 @@ _______
 ```
 The following equation should scale an int16 IMU value into an acceleration vector component (measured in Gs):
 
-`acc_vector_component = acc_raw_component * 0.061 * (G_RANGE/2) / 1000`
+`acc_vector_component = acc_raw_component * G_RANGE / SENSOR_RES / 1000`
 
-where `G_RANGE` is the sensitivity setting of the accelerometer, as explained [here](http://ozzmaker.com/accelerometer-to-g/).
+where `G_RANGE` is the sensitivity range setting of the accelerometer, as explained [here](http://ozzmaker.com/accelerometer-to-g/).
 
-Through experiment it appears that the Joy-Cons are ranged to +/- 8 Gs, so the above equation can be simplified to:
+The Joy-Con are ranged to ±8000 MilliGs (G_RANGE = 16000 MilliGs), the sensitivity calibration is always 16384 MilliGs and the SENSOR_RES is 16bit, so the above equation can be simplified to:
 
-`acc_vector_component = acc_raw_component * 0.000244`
+`acc_vector_component = acc_raw_component * 0.00025f`. (16384/65535/1000 = 0.00025)
+
+For Gyro the equation to convert the values into angular velocity (measured in degrees per second):
+
+`gyro_vector_component = gyro_raw_component * G_GAIN / SENSOR_RES / 1000`
+
+where G_GAIN is the degrees per second sensitivity range.
+
+The Joy-Con, based on their calibration, have a G_GAIN of  13371dps, so the above equation can be simplified to:
+
+`gyro_vector_component = gyro_raw_component * 0.000204f`
 
 The [SparkFun library for the LSM6DS3](https://github.com/sparkfun/SparkFun_LSM6DS3_Arduino_Library) will likely be a valuable resource for future IMU hacking.
 
@@ -303,8 +313,8 @@ Request:
                                               ^ length = 0x18 bytes
 Response: INPUT 21
 [xx .E .. .. .. .. .. .. .. .. .. .. 0. 90 80 60 00 00 18 .. .. .. ....]
-                                     ^ subcommand reply
-                                           ^~~~~~~~~~~ address
+                                        ^ subcommand reply
+                                              ^~~~~~~~~~~ address
                                                        ^ length = 0x18 bytes
                                                           ^~~~~ data
 ```
