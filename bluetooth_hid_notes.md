@@ -106,14 +106,17 @@ Standard full mode - input reports with IMU data instead of subcommand replies. 
 
 If 6-axis sensor is enabled, the IMU data in an 0x30 input report is packaged like this (assuming the packet ID is located at byte -1):
 
-| Byte       | Remarks                                               |
-|:----------:| ----------------------------------------------------- |
-|   12-13    | accel_x (Int16LE). This Axis is reversed in Left JC.  |
-|   14-15    | accel_y (Int16LE)                                     |
-|   16-17    | accel_z (Int16LE). This Axis is reversed in Right JC. |
-|   18-19    | gyro_1 (Int16LE)                                      |
-|   20-21    | gyro_2 (Int16LE)                                      |
-|   22-23    | gyro_3 (Int16LE)                                      |
+| Byte       | Remarks                                                        |
+|:----------:| -------------------------------------------------------------- |
+|   12-13    | accel_x (Int16LE). This Axis is reversed in Left JC.           |
+|   14-15    | accel_y (Int16LE)                                              |
+|   16-17    | accel_z (Int16LE). This Axis is reversed in Right JC.          |
+|   18-19    | gyro_1 (Int16LE)                                               |
+|   20-21    | gyro_2 (Int16LE)                                               |
+|   22-23    | gyro_3 (Int16LE)                                               |
+|   24-47    | The data is repeated 2 more times. Each with 5ms Δt sampling.  |
+
+The 6-Axis data is repeated 3 times. On Joy-con with a 15ms packet push, this is translated to 5ms difference sampling. E.g. 1st sample 0ms, 2nd 5ms, 3rd 10ms. Using all 3 samples let you have a 5ms precision instead of 15ms.
 
 The axes are defined as follows:
 
@@ -133,7 +136,7 @@ The following equation should scale an int16 IMU value into an acceleration vect
 
 where `G_RANGE` is the sensitivity range setting of the accelerometer, as explained [here](http://ozzmaker.com/accelerometer-to-g/).
 
-The Joy-Con are ranged to �8000 MilliGs (G_RANGE = 16000 MilliGs), the sensitivity calibration is always 16384 MilliGs and the SENSOR_RES is 16bit, so the above equation can be simplified to:
+The Joy-Con are ranged to ±8000 MilliGs (G_RANGE = 16000 MilliGs), the sensitivity calibration is always 16384 MilliGs and the SENSOR_RES is 16bit, so the above equation can be simplified to:
 
 `acc_vector_component = acc_raw_component * 0.00025f`. (16384/65535/1000 = 0.00025)
 
