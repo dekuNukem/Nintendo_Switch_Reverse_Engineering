@@ -114,7 +114,7 @@ The OTA FW is not to be confused with the actual Firmware in the 848KB ROM of BC
 
 3 groups of 3 bytes. 
 
-The general code to decode each 3 byte group is:
+The general code to decode each 3 byte group into uint16t_t is:
 ```
 uint16_t data[6]
 data[0] = (stick_cal[1] << 8) & 0xF00 | stick_cal[0];
@@ -161,21 +161,20 @@ uint16_t rstick_y_max = rstick_center_y + data[5];
 
 ## 6-Axis sensor factory and user calibration
 
-4 groups of 3 little endian 16-bit float (in Int16LE encoding).
+4 groups of 3 Int16LE.
 
-Each group probably defines the X Y Z axis.
+Each group defines the X Y Z axis.
 
-Probably Gyroscope.
+1st two groups are Acc cal and the 2nd two groups are Gyro cal.
 
 Sample (Big-Endian):
 
-| 16-bit float #| Sample           | Remarks                                     |
-|:-------------:|:----------------:| ------------------------------------------- |
-| `0` - `2`     | `FFB0 FEB9 00E0` | Possibly XYZ origin position when on table |
-| `3` - `5`     | `4000 4000 4000` | Unknown XYZ                                 |
-| `6` - `8`     | `000E FFDF FFD0` | Unknown XYZ                                 |
-| `9` - `11`    | `343B 343B 343B` | Unknown XYZ                                 |
-
+| int16t_t # | Sample XYZ       | Remarks                                                            |
+|:----------:|:----------------:| ------------------------------------------------------------------ |
+| `0` - `2`  | `FFB0 FEB9 00E0` | Unknown, possibly Acc XYZ origin position.                         |
+| `3` - `5`  | `4000 4000 4000` | Acc XYZ sensitivity range (MilliGs). Default sensitivity: ±8.192G. |
+| `6` - `8`  | `000E FFDF FFD0` | Gyro XYZ origin position when still                                |
+| `9` - `11` | `343B 343B 343B` | Gyro XYZ sensitivity range (dps). Default sensitivity: ±6685dps.   |
 
 ## 6-Axis and Stick device parameters
 
@@ -183,8 +182,8 @@ These follow the same encoding with sensor and stick calibration accordingly.
 
 6-Axis Horizontal Offsets:
 
-3 little endian 16-bit float (in Int16LE encoding).
-Define the origin position when the Joy-Con are held sideways.
+3 Int16LE.
+Define the origin position (Gyro?) when the Joy-Con are held sideways.
 
 Stick Parameters:
 18 bytes that produce 12 uint16_t.
