@@ -171,18 +171,21 @@ The middle byte is shared between the controllers.
 
 (Note: in the following table, the byte with the packet ID is cut off, located at byte "-1".)
 
-|   Byte #           |        Sample         | Remarks                                                                        |
-|:------------------:|:---------------------:|:------------------------------------------------------------------------------:|
-| 0                  | `00` - `FF`           | Timer. Increments very fast. Can be used to estimate excess Bluetooth latency. |
-| 1 high nibble      | `0` - `9`             | Battery level. 8=full, 6=medium, 4=low, 2=critical, 0=empty. LSB=Charging.     |
-| 1 low nibble       | `xE`                  | Connection info. `(con_info >> 1) & 3` - 3=BT, 0=USB. `con_info & 0x1` - 1=Charging Grip.  |
-| 2, 3, 4            | `41 00 82`            | Button status (see below table)                                                |
-| 5, 6, 7            | --                    | Left analog stick data                                                         |
-| 8, 9, 10           | --                    | Right analog stick data                                                        |
-| 11                 | `00`, `80`            | ACK acknowledge subcommand reply                                               |
-| 12                 | `90`, `82`, `B3`, etc | Reply-to subcommand ID. For packet 0x21, `x80` is added to the subcommand ID. For packet `x31` through `x33`, the subcommand ID is used as-is. |
-| 13-39 (`x30` only) | --                    | 6-Axes data. 3 frames of 2 groups of 3 Int16LE each. Group is Acc followed by Gyro. |
-| 13-EOF (Other)     | --                    | Subcommand reply data.                                                         |
+|   Byte #          |        Sample         | Remarks                                                                             |
+|:-----------------:|:---------------------:| ----------------------------------------------------------------------------------- |
+| 0                 | `00` - `FF`           | Timer. Increments very fast. Can be used to estimate excess Bluetooth latency.      |
+| 1 high nibble     | `0` - `9`             | Battery level. 8=full, 6=medium, 4=low, 2=critical, 0=empty. LSB=Charging.          |
+| 1 low nibble      | `x0`, `x1`, `xE`      | Connection info. `(con_info >> 1) & 3` - 3=JC, 0=Pro/ChrGrip. `con_info & 0x1` - 1=Switch/USB powered. |
+| 2, 3, 4           | `41 00 82`            | Button status (see below table)                                                     |
+| 5, 6, 7           | --                    | Left analog stick data                                                              |
+| 8, 9, 10          | --                    | Right analog stick data                                                             |
+| 11                | `70`, `C0`, `B0`      | Vibrator input report. Decides if next vibration pattern should be sent.            |
+| 12  (ID `21`)     | `00`, `80`, `90`, `82`| ACK for subcommand reply. If simple ACK, `80`. If reply has data, subcmd ID is added to `80`. If problem or out of range, `00` |
+| 13  (ID `21`)     | `02`, `10`, `03`      | Reply-to subcommand ID. The subcommand ID is used as-is.                            |
+| 14-48  (ID `21`)  | --                    | Subcommand reply data. Max 37 bytes.                                                |
+| 12-48  (ID `23`)  | --                    | MCU FW update input report. Max 37 bytes.                                           |
+| 12-47  (ID `30`, `31`, `32`, `33`) | --   | 6-Axis data. 3 frames of 2 groups of 3 Int16LE each. Group is Gyro followed by Acc. |
+| 48-360  (ID `31`) | --                    | NFC/IR input report. Max 313 bytes.                                                 |
 
 
 ### Standard input report - buttons
