@@ -98,7 +98,7 @@ Standard input reports used for subcommand replies.
 
 ## INPUT 0x23
 
-MCU update state report?
+MCU FW update input report.
 
 ## INPUT 0x30
 
@@ -154,7 +154,7 @@ The [SparkFun library for the LSM6DS3](https://github.com/sparkfun/SparkFun_LSM6
 
 ## INPUT 0x31
 
-NFC Mode. Pushes large packets with standard input reports and subcommand replies.
+NFC/IR Mode. Pushes large packets with standard input report + NFC/IR input report.
 
 ## INPUT 0x32
 
@@ -239,13 +239,14 @@ If the command is `x11`, it polls the MCU State? Used with IR Camera or NFC?
 
 Response data after 02 command byte:
 
-| Byte # | Sample              | Remarks                                           |
-|:------:|:-------------------:| ------------------------------------------------- |
-|  0-1   | `03 48`             | Firmware Version. Latest is 3.48                  |
-|  2     | `01`                | 1=Left Joy-Con, 2=Right Joy-Con, 3=Pro Controller |
-|  3     | `02`                | Unknown. Seems to be always 02                    |
-|  4-9   | `57 30 EA 8A BB 7C` | Joy-Con MAC address 7C:BB:8A:EA:30:57             |
-|  10-1  | `01 01`             | Unknown. Seems to be always 01 01                 |
+| Byte # | Sample              | Remarks                                                  |
+|:------:|:-------------------:| -------------------------------------------------------- |
+|  0-1   | `03 48`             | Firmware Version. Latest is 3.48                         |
+|  2     | `01`                | 1=Left Joy-Con, 2=Right Joy-Con, 3=Pro Controller.       |
+|  3     | `02`                | Unknown. Seems to be always `02`                         |
+|  4-9   | `7C BB 8A EA 30 57` | Joy-Con MAC address in Big Endian                        |
+|  10    | `01`                | Unknown. Seems to be always `01`                         |
+|  11    | `01`                | If `01`, colors in SPI are used. Otherwise default ones. |
 
 ### Subcommand 0x03: Set input report mode
 
@@ -293,9 +294,9 @@ Causes the controller to disconnect the Bluetooth connection.
 
 Takes as argument `x00` or `x01`.
 
-### Subcommand 0x07: Factory reset
+### Subcommand 0x07: Reset pairing info
 
-Does a factory reset and initialises the 0x2000 SPI region.
+Initialises the 0x2000 SPI section.
 
 ### Subcommand 0x08: Set shipment
 
