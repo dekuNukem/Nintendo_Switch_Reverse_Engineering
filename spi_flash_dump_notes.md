@@ -36,39 +36,60 @@ To update OTA FW in DS1 location, it needs a valid OTA Signature Magic which is 
 
 No data before `x1FF4`.
 
-## x2000 Volatile data
+## x2000 Pairing info
 
-User Motion Sensor and Analog stick calibration data is located around `x8000` in the SPI flash, while calibrating the control stick, data changed at Volatile Section also.
+Used internally to store current and previous Master Bluetooth addresses and Long Term Keys.
+
+The current used data has `x95` magic. If `x00`, this data defines the previous paired connection and the next section defines the current one.
+
+When Joy-Con enters sleep, it clears the old pairing info and moves section 2 to section 1.
+
+By connecting through USB (Charging grip), it keeps section 1 and the current LTK used with Switch can be aquired.
 
 Can be reset with `x07` subcommand.
 
-```
-00002000: 0022 0c96[98b6 e92a b0cb]b7ed f1ab b4a6  ; Last connected console (at x2004)
-00002010: 39e2 4876 4615 62f2 0be8 0000 0000 0000
-00002020: 0000 0000 6800[9522 634f 3402 8662 b86b  ; Marked section also changed after calibrating control sticks
-00002030: 3623 5b57 8ff0 16b4 a05f fbc0 b99d 6227
-00002040: 0000 0000 0000 0000 0000 0800]ffff ffff
-```
+|  Section Range  | Subsection Range | Remarks                                               |
+|:---------------:|:----------------:| ----------------------------------------------------- |
+| `x2000`-`x2025` | -------------    | Pairing info section 1                                          |
+|                 | `x2000`          | Magic. Used=`x95`, Unused=`x00`. If `x00`, checks next section. |
+|                 | `x2001`          | Size of pairing data. Always `x22` bytes                        |
+|                 | `x2002 - x2003`  | Checksum?                                                       |
+|                 | `x2004 - x2009`  | Master Bluetooth address (Big-Endian)                           |
+|                 | `x200A - x2019`  | 128-bit Long Term Key (Little-Endian)                           |
+|                 | `x201A - x2023`  | Always zeroed                                                   |
+|                 | `x2024`          | Master capabilities? Switch=`x68`, PC=`x08`                     |
+|                 | `x2025`          | Always zero                                                     |
+| `x2026`-`x204B` | -------------    | Pairing info section 2. All `xFF` if section 1 is used          |
+|                 | `x2026`          | Magic                                                           |
+|                 | `x2027`          | Size of pairing data                                            |
+|                 | `x2028 - x2029`  | Checksum?                                                       |
+|                 | `x202A - x202F`  | Master Bluetooth address (Big-Endian)                           |
+|                 | `x2030 - x203F`  | 128-bit Long Term Key (Little-Endian)                           |
+|                 | `x2040 - x2049`  | Always zeroed                                                   |
+|                 | `x204A`          | Switch=`x68`, PC=`x08`                                          |
+|                 | `x204B`          | Always zero                                                     |
 
 ## x6000 Factory Configuration and Calibration
 
-|  Section Range  | Subsection Range | Remarks                                         |
-|:---------------:|:----------------:| ----------------------------------------------- |
+|  Section Range  | Subsection Range | Remarks                                                                 |
+|:---------------:|:----------------:| ----------------------------------------------------------------------- |
 | `x6000`-`x600F` | -------------    | Serial number in non-extended ASCII. If first byte is >= `80`, no S/N. If a byte is `00` `NUL`, skip. Max 15 chars, if 16 chars last one is skipped.|
-| `x6012`-`x6013` | -------------    | Left Joy-Con: `x01 A0`, Right Joy-Con: `x02 A0` |
-| `x6020`-`x6037` | -------------    | Factory configuration & calibration 1           |
-|                 | `x6020 - x6037`  | 6-Axis motion sensor Factory calibration        |
-| `x603D`-`x6055` | -------------    | Factory configuration & calibration 2           |
-|                 | `x603D - x6045`  | Left analog stick calibration                   |
-|                 | `x6046 - x604E`  | Right analog stick calibration                  |
-|                 | `x6050 - x6052`  | Body #RGB color, 24-bit                         |
-|                 | `x6053 - x6055`  | Buttons #RGB color, 24-bit                      |
-| `x6080`-`x6097` | -------------    | Factory Sensor and Stick device parameters      |
-|                 | `x6080`-`x6085`  | 6-Axis Horizontal Offsets. (JC sideways)        |
-|                 | `x6086`-`x6097`  | Stick device parameters 1                       |
-| `x6098`-`x60A9` | -------------    | Factory Stick device parameters 2               |
+| `x6012`         | -------------    | Device type. JC (L): `x01`, JC (R): `x02`, Pro: `x03`. Only the 3 LSB are accounted for. Used internally and for `x02` subcmd. |
+| `x6013`         | -------------    | Unknown, seems to always be `xA0`                                       |
+| `x601B`         | -------------    | Color info exists if `x01`. If 0, default colors used are ARGB `#55555555`, `#FFFFFFFF`. Used for `x02` subcmd. |
+| `x6020`-`x6037` | -------------    | Factory configuration & calibration 1                                   |
+|                 | `x6020 - x6037`  | 6-Axis motion sensor Factory calibration                                |
+| `x603D`-`x6055` | -------------    | Factory configuration & calibration 2                                   |
+|                 | `x603D - x6045`  | Left analog stick calibration                                           |
+|                 | `x6046 - x604E`  | Right analog stick calibration                                          |
+|                 | `x6050 - x6052`  | Body #RGB color, 24-bit                                                 |
+|                 | `x6053 - x6055`  | Buttons #RGB color, 24-bit                                              |
+| `x6080`-`x6097` | -------------    | Factory Sensor and Stick device parameters                              |
+|                 | `x6080`-`x6085`  | 6-Axis Horizontal Offsets. (JC sideways)                                |
+|                 | `x6086`-`x6097`  | Stick device parameters 1                                               |
+| `x6098`-`x60A9` | -------------    | Factory Stick device parameters 2                                       |
 |                 | `x6098`-`x60A9`  | Stick device parameters 2. Normally the same with 1, even in Pro Contr. |
-| `x6E00`-`x6EFF` | -------------    | Unknown data values.. Exist only in Joy-Con     |
+| `x6E00`-`x6EFF` | -------------    | Unknown data values.. Exists only in Joy-Con                            |
 
 Above data ends at `x6F00`.
 
