@@ -221,16 +221,26 @@ These follow the same encoding with sensor and stick calibration accordingly.
 3 Int16LE.
 Define the acc origin position when the Joy-Con is held sideways.
 
-Stick Parameters:
+Stick Parameters 1 & 2:
 18 bytes that produce 12 uint16_t.
-Probably define maximum and minimum ranges that the analog stick hardware supports and deadzones.
+Define maximum/minimum ranges that the analog stick hardware supports and deadzones.
+
+Each section is for different stick.
 
 | uint16_t # | Sample    | Remarks                   |
 |:----------:|:---------:| ------------------------- |
 | `0`, `1`   | `019 4CD` | Seems that this is unused |
-| `2`        | `AE`      | Unknown                   |
-| `3`        | `E14`     | Unknown                   |
-| `4`, `5`   | `2EE 2EE` | Unknown                   |
-| `6`, `7`   | `2EE 2EE` | Unknown                   |
-| `8`, `9`   | `AB4 AB4` | Unknown                   |
-| `10`, `11` | `496 496` | Unknown                   |
+| `2`        | `AE`      | Deadzone                  |
+| `3`        | `E14`     | Range ratio               |
+| `4`, `5`   | `2EE 2EE` | X/Y: Unknown              |
+| `6`, `7`   | `2EE 2EE` | X/Y: Unknown              |
+| `8`, `9`   | `AB4 AB4` | X/Y: Unknown              |
+| `10`, `11` | `496 496` | X/Y: Unknown              |
+
+Deadzone:
+
+It is used to all directions, so it isn't divided by 2. It behaves like a circular deadzone. Changing it as big as a half axis range, produces a circular d-pad style behavior.
+
+Range ratio:
+
+Making this very small, produces d-pad like movement on the cross but still retains circular directionality. So it probably produces a float coefficient.
