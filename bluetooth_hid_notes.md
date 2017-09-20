@@ -167,6 +167,137 @@ Also, these are **uncalibrated** stick/sensor data and must be converted to usef
 
 See [here](spi_flash_dump_notes.md#analog-stick-factory-and-user-calibration) for the calibration data format.
 
+### FEATURE 0x02: Get last subcommand reply
+
+[Send] feature Report
+
+Buffer returned contains the latest 0x21 subcommand input report.
+
+### FEATURE 0x70: Enable OTA FW upgrade
+
+[Send] feature Report
+
+Enables FW update. Unlocks Erase/Write memory commands.
+
+| Byte # |  Sample  | Remarks                        |
+|:------:|:--------:| ------------------------------ |
+| 0      | `70`     | Feature report                 |
+| 1      | `90`     | Checksum (8-bit 2s Complement) |
+
+Checksum is optional.
+
+### FEATURE 0x71: Setup memory read
+
+[Send] feature Report
+
+Prepares the SPI Read report with the requested address and size.
+
+| Byte # |  Sample       | Remarks                        |
+|:------:|:-------------:| ------------------------------ |
+| 0      | `71`          | Feature report                 |
+| 1 - 4  | `F4 1F 00 F8` | UInt32LE address               |
+| 5 - 6  | `08 00`       | UInt16LE size. Max xF9 bytes.  |
+| 7      | `7C`          | Checksum (8-bit 2s Complement) |
+
+The checksum is calculated as `0x100 - Sum of Bytes`.
+
+Indirect memory map:
+
+| Address #   |  Size   | Remarks                                |
+|:-----------:|:-------:| -------------------------------------- |
+| `x00000000` | `C8000` | BCM20734's ROM                         |
+| `x08000000` | `80000` | MCU EEPROM? Device crashes, when read. |
+| `xF8000000` | `80000` | SPI                                    |
+| `xFF000000` |         | Unused. It returns all xAA.            |
+
+### FEATURE 0x72: Memory read
+
+[Get] feature Report
+
+| Byte # |  Sample  | Remarks                        |
+|:------:|:--------:| ------------------------------ |
+| 0      | `72`     | Feature report                 |
+| 1      | `8E`     | Checksum (8-bit 2s Complement) |
+
+Checksum is optional.
+
+In Get feature report mode it returns the 0x71 requested SPI or Rom data.
+
+If the 0x71 command wasn't sent previously, it will return zeroed data (except ID and CRC).
+
+The data returned has the following structure:
+
+| Byte #  |  Sample       | Remarks                        |
+|:-------:|:-------------:| ------------------------------ |
+| 0       | `74`          | Feature report                 |
+| 1 - 4   | `00 80 02 F8` | UInt32LE address               |
+| 5 - 6   | `F9 00`       | UInt16LE size                  |
+| 7-EOF-1 |               | Data requested                 |
+| EOF     | `DC`          | Checksum (8-bit 2s Complement) |
+
+The returned size is header + size in 0x71 ft report + 1.
+
+### FEATURE 0x73: Memory erase
+
+[Send] feature Report
+
+Erases specified address and size in SPI. Can erase locked sectors.
+
+Should be used only with SPI (0xF8000000 - 0xF807FFFF), because SPI needs to be erased before writing to it.
+
+0x70 command must be sent before using this.
+
+| Byte # |  Sample       | Remarks                        |
+|:------:|:-------------:| ------------------------------ |
+| 0      | `73`          | Feature report                 |
+| 1 - 4  | `00 80 02 F8` | UInt32LE address               |
+| 5 - 6  | `00 10`       | UInt16LE size. Max 4KB?        |
+| 7      | `03`          | Checksum (8-bit 2s Complement) |
+
+### FEATURE 0x74: Memory write
+
+[Send] feature Report
+
+Writes to SPI. Can write locked sectors.
+
+0x70 command must be sent before using this.
+
+| Byte #  |  Sample       | Remarks                        |
+|:-------:|:-------------:| ------------------------------ |
+| 0       | `74`          | Feature report                 |
+| 1 - 4   | `00 80 02 F8` | UInt32LE address               |
+| 5 - 6   | `F9 00`       | UInt16LE size. Max xF9 bytes.  |
+| 7-EOF-1 |               | Data to write                  |
+| EOF     | `DC`          | Checksum (8-bit 2s Complement) |
+
+### FEATURE 0x75: Launch execution
+
+[Send] feature Report
+
+Executes the firmware in the given address.
+
+If address is `x0000` the Host should assume that the device will reboot.
+
+| Byte #  |  Sample       | Remarks                                  |
+|:-------:|:-------------:| ---------------------------------------- |
+| 0       | `74`          | Feature report                           |
+| 1 - 4   | `00 80 02 F8` | UInt32LE entry address for firmware jump |
+| 5 - 6   | `00 00`       | UInt16LE size. Always 0.                 |
+| 7-EOF-1 |               | Entry address (Optional)                 |
+| EOF     | `DC`          | Checksum (8-bit 2s Complement)           |
+
+### FEATURE 0xCC
+
+[Send] feature Report
+
+Unknown
+
+### FEATURE 0xFE
+
+[Get] feature Report
+
+Unknown
+
 ## Subcommands
 
 ### Subcommand 0x##: All unused subcommands
