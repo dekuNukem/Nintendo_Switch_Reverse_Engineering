@@ -44,7 +44,7 @@ The current used data has `x95` magic. If `x00`, this data defines the previous 
 
 When Joy-Con enters sleep, it clears the old pairing info and moves section 2 to section 1.
 
-By connecting through USB (Charging grip), it keeps section 1 and the current LTK used with Switch can be aquired.
+By connecting through USB (Charging grip), it keeps section 1 and the current LTK used with Switch can be acquired.
 
 Can be reset with `x07` subcommand.
 
@@ -124,7 +124,7 @@ Normally the firmware at `x010000` is older.
 
 Maximum size for OTA Firmware is 96KB.
 
-It probably keeps the joycon application code and patches to the actual firmware.
+It keeps the Joy-Con application code and patches to the actual firmware.
 
 It can be updated through UART and Bluetooth.
 
@@ -192,10 +192,25 @@ Sample (Big-Endian):
 
 | int16t_t # | Sample XYZ       | Remarks                                                            |
 |:----------:|:----------------:| ------------------------------------------------------------------ |
-| `0` - `2`  | `FFB0 FEB9 00E0` | Unknown, possibly Acc XYZ origin position.                         |
+| `0` - `2`  | `FFB0 FEB9 00E0` | Acc XYZ origin position when on table                              |
 | `3` - `5`  | `4000 4000 4000` | Acc XYZ sensitivity range (MilliGs). Default sensitivity: ±8.192G. |
 | `6` - `8`  | `000E FFDF FFD0` | Gyro XYZ origin position when still                                |
 | `9` - `11` | `343B 343B 343B` | Gyro XYZ sensitivity range (dps). Default sensitivity: ±6685dps.   |
+
+The origin positions should be subtracted from the raw values.
+
+For the sensitivities conversion check [here](accelerator_gyroscope_notes.md#convert-to-basic-useful-data).
+
+Reference code for converting from uint16t_t to int16t_t for doing the above calculations:
+
+```
+int16_t sensor_uint16_to_int16(uint16_t a) {
+	int16_t b;
+	char* aPointer = (char*)&a, *bPointer = (char*)&b;
+	memcpy(bPointer, aPointer, sizeof(a));
+	return b;
+}
+```
 
 ## 6-Axis and Stick device parameters
 
@@ -204,18 +219,28 @@ These follow the same encoding with sensor and stick calibration accordingly.
 6-Axis Horizontal Offsets:
 
 3 Int16LE.
-Define the origin position (Gyro?) when the Joy-Con are held sideways.
+Define the acc origin position when the Joy-Con is held sideways.
 
-Stick Parameters:
+Stick Parameters 1 & 2:
 18 bytes that produce 12 uint16_t.
-Probably define maximum and minimum ranges that the analog stick hardware supports and deadzones.
+Define maximum/minimum ranges that the analog stick hardware supports and dead-zones.
+
+Each section is for different stick.
 
 | uint16_t # | Sample    | Remarks                   |
 |:----------:|:---------:| ------------------------- |
 | `0`, `1`   | `019 4CD` | Seems that this is unused |
-| `2`        | `AE`      | Unknown                   |
-| `3`        | `E14`     | Unknown                   |
-| `4`, `5`   | `2EE 2EE` | Unknown                   |
-| `6`, `7`   | `2EE 2EE` | Unknown                   |
-| `8`, `9`   | `AB4 AB4` | Unknown                   |
-| `10`, `11` | `496 496` | Unknown                   |
+| `2`        | `AE`      | Dead-zone                 |
+| `3`        | `E14`     | Range ratio               |
+| `4`, `5`   | `2EE 2EE` | X/Y: Unknown              |
+| `6`, `7`   | `2EE 2EE` | X/Y: Unknown              |
+| `8`, `9`   | `AB4 AB4` | X/Y: Unknown              |
+| `10`, `11` | `496 496` | X/Y: Unknown              |
+
+Dead-zone:
+
+It is used to all directions, so it isn't divided by 2. It behaves like a circular dead-zone. Changing it as big as a half axis range, produces a circular d-pad style behavior.
+
+Range ratio:
+
+Making this very small, produces d-pad like movement on the cross but still retains circular directionality. So it probably produces a float coefficient.

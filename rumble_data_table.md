@@ -1,5 +1,5 @@
 The encoding algorithm for frequency is log2((double)freq/10.0)*32.0.
-The algorithm for amplitude is splitted in 3 range indexes (idx < 16, 16 <= idx < 32, idx < 128) and it's currently undecoded.
+The algorithm for amplitude is split in 3 range indexes (idx < 16, 16 <= idx < 32, idx < 128) and it's currently undecoded.
 
 An example of code using it is:
 
@@ -8,7 +8,7 @@ An example of code using it is:
 if (freq < 0.0f)
   freq = 0.0f;
 else if (freq > 1252.0f)
-  freq = 1252.0f
+  freq = 1252.0f;
 uint8_t encoded_hex_freq = (uint8_t)round(log2((double)freq/10.0)*32.0);
 
 //Convert to Joy-Con HF range. Range in big-endian: 0x0004-0x01FC with +0x0004 steps.
