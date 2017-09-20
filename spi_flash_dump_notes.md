@@ -44,7 +44,7 @@ The current used data has `x95` magic. If `x00`, this data defines the previous 
 
 When Joy-Con enters sleep, it clears the old pairing info and moves section 2 to section 1.
 
-By connecting through USB (Charging grip), it keeps section 1 and the current LTK used with Switch can be aquired.
+By connecting through USB (Charging grip), it keeps section 1 and the current LTK used with Switch can be acquired.
 
 Can be reset with `x07` subcommand.
 
@@ -124,7 +124,7 @@ Normally the firmware at `x010000` is older.
 
 Maximum size for OTA Firmware is 96KB.
 
-It probably keeps the joycon application code and patches to the actual firmware.
+It keeps the Joy-Con application code and patches to the actual firmware.
 
 It can be updated through UART and Bluetooth.
 
@@ -223,23 +223,23 @@ Define the acc origin position when the Joy-Con is held sideways.
 
 Stick Parameters 1 & 2:
 18 bytes that produce 12 uint16_t.
-Define maximum/minimum ranges that the analog stick hardware supports and deadzones.
+Define maximum/minimum ranges that the analog stick hardware supports and dead-zones.
 
 Each section is for different stick.
 
 | uint16_t # | Sample    | Remarks                   |
 |:----------:|:---------:| ------------------------- |
 | `0`, `1`   | `019 4CD` | Seems that this is unused |
-| `2`        | `AE`      | Deadzone                  |
+| `2`        | `AE`      | Dead-zone                 |
 | `3`        | `E14`     | Range ratio               |
 | `4`, `5`   | `2EE 2EE` | X/Y: Unknown              |
 | `6`, `7`   | `2EE 2EE` | X/Y: Unknown              |
 | `8`, `9`   | `AB4 AB4` | X/Y: Unknown              |
 | `10`, `11` | `496 496` | X/Y: Unknown              |
 
-Deadzone:
+Dead-zone:
 
-It is used to all directions, so it isn't divided by 2. It behaves like a circular deadzone. Changing it as big as a half axis range, produces a circular d-pad style behavior.
+It is used to all directions, so it isn't divided by 2. It behaves like a circular dead-zone. Changing it as big as a half axis range, produces a circular d-pad style behavior.
 
 Range ratio:
 

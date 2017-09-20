@@ -60,7 +60,7 @@ Normal ±2000 dps or 61 mdps/digit:
 
 To express the full-scale rates in both directions without saturating you can add a 15% (IMU Manufacturer) or a 20% (Nintendo).
 
-The new convertions will be:  
+The new conversions will be:  
 
 STMicroelectronics ±2294 dps or 70 mdps/digit:
 
