@@ -104,54 +104,6 @@ MCU FW update input report.
 
 Standard full mode - input reports with IMU data instead of subcommand replies. Pushes current state @60Hz, or @120Hz if Pro Controller.
 
-If 6-axis sensor is enabled, the IMU data in an 0x30 input report is packaged like this (assuming the packet ID is located at byte -1):
-
-| Byte       | Remarks                                                        |
-|:----------:| -------------------------------------------------------------- |
-|   12-13    | accel_x (Int16LE). This Axis is reversed in Left JC.           |
-|   14-15    | accel_y (Int16LE)                                              |
-|   16-17    | accel_z (Int16LE). This Axis is reversed in Right JC.          |
-|   18-19    | gyro_1 (Int16LE)                                               |
-|   20-21    | gyro_2 (Int16LE)                                               |
-|   22-23    | gyro_3 (Int16LE)                                               |
-|   24-47    | The data is repeated 2 more times. Each with 5ms Δt sampling.  |
-
-The 6-Axis data is repeated 3 times. On Joy-con with a 15ms packet push, this is translated to 5ms difference sampling. E.g. 1st sample 0ms, 2nd 5ms, 3rd 10ms. Using all 3 samples let you have a 5ms precision instead of 15ms.
-
-The axes are defined as follows:
-
-```
-_______
-|      \
-| Front |        +x +z
-|   R   |    -y __|/__ +y
-|       |        /|
-|       |     -z -x
-|______/
-
-```
-The following equation should scale an int16 IMU value into an acceleration vector component (measured in Gs):
-
-`acc_vector_component = acc_raw_component * G_RANGE / SENSOR_RES / 1000`
-
-where `G_RANGE` is the sensitivity range setting of the accelerometer, as explained [here](http://ozzmaker.com/accelerometer-to-g/).
-
-The Joy-Con are ranged to ±8000 MilliGs (G_RANGE = 16000 MilliGs), the sensitivity calibration is always 16384 MilliGs and the SENSOR_RES is 16bit, so the above equation can be simplified to:
-
-`acc_vector_component = acc_raw_component * 0.00025f`. (16384/65535/1000 = 0.00025)
-
-For Gyro the equation to convert the values into angular velocity (measured in degrees per second):
-
-`gyro_vector_component = gyro_raw_component * G_GAIN / SENSOR_RES / 1000`
-
-where G_GAIN is the degrees per second sensitivity range.
-
-The Joy-Con, based on their calibration, have a G_GAIN of  13371dps, so the above equation can be simplified to:
-
-`gyro_vector_component = gyro_raw_component * 0.000204f`
-
-The [SparkFun library for the LSM6DS3](https://github.com/sparkfun/SparkFun_LSM6DS3_Arduino_Library) will likely be a valuable resource for future IMU hacking.
-
 ## INPUT 0x31
 
 NFC/IR Mode. Pushes large packets with standard input report + NFC/IR input report.
@@ -184,7 +136,7 @@ The middle byte is shared between the controllers.
 | 13  (ID `21`)     | `02`, `10`, `03`      | Reply-to subcommand ID. The subcommand ID is used as-is.                            |
 | 14-48  (ID `21`)  | --                    | Subcommand reply data. Max 37 bytes.                                                |
 | 12-48  (ID `23`)  | --                    | MCU FW update input report. Max 37 bytes.                                           |
-| 12-47  (ID `30`, `31`, `32`, `33`) | --   | 6-Axis data. 3 frames of 2 groups of 3 Int16LE each. Group is Gyro followed by Acc. |
+| 12-47  (ID `30`, `31`, `32`, `33`) | --   | 6-Axis data. 3 frames of 2 groups of 3 Int16LE each. Group is Acc followed by Gyro. |
 | 48-360  (ID `31`) | --                    | NFC/IR input report. Max 313 bytes.                                                 |
 
 
@@ -207,7 +159,11 @@ uint16_t stick_horizontal = data[0] | ((data[1] & 0xF) << 8);
 uint16_t stick_vertical = (data[1] >> 4) | (data[2] << 4);
 ```
 
-Also, these are **uncalibrated** stick data and must be converted to useful axes using the calibration data in the SPI flash.
+#### Standard input report - 6-Axis sensor data
+
+See [here](accelerator_gyroscope_notes.md) for the 6-Axis sensor data format.
+
+Also, these are **uncalibrated** stick/sensor data and must be converted to useful axes and values using the calibration data in the SPI flash.
 
 See [here](spi_flash_dump_notes.md#analog-stick-factory-and-user-calibration) for the calibration data format.
 
@@ -221,7 +177,7 @@ All subcommands that do nothing, reply back with ACK `x80` `x##` and `x03`
 
 Replies with `x80` `x00` `x03`
 
-Can be used to get Controller state only, like any subcommand that does nothing
+Can be used to get Controller state only (w/o 6-Axis sensor data), like any subcommand that does nothing
 
 ### Subcommand 0x01 (With cmd 0x01 or 0x11): Bluetooth Pairing or Get MCU State
 

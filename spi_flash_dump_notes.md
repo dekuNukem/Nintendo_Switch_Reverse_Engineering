@@ -192,10 +192,25 @@ Sample (Big-Endian):
 
 | int16t_t # | Sample XYZ       | Remarks                                                            |
 |:----------:|:----------------:| ------------------------------------------------------------------ |
-| `0` - `2`  | `FFB0 FEB9 00E0` | Unknown, possibly Acc XYZ origin position.                         |
+| `0` - `2`  | `FFB0 FEB9 00E0` | Acc XYZ origin position when on table                              |
 | `3` - `5`  | `4000 4000 4000` | Acc XYZ sensitivity range (MilliGs). Default sensitivity: ±8.192G. |
 | `6` - `8`  | `000E FFDF FFD0` | Gyro XYZ origin position when still                                |
 | `9` - `11` | `343B 343B 343B` | Gyro XYZ sensitivity range (dps). Default sensitivity: ±6685dps.   |
+
+The origin positions should be subtracted from the raw values.
+
+For the sensitivities conversion check [here](accelerator_gyroscope_notes.md#convert-to-basic-useful-data).
+
+Reference code for converting from uint16t_t to int16t_t for doing the above calculations:
+
+```
+int16_t sensor_uint16_to_int16(uint16_t a) {
+	int16_t b;
+	char* aPointer = (char*)&a, *bPointer = (char*)&b;
+	memcpy(bPointer, aPointer, sizeof(a));
+	return b;
+}
+```
 
 ## 6-Axis and Stick device parameters
 
@@ -204,7 +219,7 @@ These follow the same encoding with sensor and stick calibration accordingly.
 6-Axis Horizontal Offsets:
 
 3 Int16LE.
-Define the origin position (Gyro?) when the Joy-Con are held sideways.
+Define the acc origin position when the Joy-Con is held sideways.
 
 Stick Parameters:
 18 bytes that produce 12 uint16_t.
