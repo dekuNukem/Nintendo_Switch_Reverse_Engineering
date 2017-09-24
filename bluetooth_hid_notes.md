@@ -164,7 +164,7 @@ uint16_t stick_vertical = (data[1] >> 4) | (data[2] << 4);
 
 #### Standard input report - 6-Axis sensor data
 
-See [here](accelerator_gyroscope_notes.md) for the 6-Axis sensor data format.
+See [here](imu_sensor_notes.md) for the 6-Axis sensor data format and conversion.
 
 Also, these are **uncalibrated** stick/sensor data and must be converted to useful axes and values using the calibration data in the SPI flash.
 

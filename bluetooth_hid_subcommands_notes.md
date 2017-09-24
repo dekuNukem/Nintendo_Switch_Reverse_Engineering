@@ -234,19 +234,44 @@ Table of Mini Cycle configuration:
 
 One argument of `x00` Disable  or `x01` Enable.
 
-## Subcommand 0x41: 6-Axis sensor configuration
+## Subcommand 0x41: Set 6-Axis sensor sensitivity
 
-Two arguments of one byte. LO byte takes `x00` to `x03`, `x00` is error in config data and also sets HI byte to `x00`. HI byte takes `x00` to `x02`, `x00` is error.
+Sets the 6-axis sensor sensitivity for accelerometer and gyroscope.
+
+Sending x40 x01 (IMU enable) resets your configuration to default ±8G / 2000dps.
+
+Gyroscope sensitivity (Byte 0):
+
+| Arg # | Remarks  |
+|:-----:|:--------:|
+| `00`  | ±250dps  |
+| `01`  | ±500dps  |
+| `02`  | ±1000dps |
+| `03`  | ±2000dps |
+
+Accelerometer sensitivity (Byte 1):
+
+| Arg # | Remarks |
+|:-----:|:-------:|
+| `00`  | ±8G     |
+| `01`  | ±4G     |
+| `02`  | ±2G     |
+| `03`  | ±16G    |
 
 ## Subcommand 0x42: 6-Axis sensor write
 
-## Subcommand 0x43: Get 6-Axis sensor data?
+## Subcommand 0x43: Get all 6-Axis sensor values and configuration
 
-It takes a 2 byte argument.
+It takes 2 uint8t_t.
 
-Replies with ACK `xC0` `x43`.
+To view all bytes send `xF20` for the first page and `x2F20` for the second.
 
-If the 2 bytes exceed `x12` and `x0E` accordingly, replies with `x00` `x43`: no data returned or out of range.
+The values you can check are acc, gyro, configuration, registers and many more.
+
+| Byte # | Remarks                          |
+|:------:| -------------------------------- |
+| `00`   | Offset of values                 |
+| `01`   | How many values to show. Max x20 |
 
 ## Subcommand 0x48: Enable vibration
 
