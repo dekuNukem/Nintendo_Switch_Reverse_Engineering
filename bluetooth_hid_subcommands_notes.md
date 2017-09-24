@@ -1,28 +1,56 @@
 # Subcommands
 
-## Subcommand 0x##: All unused subcommands
+### Subcommand 0x##: All unused subcommands
 
 All subcommands that do nothing, reply back with ACK `x80` `x##` and `x03`
 
-## Subcommand 0x00: Get Only Controller State
+### Subcommand 0x00: Get Only Controller State
 
 Replies with `x80` `x00` `x03`
 
 Can be used to get Controller state only (w/o 6-Axis sensor data), like any subcommand that does nothing
 
-## Subcommand 0x01 (With cmd 0x01 or 0x11): Bluetooth Pairing or Get MCU State
+### Subcommand 0x01: Bluetooth manual pairing
 
-One argument with valid values of `x00` to `x04`.
+Takes max 2 arguments. A Pair request type uint8 and Host BD_ADDR 6 bytes in LE.
 
-With some trials, only `x01` and `x02` return some real data. With 1st one, the data is always the same. With 2nd seems random
+When used with cmd x01 it handles pairing. It is especially useful to change on the fly the pairing info for the next session, or to bluetooth pair through wired (rail/usb) connection.
 
-This subcommand handles some of the BT pairing.
+The procedure must be done sequentially:
 
-It happens once every BT host change. 
+- 1: x01 x01 [{BD_ADDR_LE}] (Send host MAC and acquire Joy-Con MAC)
+- 2: x01 x02 (Acquire the XORed LTK hash)
+- 3: x01 x03 (saves pairing info in Joy-Con)
+
+Host Pair request x01 (send HOST BT MAC and request Joy-Con BT MAC):
+
+| Byte # | Sample              | Remarks                                 |
+|:------:|:-------------------:| --------------------------------------- |
+|  0     | `01`                | subcmd                                  |
+|  1     | `01`                | Pair request type                       |
+|  2-7   | `16 30 AA 82 BB 98` | Host Bluetooth address in Little-Endian |
+
+Joy-Con Pair request x01 reply:
+
+| Byte # | Sample              | Remarks                         |
+|:------:|:-------------------:| ------------------------------- |
+|  0     | `01`                | Pair request type               |
+|  1-6   | `57 30 EA 8A BB 7C` | Joy-Con BT MAC in Little-Endian |
+|  7-31  |                     | Descriptor?                     |
+
+Host Pair request x03 (request LTK):
+
+Joy-Con Pair request x02 reply:
+
+Long Term Key (LTK) in Little-Endian. Each byte is XORed with 0xAA.
+
+Host Pair request x03:
+
+Joy-Con saves pairing info in x2000 SPI region.
 
 If the command is `x11`, it polls the MCU State? Used with IR Camera or NFC?
 
-## Subcommand 0x02: Request device info
+### Subcommand 0x02: Request device info
 
 Response data after 02 command byte:
 
@@ -35,7 +63,7 @@ Response data after 02 command byte:
 |  10    | `01`                | Unknown. Seems to be always `01`                         |
 |  11    | `01`                | If `01`, colors in SPI are used. Otherwise default ones. |
 
-## Subcommand 0x03: Set input report mode
+### Subcommand 0x03: Set input report mode
 
 One argument:
 
@@ -53,7 +81,7 @@ One argument:
 
 Starts pushing input data at 60Hz.
 
-## Subcommand 0x04: Trigger buttons elapsed time
+### Subcommand 0x04: Trigger buttons elapsed time
 
 Replies with 7 little-endian uint16. The values are in 10ms. They reset by turning off the controller.
 
@@ -71,21 +99,21 @@ Left_trigger_ms = ((byte[1] << 8) | byte[0]) * 10;
 |   10-9  | SR      |
 |   12-11 | HOME    |
 
-## Subcommand 0x05: Get page
+### Subcommand 0x05: Get page
 
 Replies a uint8 with a value of `x01`.
 
-## Subcommand 0x06: Reset connection (Disconnect)
+### Subcommand 0x06: Reset connection (Disconnect)
 
 Causes the controller to disconnect the Bluetooth connection.
 
-Takes as argument `x00` or `x01`.
+Takes as argument `x00` or `x01`. Sleep, Deep sleep?
 
-## Subcommand 0x07: Reset pairing info
+### Subcommand 0x07: Reset pairing info
 
 Initializes the 0x2000 SPI section.
 
-## Subcommand 0x08: Set shipment
+### Subcommand 0x08: Set shipment
 
 Takes as argument `x00` or `x01`.
 
@@ -95,7 +123,7 @@ If `x01` is set, then Switch initiates pairing, if not, initializes connection w
 
 Switch always sends `x08 00` after every initialization.
 
-## Subcommand 0x10: SPI flash read
+### Subcommand 0x10: SPI flash read
 Little-endian int32 address, int8 size, max size is `x1D`.
 Subcommand reply echoes the request info, followed by `size` bytes of data.
 
@@ -113,23 +141,23 @@ Response: INPUT 21
                                                           ^~~~~ data
 ```
 
-## Subcommand 0x11: SPI flash Write
+### Subcommand 0x11: SPI flash Write
 
 Little-endian int32 address, int8 size. Max size `x1D` data to write.
 Subcommand reply echoes the address, size, plus a uint8 status. `x00` = success, `x01` = write protected.
 
-## Subcommand 0x12: SPI sector erase
+### Subcommand 0x12: SPI sector erase
 
 Takes a Little-endian uint32. Erases the whole 4KB in the specified address to 0xFF.
 Subcommand reply echos the address, plus a uint8 status. `x00` = success, `x01` = write protected.
 
-## Subcommand 0x20: MCU (Micro-controller for Sensors and Peripherals) reset
+### Subcommand 0x20: MCU (Microcontroller for Sensors and Peripherals) reset
 
-## Subcommand 0x21: Write configuration to MCU
+### Subcommand 0x21: Write configuration to MCU
 
 Write configuration data to MCU. This data can be IR configuration, NFC configuration or data for the 512KB MCU firmware update.
 
-## Subcommand 0x22: MCU Resume mode
+### Subcommand 0x22: MCU Resume mode
 
 Takes one argument:
 
@@ -140,25 +168,25 @@ Takes one argument:
 |   `01`     | Resume            |
 |   `02`     | Resume for update |
 
-## Subcommand 0x28: Set unknown data?
+### Subcommand 0x28: Set unknown data
 
 Replies with ACK `x80` `x28`.
 
-## Subcommand 0x29: Get `x28` data
+### Subcommand 0x29: Get `x28` data
 
-Replies with ACK `xA8` `x29`. Sometimes these subcmd take arguments
+Replies with ACK `xA8` `x29`. Sometimes these subcmd take arguments.
 
-## Subcommand 0x2A: Unknown
+### Subcommand 0x2A: Set Unknown data
 
 Replies with ACK `x00` `x2A`.
 
-`x00` as an ACK, means no data. Some commands if you send wrong arguments reply with this.
+`x00` as an ACK, means it failed. Some commands if you send wrong arguments reply with this.
 
-## Subcommand 0x2B: Get `x29` data?
+### Subcommand 0x2B: Get `x29` data?
 
-Replies with ACK `xA9` `x2B`. Normally these take an address and a size as an argument and give out data.
+Replies with ACK `xA9` `x2B`. Sometimes these subcmd take arguments.
 
-## Subcommand 0x30: Set player lights
+### Subcommand 0x30: Set player lights
 
 First argument byte is a bitfield:
 
@@ -171,13 +199,13 @@ aaaa bbbb
 On overrides flashing. When on USB, flashing bits work like always on bits.
 
 
-## Subcommand 0x31: Get player lights
+### Subcommand 0x31: Get player lights
 
 Replies with ACK `xB0` `x31` and one byte that uses the same bitfield with `x30` subcommand
 
 `xB1` is the 4 leds trail effect. But it can't be set via `x30`.
 
-## Subcommand 0x38: Set HOME Light
+### Subcommand 0x38: Set HOME Light
 
 25 bytes argument that control 49 elements.
 
@@ -230,29 +258,54 @@ Table of Mini Cycle configuration:
 | `x23`, Low     | Unused                                    |
 | `x24` High/Low | Fading/LED Duration Multipliers for MC 15 |
 
-## Subcommand 0x40: Enable 6-Axis sensor
+### Subcommand 0x40: Enable 6-Axis sensor
 
 One argument of `x00` Disable  or `x01` Enable.
 
-## Subcommand 0x41: 6-Axis sensor configuration
+### Subcommand 0x41: Set 6-Axis sensor sensitivity
 
-Two arguments of one byte. LO byte takes `x00` to `x03`, `x00` is error in config data and also sets HI byte to `x00`. HI byte takes `x00` to `x02`, `x00` is error.
+Sets the 6-axis sensor sensitivity for accelerometer and gyroscope.
 
-## Subcommand 0x42: 6-Axis sensor write
+Sending x40 x01 (IMU enable) resets your configuration to default ±8G / 2000dps.
 
-## Subcommand 0x43: Get 6-Axis sensor data?
+Gyroscope sensitivity (Byte 0):
 
-It takes a 2 byte argument.
+| Arg # | Remarks  |
+|:-----:|:--------:|
+| `00`  | ±250dps  |
+| `01`  | ±500dps  |
+| `02`  | ±1000dps |
+| `03`  | ±2000dps |
 
-Replies with ACK `xC0` `x43`.
+Accelerometer sensitivity (Byte 1):
 
-If the 2 bytes exceed `x12` and `x0E` accordingly, replies with `x00` `x43`: no data returned or out of range.
+| Arg # | Remarks |
+|:-----:|:-------:|
+| `00`  | ±8G     |
+| `01`  | ±4G     |
+| `02`  | ±2G     |
+| `03`  | ±16G    |
 
-## Subcommand 0x48: Enable vibration
+### Subcommand 0x42: 6-Axis sensor write
+
+### Subcommand 0x43: Get all 6-Axis sensor values and configuration
+
+It takes 2 uint8t_t.
+
+To view all bytes send `xF20` for the first page and `x2F20` for the second.
+
+The values you can check are acc, gyro, configuration, registers and many more.
+
+| Byte # | Remarks                          |
+|:------:| -------------------------------- |
+| `00`   | Offset of values                 |
+| `01`   | How many values to show. Max x20 |
+
+### Subcommand 0x48: Enable vibration
 
 One argument of `x00` Disable  or `x01` Enable.
 
-## Subcommand 0x50: Get regulated voltage
+### Subcommand 0x50: Get regulated voltage
 
 Replies with ACK `xD0` `x50` and a little-endian uint16. Raises when charging a Joy-Con.
 
@@ -265,7 +318,7 @@ Replies with ACK `xD0` `x50` and a little-endian uint16. Raises when charging a 
 
 Tests showed charging stops at around 1680mV and the controller turns off at around 1323mV.
 
-## Subcommand 0x51: Set unknown data. Connection status?
+### Subcommand 0x51: Set unknown data. Connection status?
 
 Replies with ACK `x80` `x51`.
 
@@ -273,7 +326,7 @@ It takes a uint8. Valid values are 0x00, 0x04, 0x10, 0x14. Other values result t
 
 E.g. 0x0->0x3 = 0x0, 0x4->0x7,0xC-0xF = 0x4, 0x8->0xB = 0x0, 0x10-0x13 = 0x10 and so on.
 
-## Subcommand 0x52: Get 0x51 unknown data
+### Subcommand 0x52: Get 0x51 unknown data
 
 Replies with ACK `xD1` `x52` and a uint8. 
 

@@ -24,7 +24,7 @@ The following images show exactly the 6 axes:
 
 ![alt text](http://ctcaer.com/wii/switch/joycon_acc-gyro_left2.png)![alt text](http://ctcaer.com/wii/switch/joycon_acc-gyro_right2.png)
 
-## Convert to basic useful data
+## Convert to basic useful data using raw values
 
 ### Accelerometer - Acceleration (in G)
 
@@ -36,13 +36,9 @@ where `G_RANGE` is the sensitivity range setting of the accelerometer, as explai
 
 The Joy-Con are ranged to ±8000 MilliGs (G_RANGE = 16000 MilliGs), the sensitivity calibration is always ±8192 MilliGs and the SENSOR_RES is 16bit, so the above equation can be simplified to:
 
-Normal ±8000 mG:
+##### Normal ±8000 mG:
 
 `acc_vector_component = acc_raw_component * 0.000244f`. (=16000/65535/1000)
-
-Switch (SPI cal) ±8192 mG:
-
-`acc_vector_component = acc_raw_component * 0.00025f`. (=16384/65535/1000)
 
 ### Gyroscope - Rotation (in Degrees/s - dps)
 
@@ -54,21 +50,17 @@ where G_GAIN is the degrees per second sensitivity range.
 
 The Joy-Con, based on their configuration, have a gyro sensitivity of ±2000dps (G_GAIN = 4000dps), so the above equation can be simplified to:
 
-Normal ±2000 dps or 61 mdps/digit:
+##### Normal ±2000 dps or 61 mdps/digit:
 
-`gyro_vector_component = gyro_raw_component * 0.061f` (=4000/65535)
+`gyro_vector_component = gyro_raw_component * 0.06103f` (=4000/65535)
 
-To express the full-scale rates in both directions without saturating you can add a 15% (IMU Manufacturer) or a 20% (Nintendo).
+To express the full-scale rates in both directions without saturating you can add a 15% (STMicroelectronics LSM6DS3 datasheet) and it's the recommended way to do it.
 
-The new conversions will be:  
+The new conversion will be:  
 
-STMicroelectronics ±2294 dps or 70 mdps/digit:
+##### LSM6DS3 ±2000 dps or 70 mdps/digit:
 
 `gyro_vector_component = gyro_raw_component * 0.070f` (=4588/65535)
-
-Switch (SPI cal) ±2406.5 dps or 73.44 mdps/digit:
-
-`gyro_vector_component = gyro_raw_component * 0.07344f` (=4813/65535)
 
 ### Gyroscope - Rotation (in revolutions/s)
 
@@ -80,16 +72,68 @@ Normally to get revolutions/s you need to follow the below equation:
 
 So the equation for the above 3 sensitivities will become:
 
-Normal ±2000 dps:
+##### Normal:
 
 `gyro_revolutions = gyro_raw_component * 0.0001694f` (=4813/65535/360)
 
-STMicroelectronics ±2294 dps:
+##### LSM6DS3:
 
 `gyro_revolutions = gyro_raw_component * 0.0001944f` (=4813/65535/360)
 
-Switch (SPI cal) ±2406.5 dps:
-
-`gyro_revolutions = gyro_raw_component * 0.000204f` (=4813/65535/360)
-
 The [SparkFun library for the LSM6DS3](https://github.com/sparkfun/SparkFun_LSM6DS3_Arduino_Library) will likely be a valuable resource for future IMU hacking.
+
+## Convert to basic useful data using SPI Calibration
+
+### Accelerometer (Calibrated) - Acceleration (in G)
+
+The SPI `accelerometer calibration`, includes 3 important values for each axis:
+
+The `cal_acc_origin` which is the origin position when the Joy-Con is held completely horizontally.
+
+The `cal_acc_horizontal_offset` which is the offest (difference) that the Joy-Con has when it's on a flat surface than being completely horizontal. (The Trigger bump changes its position and you can use this offset to calibrate the position when it is on a flat surface)
+
+The `cal_acc_horizontal_offset` is always the same. Advise [here](spi_flash_dump_notes.md#6-axis-and-stick-device-parameters) for the values each model (JC Left, JC Right, Pro).
+
+The `cal_acc_coeff` which is used for the equations and it's always `x4000` (`16384`).
+
+Based on these we can conclude on 2 different equations to find the final coefficient:
+
+##### Origin posititon is horizontal and stick is upside:
+
+`acc_coeff = (float)(1.0 / (float)(16384 - uint16_to_int16(cal_acc_origin))) * 4.0f;`
+
+##### Origin position is horizontal on flat surface and stick is upside:
+
+`acc_coeff = (float)(1.0 / (float)(16384 - uint16_to_int16(cal_acc_origin + cal_acc_horizontal_offset))) * 4.0f;`
+
+Then we use the coefficient to convert the value into G (SI: 9.8m/s²):
+
+`acc_vector_component = acc_raw_component * acc_coeff`
+
+### Gyroscope (Calibrated) - Rotation (in Degrees/s - dps)
+
+The SPI `gyro calibration`, includes 2 important values for each axis:
+
+The `cal_gyro_offset` which is the offset when the Joy-Con is stable (held still).
+
+The `cal_gyro_coeff` which is the coeff that is used in the equation and it's always `x343B` (`13371`).
+
+Based on these we can conclude on the final equation:
+
+##### Default (saturation free) LSM6DS3 ±2000 dps : 70 mdps/digit:
+
+`gyro_cal_coeff = (float)(936.0 / (float)(13371 - uint16_to_int16(cal_gyro_offset)));`
+
+##### Accurate ±2000 dps : 61 mdps/digit:
+
+`gyro_cal_coeff = (float)(816.0 / (float)(13371 - uint16_to_int16(cal_gyro_offset)));`
+
+Then we use the coefficient to convert the value into degrees°/s (SI: 0.01745 rad/s):
+
+`acc_vector_component = acc_raw_component * acc_coeff`
+
+### Gyroscope - Rotation (in revolutions/s)
+
+The equation will become:
+
+`acc_vector_component = acc_raw_component * acc_coeff * 0.0027777778`

@@ -164,7 +164,7 @@ uint16_t stick_vertical = (data[1] >> 4) | (data[2] << 4);
 
 #### Standard input report - 6-Axis sensor data
 
-See [here](accelerator_gyroscope_notes.md) for the 6-Axis sensor data format.
+See [here](imu_sensor_notes.md) for the 6-Axis sensor data format and conversion.
 
 Also, these are **uncalibrated** stick/sensor data and must be converted to useful axes and values using the calibration data in the SPI flash.
 
@@ -178,18 +178,21 @@ See [here](spi_flash_dump_notes.md#analog-stick-factory-and-user-calibration) fo
 
 Buffer returned contains the latest 0x21 subcommand input report.
 
+You must pass a buffer that can fit a 0x21 input report.
+
 ### FEATURE 0x70: Enable OTA FW upgrade
 
 [Send] feature Report
 
 Enables FW update. Unlocks Erase/Write memory commands.
 
+The buffer sent must be exactly one byte. If else, Joy-Con rejects it.
+
+The only possible ways to send it, is a Linux device with patched hidraw to accept 1 byte reports or a custom bluetooth developement kit. 
+
 | Byte # |  Sample  | Remarks                        |
 |:------:|:--------:| ------------------------------ |
 | 0      | `70`     | Feature report                 |
-| 1      | `90`     | Checksum (8-bit 2s Complement) |
-
-Checksum is optional.
 
 ### FEATURE 0x71: Setup memory read
 
@@ -219,12 +222,13 @@ Indirect memory map:
 
 [Get] feature Report
 
-| Byte # |  Sample  | Remarks                        |
-|:------:|:--------:| ------------------------------ |
-| 0      | `72`     | Feature report                 |
-| 1      | `8E`     | Checksum (8-bit 2s Complement) |
+| Byte # |  Sample  | Remarks                         |
+|:------:|:--------:| ------------------------------- |
+| 0      | `72`     | Feature report                  |
+| 1      | `8E`     | Checksum* (8-bit 2s Complement) |
+| 2-EOF  |          |                                 |
 
-Checksum is optional.
+*Checksum is optional.
 
 In Get feature report mode it returns the 0x71 requested SPI or Rom data.
 
@@ -240,7 +244,7 @@ The data returned has the following structure:
 | 7-EOF-1 |               | Data requested                 |
 | EOF     | `DC`          | Checksum (8-bit 2s Complement) |
 
-The returned size is header + size in 0x71 ft report + 1.
+The returned size is header + size in 0x71 ft report + 1. So make sure to get your report with an adequate buffer size.
 
 ### FEATURE 0x73: Memory erase
 
@@ -250,7 +254,7 @@ Erases specified address and size in SPI. Can erase locked sectors.
 
 Should be used only with SPI (0xF8000000 - 0xF807FFFF), because SPI needs to be erased before writing to it.
 
-0x70 command must be sent before using this.
+0x70 command must be sent before using this. Otherwise, Joy-Con will reply with invalid report ID.
 
 | Byte # |  Sample       | Remarks                        |
 |:------:|:-------------:| ------------------------------ |
@@ -259,13 +263,17 @@ Should be used only with SPI (0xF8000000 - 0xF807FFFF), because SPI needs to be 
 | 5 - 6  | `00 10`       | UInt16LE size. Max 4KB?        |
 | 7      | `03`          | Checksum (8-bit 2s Complement) |
 
+#### Warning:
+
+Don't try to erase anything on the static xF8000000 - xF8000FFF region. It will brick your device and you are gonna need a SPI programmer.
+
 ### FEATURE 0x74: Memory write
 
 [Send] feature Report
 
 Writes to SPI. Can write locked sectors.
 
-0x70 command must be sent before using this.
+0x70 command must be sent before using this. Otherwise, Joy-Con will reply with invalid report ID.
 
 | Byte #  |  Sample       | Remarks                        |
 |:-------:|:-------------:| ------------------------------ |
@@ -275,33 +283,39 @@ Writes to SPI. Can write locked sectors.
 | 7-EOF-1 |               | Data to write                  |
 | EOF     | `DC`          | Checksum (8-bit 2s Complement) |
 
-### FEATURE 0x75: Launch execution
+#### Warning:
+
+Don't try to write anything on the static xF8000000 - xF8000FFF region. It will brick your device and you are gonna need a SPI programmer.
+
+### FEATURE 0x75: Launch (Reboot)
 
 [Send] feature Report
 
-Executes the firmware in the given address.
+Reboots and executes the firmware in the given address.
 
 If address is `x0000` the Host should assume that the device will reboot.
+
+0x70 command must be sent before using this. Otherwise, Joy-Con will reply with invalid report ID.
 
 | Byte #  |  Sample       | Remarks                                  |
 |:-------:|:-------------:| ---------------------------------------- |
 | 0       | `74`          | Feature report                           |
 | 1 - 4   | `00 80 02 F8` | UInt32LE entry address for firmware jump |
 | 5 - 6   | `00 00`       | UInt16LE size. Always 0.                 |
-| 7-EOF-1 |               | Entry address (Optional)                 |
-| EOF     | `DC`          | Checksum (8-bit 2s Complement)           |
+| 7       | `00`          | Always 0                                 |
+| 8       | `DC`          | Checksum (8-bit 2s Complement)           |
 
 ### FEATURE 0xCC
 
 [Send] feature Report
 
-Unknown
+Unknown parameters needed
 
 ### FEATURE 0xFE
 
 [Get] feature Report
 
-Unknown
+Unknown parameters needed
 
 ## Subcommands
 

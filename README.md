@@ -40,7 +40,7 @@ It looks like SCK runs at 12.5MHz when accessing the flash memory, but switches 
 
 ### Accelerometer and gyroscope
 
-Upon connection the micro-controller initializes a software reset of the MEMS chip, then set up the accelerometer and gyroscope as follows:
+Upon connection the microcontroller initializes a software reset of the MEMS chip, then set up the accelerometer and gyroscope as follows:
 
 | Accelerometer               | Gyroscope                      |
 |-----------------------------|--------------------------------|
@@ -222,7 +222,7 @@ The 7-bit I2C address of the chip is 0x49 (0x92 write, 0x93 read), and it's poll
 
 ## Docking station firmware dump
 
-The docking station uses a STM32F048 micro-controller. It's actually labeled as STM32P048 because it uses the FASTROM option where ST pre-programs the flash memory inside the factory. It has 32KB flash memory and 6KB RAM, runs at 48MHz. 
+The docking station uses a STM32F048 microcontroller. It's actually labeled as STM32P048 because it uses the FASTROM option where ST pre-programs the flash memory inside the factory. It has 32KB flash memory and 6KB RAM, runs at 48MHz. 
 
 It uses SWD debugging and programming interface, and interestingly the programming testpoints are on the PCB and clearly labeled. After connecting a ST-Link programmer to it reveals that the chip is not read-protected at all, so a firmware dump was easily made. I'm not going to post it in the repo, but if you want it just ask.
 
