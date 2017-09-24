@@ -1,4 +1,4 @@
-Please add your findings to this document!
+#SPI Flash Memory Information
 
 ## Memory map
 
@@ -16,10 +16,11 @@ Static section data starts at `x0000` and ends at `x03B0`.
 
 Includes Magic numbers, OTA FW 1 offset? and other. 
 
-|    Range        |        Sample        | Remarks                                                    |
-|:---------------:|:--------------------:| ---------------------------------------------------------- |
-| `x0015`-`x001A` | `x57 30 EA 8A BB 7C` | Bluetooth MAC Address, reversed (7C:BB:8A:EA:30:57)        |
-| `x03B3`-`x03B7` | `x00000100`          | Dynamic Section Offset 1 for OTA FW, reversed (`x010000`) |
+|    Range        |        Sample                      | Remarks                                                        |
+|:---------------:|:----------------------------------:| -------------------------------------------------------------- |
+| `x0000`-`x0010` | `01 08 00 F0 00 00 62 08 C0 5D 89` | Static region Magic                                            |
+| `x0015`-`x001A` | `x57 30 EA 8A BB 7C`               | Bluetooth MAC Address, reversed (7C:BB:8A:EA:30:57)            |
+| `x03B3`-`x03B7` | `x00000100`                        | Dynamic Section Offset 1 for OTA FW, Little-Endian (`x010000`) |
 
 ## x1000 Failsafe mechanism
 
@@ -38,13 +39,13 @@ No data before `x1FF4`.
 
 ## x2000 Pairing info
 
-Used internally to store current and previous Master Bluetooth addresses and Long Term Keys.
+Used internally to store current and previous Host Bluetooth addresses and Long Term Keys.
+
+It can store entries until it fills  the whole section.
 
 The current used data has `x95` magic. If `x00`, this data defines the previous paired connection and the next section defines the current one.
 
-When Joy-Con enters sleep, it clears the old pairing info and moves section 2 to section 1.
-
-By connecting through USB (Charging grip), it keeps section 1 and the current LTK used with Switch can be acquired.
+By connecting through USB (Charging grip), it keeps the active section and the current LTK used with Switch can be acquired.
 
 Can be reset with `x07` subcommand.
 
@@ -54,20 +55,21 @@ Can be reset with `x07` subcommand.
 |                 | `x2000`          | Magic. Used=`x95`, Unused=`x00`. If `x00`, checks next section. |
 |                 | `x2001`          | Size of pairing data. Always `x22` bytes                        |
 |                 | `x2002 - x2003`  | Checksum?                                                       |
-|                 | `x2004 - x2009`  | Master Bluetooth address (Big-Endian)                           |
+|                 | `x2004 - x2009`  | Host Bluetooth address (Big-Endian)                             |
 |                 | `x200A - x2019`  | 128-bit Long Term Key (Little-Endian)                           |
 |                 | `x201A - x2023`  | Always zeroed                                                   |
-|                 | `x2024`          | Master capabilities? Switch=`x68`, PC=`x08`                     |
+|                 | `x2024`          | Host capabilities? Switch=`x68`, PC=`x08`                       |
 |                 | `x2025`          | Always zero                                                     |
 | `x2026`-`x204B` | -------------    | Pairing info section 2. All `xFF` if section 1 is used          |
 |                 | `x2026`          | Magic                                                           |
 |                 | `x2027`          | Size of pairing data                                            |
 |                 | `x2028 - x2029`  | Checksum?                                                       |
-|                 | `x202A - x202F`  | Master Bluetooth address (Big-Endian)                           |
+|                 | `x202A - x202F`  | Host Bluetooth address (Big-Endian)                             |
 |                 | `x2030 - x203F`  | 128-bit Long Term Key (Little-Endian)                           |
 |                 | `x2040 - x2049`  | Always zeroed                                                   |
 |                 | `x204A`          | Switch=`x68`, PC=`x08`                                          |
 |                 | `x204B`          | Always zero                                                     |
+| --              | --               | The layout is repeated according to saved pairings              |
 
 ## x6000 Factory Configuration and Calibration
 
@@ -190,21 +192,19 @@ Each group defines the X Y Z axis.
 
 Sample (Big-Endian):
 
-| int16t_t # | Sample XYZ       | Remarks                                                            |
-|:----------:|:----------------:| ------------------------------------------------------------------ |
-| `0` - `2`  | `FFB0 FEB9 00E0` | Acc XYZ origin position when on table                              |
-| `3` - `5`  | `4000 4000 4000` | Acc XYZ sensitivity range (MilliGs). Default sensitivity: ±8.192G. |
-| `6` - `8`  | `000E FFDF FFD0` | Gyro XYZ origin position when still                                |
-| `9` - `11` | `343B 343B 343B` | Gyro XYZ sensitivity range (dps). Default sensitivity: ±6685dps.   |
+| int16t_t # | Sample XYZ       | Remarks                                                                |
+|:----------:|:----------------:| ---------------------------------------------------------------------- |
+| `0` - `2`  | `FFB0 FEB9 00E0` | Acc XYZ origin position when completely horizontal and stick is upside |
+| `3` - `5`  | `4000 4000 4000` | Acc XYZ sensitivity special coeff, for default sensitivity: ±8G.       |
+| `6` - `8`  | `000E FFDF FFD0` | Gyro XYZ origin position when still                                    |
+| `9` - `11` | `343B 343B 343B` | Gyro XYZ sensitivity special coeff, for default sensitivity: ±2000dps. |
 
-The origin positions should be subtracted from the raw values.
-
-For the sensitivities conversion check [here](accelerator_gyroscope_notes.md#convert-to-basic-useful-data).
+For the sensitivities conversion check [here](imu_sensor_notes.md#convert-to-basic-useful-data-using-spi-calibration).
 
 Reference code for converting from uint16t_t to int16t_t for doing the above calculations:
 
 ```
-int16_t sensor_uint16_to_int16(uint16_t a) {
+int16_t uint16_to_int16(uint16_t a) {
 	int16_t b;
 	char* aPointer = (char*)&a, *bPointer = (char*)&b;
 	memcpy(bPointer, aPointer, sizeof(a));
@@ -216,12 +216,20 @@ int16_t sensor_uint16_to_int16(uint16_t a) {
 
 These follow the same encoding with sensor and stick calibration accordingly.
 
-6-Axis Horizontal Offsets:
+#### 6-Axis Horizontal Offsets:
 
 3 Int16LE.
-Define the acc origin position when the Joy-Con is held sideways.
+Define the accelerator additional offset from origin position when the Joy-Con is on a flat surface. The trigger bumps on the Joy-Con and Pro controller change the origin position and use can use these to level it.
 
-Stick Parameters 1 & 2:
+Default values:
+
+| Axis | Joy-Con (L)  | Joy-Con (R)    | Pro Controller |
+|:----:|:------------:|:--------------:|:--------------:|
+| X    | `x15E` (350) | `x15E` (350)   | `FD50` (-688)  |
+| Y    | `x00` (0)    | `x00` (0)      | `x00` (0)      |
+| Z    | `xFF1` (4081)| `xF00F` (-4081)| `xFC6` (4038)  |
+
+#### Stick Parameters 1 & 2:
 18 bytes that produce 12 uint16_t.
 Define maximum/minimum ranges that the analog stick hardware supports and dead-zones.
 
@@ -237,10 +245,10 @@ Each section is for different stick.
 | `8`, `9`   | `AB4 AB4` | X/Y: Unknown              |
 | `10`, `11` | `496 496` | X/Y: Unknown              |
 
-Dead-zone:
+##### Dead-zone:
 
 It is used to all directions, so it isn't divided by 2. It behaves like a circular dead-zone. Changing it as big as a half axis range, produces a circular d-pad style behavior.
 
-Range ratio:
+##### Range ratio:
 
 Making this very small, produces d-pad like movement on the cross but still retains circular directionality. So it probably produces a float coefficient.
