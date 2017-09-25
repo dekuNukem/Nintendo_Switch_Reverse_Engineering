@@ -96,19 +96,23 @@ The `cal_acc_horizontal_offset` is always the same. Advise [here](spi_flash_dump
 
 The `cal_acc_coeff` which is used for the equations and it's always `x4000` (`16384`).
 
-Based on these we can conclude on 2 different equations to find the final coefficient:
+Based on these we can conclude on the following equation to find the final coefficient:
 
 ##### Origin posititon is horizontal and stick is upside:
 
 `acc_coeff = (float)(1.0 / (float)(16384 - uint16_to_int16(cal_acc_origin))) * 4.0f;`
 
-##### Origin position is horizontal on flat surface and stick is upside:
-
-`acc_coeff = (float)(1.0 / (float)(16384 - uint16_to_int16(cal_acc_origin + cal_acc_horizontal_offset))) * 4.0f;`
-
 Then we use the coefficient to convert the value into G (SI: 9.8m/s²):
 
 `acc_vector_component = acc_raw_component * acc_coeff`
+
+### Completely level* Accelerometer when horizontal on flat surface:
+
+*This will level the accelerometer to 0 values when resting on flat surface
+
+We subtract `cal_acc_horizontal_offset` and then we use the coefficient to convert the value into G (SI: 9.8m/s²):
+
+`acc_vector_component = (acc_raw_component - uint16_to_int16(cal_acc_horizontal_offset)) * acc_coeff`
 
 ### Gyroscope (Calibrated) - Rotation (in Degrees/s - dps)
 
@@ -137,3 +141,27 @@ Then we use the coefficient to convert the value into degrees°/s (SI: 0.01745 r
 The equation will become:
 
 `acc_vector_component = acc_raw_component * acc_coeff * 0.0027777778`
+
+## Noise level range for each sensitivity configuration
+
+This is useful to set a noise cancellation deadzone for acc and gyro.
+
+Based on official values. Also it's a range value (not a ± value).
+
+Accelerometer:
+
+| Sensitivity   | Noise level range |
+|:-------------:|:-----------------:|
+| ±2G           | 328 * 2.5 = 2050  |
+| ±4G           | 164 * 2.5 = 410   |
+| ±8G (default) | 82 * 2.5 = 205    |
+| ±16G          | No official value |
+
+Gyroscope:
+
+| Sensitivity        | Noise level range |
+|:------------------:|:-----------------:|
+| ±250dps            | 236 * 2.5 = 590   |
+| ±500dps            | 118 * 2.5 = 295   |
+| ±1000dps           | 59 * 2.5 = 147    |
+| ±2000dps (default) | 30 * 2.5 = 75     |
