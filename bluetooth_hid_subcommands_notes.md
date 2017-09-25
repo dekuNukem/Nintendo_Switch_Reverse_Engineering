@@ -103,11 +103,16 @@ Left_trigger_ms = ((byte[1] << 8) | byte[0]) * 10;
 
 Replies a uint8 with a value of `x01`.
 
-### Subcommand 0x06: Reset connection (Disconnect)
+### Subcommand 0x06: Reset connection (Disconnect/reboot)
 
-Causes the controller to disconnect the Bluetooth connection.
+Causes the controller to disconnect or reboot.
 
-Takes as argument `x00` or `x01`. Sleep, Deep sleep?
+Takes as argument.
+
+| Arg value # | Remarks    |
+|:-----------:|:----------:|
+|   0         | Disconnect |
+|   1         | Reboot     |
 
 ### Subcommand 0x07: Reset pairing info
 
@@ -266,25 +271,25 @@ One argument of `x00` Disable  or `x01` Enable.
 
 Sets the 6-axis sensor sensitivity for accelerometer and gyroscope.
 
-Sending x40 x01 (IMU enable) resets your configuration to default ±8G / 2000dps.
+Sending x40 x01 (IMU enable) resets your configuration to default Â±8G / 2000dps.
 
 Gyroscope sensitivity (Byte 0):
 
 | Arg # | Remarks  |
 |:-----:|:--------:|
-| `00`  | ±250dps  |
-| `01`  | ±500dps  |
-| `02`  | ±1000dps |
-| `03`  | ±2000dps |
+| `00`  | Â±250dps  |
+| `01`  | Â±500dps  |
+| `02`  | Â±1000dps |
+| `03`  | Â±2000dps |
 
 Accelerometer sensitivity (Byte 1):
 
 | Arg # | Remarks |
 |:-----:|:-------:|
-| `00`  | ±8G     |
-| `01`  | ±4G     |
-| `02`  | ±2G     |
-| `03`  | ±16G    |
+| `00`  | Â±8G     |
+| `01`  | Â±4G     |
+| `02`  | Â±2G     |
+| `03`  | Â±16G    |
 
 ### Subcommand 0x42: 6-Axis sensor write
 
