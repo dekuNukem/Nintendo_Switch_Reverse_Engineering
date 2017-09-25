@@ -263,11 +263,11 @@ Table of Mini Cycle configuration:
 | `x23`, Low     | Unused                                    |
 | `x24` High/Low | Fading/LED Duration Multipliers for MC 15 |
 
-### Subcommand 0x40: Enable 6-Axis sensor
+### Subcommand 0x40: Enable IMU (6-Axis sensor)
 
 One argument of `x00` Disable  or `x01` Enable.
 
-### Subcommand 0x41: Set 6-Axis sensor sensitivity
+### Subcommand 0x41: Set IMU sensitivity
 
 Sets the 6-axis sensor sensitivity for accelerometer and gyroscope.
 
@@ -291,20 +291,36 @@ Accelerometer sensitivity (Byte 1):
 | `02`  | ±2G     |
 | `03`  | ±16G    |
 
-### Subcommand 0x42: 6-Axis sensor write
+### Subcommand 0x42: Write to IMU registers
 
-### Subcommand 0x43: Get all 6-Axis sensor values and configuration
+It takes 3 uint8_t arguments and writes to the selected register. You can write only writable registers (r/w).
+
+Consult LSM6DS3.pdf for all registers and their meaning. The registers addresses are mapped 1:1 in the subcmd.
+
+With this subcmd you can completely control the IMU.
+
+| Byte # | Remarks                  |
+|:------:|:------------------------:|
+| `00`   | Register address         |
+| `01`   | Always `x01` for writing |
+| `02`   | Value to write           |
+
+### Subcommand 0x43: Read IMU registers
 
 It takes 2 uint8t_t.
 
-To view all bytes send `xF20` for the first page and `x2F20` for the second.
+| Byte # | Remarks                    |
+|:------:| -------------------------- |
+| `00`   | Register start address     |
+| `01`   | Registers to show. Max x20 |
 
-The values you can check are acc, gyro, configuration, registers and many more.
+It replies with `xC043##$$`, where ## is the first register address to show and $$ is how many registers to show. After these the data follows.
 
-| Byte # | Remarks                          |
-|:------:| -------------------------------- |
-| `00`   | Offset of values                 |
-| `01`   | How many values to show. Max x20 |
+For example, by sending `x0020` you can view registers `x00` - `x1F`, `x2020`: `x20` - `x2F`, etc.
+
+To quickly get the register you need, send `x##01` (## is the register address) and parse the 1st byte after the subcmd + args reply (`xC043##$$`).
+
+Consult LSM6DS3.pdf for all registers and their meaning. The registers addresses are mapped 1:1 in the subcmd.
 
 ### Subcommand 0x48: Enable vibration
 
