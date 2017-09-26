@@ -271,7 +271,9 @@ One argument of `x00` Disable  or `x01` Enable.
 
 Sets the 6-axis sensor sensitivity for accelerometer and gyroscope.
 
-Sending x40 x01 (IMU enable) resets your configuration to default ±8G / 2000dps.
+Sending x40 x01 (IMU enable), it it was previously disabled, resets your configuration to Acc: 1.66 kHz (high perf), ±8G, 100 Hz Anti-aliasing filter bandwidth and Gyro: 208 Hz (high performance), ±2000dps.
+
+Changing the sensitivity with this subcmd, also changes the following for some reason: Acc: 200 Hz AA filter bandwidth and Gyro: 833 Hz (high perf).
 
 Gyroscope sensitivity (Byte 0):
 
