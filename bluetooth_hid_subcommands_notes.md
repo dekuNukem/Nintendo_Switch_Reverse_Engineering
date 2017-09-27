@@ -103,16 +103,22 @@ Left_trigger_ms = ((byte[1] << 8) | byte[0]) * 10;
 
 Replies a uint8 with a value of `x01`.
 
-### Subcommand 0x06: Reset connection (Disconnect/reboot)
+### Subcommand 0x06: Set power state (sleep/reboot/turn off)
 
-Causes the controller to disconnect or reboot.
+Causes the controller to change power state.
 
-Takes as argument.
+Takes as argument a uint8_t:
 
-| Arg value # | Remarks    |
-|:-----------:|:----------:|
-|   0         | Disconnect |
-|   1         | Reboot     |
+| Arg value # | Remarks                  |
+|:-----------:|:------------------------:|
+|   `x00`     | Deep sleep / Disconnect  |
+|   `x01`     | Cold Reboot              |
+|   `x02`     | Reboot into pairing mode |
+|   `x04`     | Turn off                 |
+
+Option `x01`: Tt does a reboot and goes into deep sleep mode.
+Option `x02`: If some time passes without pairing, the controller tries to connect to the last valid connection.
+Option `x04`: It completely turns off and you can only power it up by pressing the SYNC button.
 
 ### Subcommand 0x07: Reset pairing info
 
@@ -173,23 +179,23 @@ Takes one argument:
 |   `01`     | Resume            |
 |   `02`     | Resume for update |
 
-### Subcommand 0x28: Set unknown data
+### Subcommand 0x28: Set unknown MCU data
 
 Replies with ACK `x80` `x28`.
 
-### Subcommand 0x29: Get `x28` data
+### Subcommand 0x29: Get `x28` MCU data
 
 Replies with ACK `xA8` `x29`. Sometimes these subcmd take arguments.
 
-### Subcommand 0x2A: Set Unknown data
+### Subcommand 0x2A: Set Unknown MCU data
 
 Replies with ACK `x00` `x2A`.
 
 `x00` as an ACK, means it failed. Some commands if you send wrong arguments reply with this.
 
-### Subcommand 0x2B: Get `x29` data?
+### Subcommand 0x2B: Get `x29` MCU data
 
-Replies with ACK `xA9` `x2B`. Sometimes these subcmd take arguments.
+Replies with ACK `xA9` `x2B`.
 
 ### Subcommand 0x30: Set player lights
 
@@ -269,29 +275,41 @@ One argument of `x00` Disable  or `x01` Enable.
 
 ### Subcommand 0x41: Set IMU sensitivity
 
-Sets the 6-axis sensor sensitivity for accelerometer and gyroscope.
+Sets the 6-axis sensor sensitivity for accelerometer and gyroscope. 4 uint8_t.
 
-Sending x40 x01 (IMU enable), it it was previously disabled, resets your configuration to Acc: 1.66 kHz (high perf), ±8G, 100 Hz Anti-aliasing filter bandwidth and Gyro: 208 Hz (high performance), ±2000dps.
-
-Changing the sensitivity with this subcmd, also changes the following for some reason: Acc: 200 Hz AA filter bandwidth and Gyro: 833 Hz (high perf).
+Sending x40 x01 (IMU enable), if it was previously disabled, resets your configuration to Acc: 1.66 kHz (high perf), ±8G, 100 Hz Anti-aliasing filter bandwidth and Gyro: 208 Hz (high performance), ±2000dps..
 
 Gyroscope sensitivity (Byte 0):
 
-| Arg # | Remarks  |
-|:-----:|:--------:|
-| `00`  | ±250dps  |
-| `01`  | ±500dps  |
-| `02`  | ±1000dps |
-| `03`  | ±2000dps |
+| Arg # | Remarks            |
+|:-----:|:------------------:|
+| `00`  | ±250dps            |
+| `01`  | ±500dps            |
+| `02`  | ±1000dps           |
+| `03`  | ±2000dps (default) |
 
 Accelerometer sensitivity (Byte 1):
 
-| Arg # | Remarks |
-|:-----:|:-------:|
-| `00`  | ±8G     |
-| `01`  | ±4G     |
-| `02`  | ±2G     |
-| `03`  | ±16G    |
+| Arg # | Remarks       |
+|:-----:|:-------------:|
+| `00`  | ±8G (default) |
+| `01`  | ±4G           |
+| `02`  | ±2G           |
+| `03`  | ±16G          |
+
+Gyroscope performance rate (Byte 2):
+
+| Arg # | Remarks                    |
+|:-----:|:--------------------------:|
+| `00`  | 833Hz (high perf)          |
+| `01`  | 208Hz (high perf, default) |
+
+Accelerometer Anti-aliasing filter bandwidth (Byte 3):
+
+| Arg # | Remarks         |
+|:-----:|:---------------:|
+| `00`  | 200Hz           |
+| `01`  | 100Hz (default) |
 
 ### Subcommand 0x42: Write to IMU registers
 
