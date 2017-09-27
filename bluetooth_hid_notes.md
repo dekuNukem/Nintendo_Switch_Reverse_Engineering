@@ -211,12 +211,12 @@ The checksum is calculated as `0x100 - Sum of Bytes`.
 
 Indirect memory map:
 
-| Address #   |  Size   | Remarks                                |
-|:-----------:|:-------:| -------------------------------------- |
-| `x00000000` | `C8000` | BCM20734's ROM                         |
-| `x08000000` | `80000` | MCU EEPROM? Device crashes, when read. |
-| `xF8000000` | `80000` | SPI                                    |
-| `xFF000000` |         | Unused. It returns all xAA.            |
+| Address #   |  Size   | Remarks              |
+|:-----------:|:-------:| -------------------- |
+| `x00000000` | `C8000` | BCM20734's ROM       |
+| `x000D0000` | `10000` | RAM region 1 (64KB)  |
+| `x00200000` | `48000` | RAM region 2 (288KB) |
+| `xF8000000` | `80000` | SPI                  |
 
 ### FEATURE 0x72: Memory read
 
