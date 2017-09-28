@@ -103,16 +103,22 @@ Left_trigger_ms = ((byte[1] << 8) | byte[0]) * 10;
 
 Replies a uint8 with a value of `x01`.
 
-### Subcommand 0x06: Reset connection (Disconnect/reboot)
+### Subcommand 0x06: Set power state (sleep/reboot/turn off)
 
-Causes the controller to disconnect or reboot.
+Causes the controller to change power state.
 
-Takes as argument.
+Takes as argument a uint8_t:
 
-| Arg value # | Remarks    |
-|:-----------:|:----------:|
-|   0         | Disconnect |
-|   1         | Reboot     |
+| Arg value # | Remarks                  |
+|:-----------:|:------------------------:|
+|   `x00`     | Deep sleep / Disconnect  |
+|   `x01`     | Cold Reboot              |
+|   `x02`     | Reboot into pairing mode |
+|   `x04`     | Turn off                 |
+
+Option `x01`: Tt does a reboot and goes into deep sleep mode.
+Option `x02`: If some time passes without pairing, the controller tries to connect to the last valid connection.
+Option `x04`: It completely turns off and you can only power it up by pressing the SYNC button.
 
 ### Subcommand 0x07: Reset pairing info
 
@@ -173,23 +179,23 @@ Takes one argument:
 |   `01`     | Resume            |
 |   `02`     | Resume for update |
 
-### Subcommand 0x28: Set unknown data
+### Subcommand 0x28: Set unknown MCU data
 
 Replies with ACK `x80` `x28`.
 
-### Subcommand 0x29: Get `x28` data
+### Subcommand 0x29: Get `x28` MCU data
 
 Replies with ACK `xA8` `x29`. Sometimes these subcmd take arguments.
 
-### Subcommand 0x2A: Set Unknown data
+### Subcommand 0x2A: Set Unknown MCU data
 
 Replies with ACK `x00` `x2A`.
 
 `x00` as an ACK, means it failed. Some commands if you send wrong arguments reply with this.
 
-### Subcommand 0x2B: Get `x29` data?
+### Subcommand 0x2B: Get `x29` MCU data
 
-Replies with ACK `xA9` `x2B`. Sometimes these subcmd take arguments.
+Replies with ACK `xA9` `x2B`.
 
 ### Subcommand 0x30: Set player lights
 
@@ -263,48 +269,78 @@ Table of Mini Cycle configuration:
 | `x23`, Low     | Unused                                    |
 | `x24` High/Low | Fading/LED Duration Multipliers for MC 15 |
 
-### Subcommand 0x40: Enable 6-Axis sensor
+### Subcommand 0x40: Enable IMU (6-Axis sensor)
 
 One argument of `x00` Disable  or `x01` Enable.
 
-### Subcommand 0x41: Set 6-Axis sensor sensitivity
+### Subcommand 0x41: Set IMU sensitivity
 
-Sets the 6-axis sensor sensitivity for accelerometer and gyroscope.
+Sets the 6-axis sensor sensitivity for accelerometer and gyroscope. 4 uint8_t.
 
-Sending x40 x01 (IMU enable) resets your configuration to default ±8G / 2000dps.
+Sending x40 x01 (IMU enable), if it was previously disabled, resets your configuration to Acc: 1.66 kHz (high perf), ±8G, 100 Hz Anti-aliasing filter bandwidth and Gyro: 208 Hz (high performance), ±2000dps..
 
 Gyroscope sensitivity (Byte 0):
 
-| Arg # | Remarks  |
-|:-----:|:--------:|
-| `00`  | ±250dps  |
-| `01`  | ±500dps  |
-| `02`  | ±1000dps |
-| `03`  | ±2000dps |
+| Arg # | Remarks            |
+|:-----:|:------------------:|
+| `00`  | ±250dps            |
+| `01`  | ±500dps            |
+| `02`  | ±1000dps           |
+| `03`  | ±2000dps (default) |
 
 Accelerometer sensitivity (Byte 1):
 
-| Arg # | Remarks |
-|:-----:|:-------:|
-| `00`  | ±8G     |
-| `01`  | ±4G     |
-| `02`  | ±2G     |
-| `03`  | ±16G    |
+| Arg # | Remarks       |
+|:-----:|:-------------:|
+| `00`  | ±8G (default) |
+| `01`  | ±4G           |
+| `02`  | ±2G           |
+| `03`  | ±16G          |
 
-### Subcommand 0x42: 6-Axis sensor write
+Gyroscope performance rate (Byte 2):
 
-### Subcommand 0x43: Get all 6-Axis sensor values and configuration
+| Arg # | Remarks                    |
+|:-----:|:--------------------------:|
+| `00`  | 833Hz (high perf)          |
+| `01`  | 208Hz (high perf, default) |
+
+Accelerometer Anti-aliasing filter bandwidth (Byte 3):
+
+| Arg # | Remarks         |
+|:-----:|:---------------:|
+| `00`  | 200Hz           |
+| `01`  | 100Hz (default) |
+
+### Subcommand 0x42: Write to IMU registers
+
+It takes 3 uint8_t arguments and writes to the selected register. You can write only writable registers (r/w).
+
+Consult LSM6DS3.pdf for all registers and their meaning. The registers addresses are mapped 1:1 in the subcmd.
+
+With this subcmd you can completely control the IMU.
+
+| Byte # | Remarks                  |
+|:------:|:------------------------:|
+| `00`   | Register address         |
+| `01`   | Always `x01` for writing |
+| `02`   | Value to write           |
+
+### Subcommand 0x43: Read IMU registers
 
 It takes 2 uint8t_t.
 
-To view all bytes send `xF20` for the first page and `x2F20` for the second.
+| Byte # | Remarks                    |
+|:------:| -------------------------- |
+| `00`   | Register start address     |
+| `01`   | Registers to show. Max x20 |
 
-The values you can check are acc, gyro, configuration, registers and many more.
+It replies with `xC043##$$`, where ## is the first register address to show and $$ is how many registers to show. After these the data follows.
 
-| Byte # | Remarks                          |
-|:------:| -------------------------------- |
-| `00`   | Offset of values                 |
-| `01`   | How many values to show. Max x20 |
+For example, by sending `x0020` you can view registers `x00` - `x1F`, `x2020`: `x20` - `x2F`, etc.
+
+To quickly get the register you need, send `x##01` (## is the register address) and parse the 1st byte after the subcmd + args reply (`xC043##$$`).
+
+Consult LSM6DS3.pdf for all registers and their meaning. The registers addresses are mapped 1:1 in the subcmd.
 
 ### Subcommand 0x48: Enable vibration
 
