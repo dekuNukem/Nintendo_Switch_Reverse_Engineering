@@ -213,9 +213,10 @@ Indirect memory map:
 
 | Address #   |  Size   | Remarks              |
 |:-----------:|:-------:| -------------------- |
-| `x00000000` | `C8000` | BCM20734's ROM       |
+| `x00000000` | `C8000` | ROM region 1 (800KB) |
 | `x000D0000` | `10000` | RAM region 1 (64KB)  |
 | `x00200000` | `48000` | RAM region 2 (288KB) |
+| `x00260000` | `C000`  | ROM region 2 (48KB)  |
 | `xF8000000` | `80000` | SPI                  |
 
 ### FEATURE 0x72: Memory read
