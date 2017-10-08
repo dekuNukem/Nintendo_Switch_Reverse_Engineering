@@ -356,14 +356,18 @@ One argument of `x00` Disable  or `x01` Enable.
 
 Replies with ACK `xD0` `x50` and a little-endian uint16. Raises when charging a Joy-Con.
 
-|   Range #            |   Range mV  | Reported battery |
-|:--------------------:|:-----------:| ---------------- |
-|   `x052B` - `x059F`  | 1323 - 1439 | 2 - Critical     |
-|   `x05A0` - `x05DF`  | 1440 - 1503 | 4 - Low          |
-|   `x05E0` - `x0617`  | 1504 - 1559 | 6 - Medium       |
-|   `x0618` - `x0690`  | 1560 - 1680 | 8 - Full         |
+These seem to follow a curve between 3.3V and 4.2V. So a 0.4 multiplier can get us the real battery voltage in mV?
 
-Tests showed charging stops at around 1680mV and the controller turns off at around 1323mV.
+Based on this info, we have the following table:
+
+|   Range #            |   Range     | Range in mV | Reported battery |
+|:--------------------:|:-----------:|:-----------:| ---------------- |
+|   `x0528` - `x059F`  | 1320 - 1439 | 3300 - 3599 | 2 - Critical     |
+|   `x05A0` - `x05DF`  | 1440 - 1503 | 3600 - 3759 | 4 - Low          |
+|   `x05E0` - `x0617`  | 1504 - 1559 | 3760 - 3899 | 6 - Medium       |
+|   `x0618` - `x0690`  | 1560 - 1680 | 3900 - 4200 | 8 - Full         |
+
+Tests showed charging stops at 1680 and the controller turns off at 1320.
 
 ### Subcommand 0x51: Set unknown data. Connection status?
 
