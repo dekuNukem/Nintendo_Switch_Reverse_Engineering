@@ -103,22 +103,28 @@ Left_trigger_ms = ((byte[1] << 8) | byte[0]) * 10;
 
 Replies a uint8 with a value of `x01`.
 
-### Subcommand 0x06: Set power state (sleep/reboot/turn off)
+### Subcommand 0x06: Set HCI state (disconnect/page/pair/turn off)
 
 Causes the controller to change power state.
 
 Takes as argument a uint8_t:
 
-| Arg value # | Remarks                  |
-|:-----------:|:------------------------:|
-|   `x00`     | Deep sleep / Disconnect  |
-|   `x01`     | Cold Reboot              |
-|   `x02`     | Reboot into pairing mode |
-|   `x04`     | Turn off                 |
+| Arg value # | Remarks                                       |
+|:-----------:| --------------------------------------------- |
+|   `x00`     | Disconnect (sleep mode / page scan mode)      |
+|   `x01`     | Reboot and Reconnect (page mode)              |
+|   `x02`     | Reboot and enter Pair mode (discoverable)     |
+|   `x04`     | Reboot and Reconnect (page mode / HOME mode?) |
 
-Option `x01`: Tt does a reboot and goes into deep sleep mode.
-Option `x02`: If some time passes without pairing, the controller tries to connect to the last valid connection.
-Option `x04`: It completely turns off and you can only power it up by pressing the SYNC button.
+Option `x01`: It does a reboot and tries to reconnect. If no host is found, it goes into sleep.
+
+Option `x02`: If some time passes without a pairing, or pressing a button, the controller connects to the last active BD_ADDR.
+
+Option `x04`: It does a reboot and tries to reconnect. If no host is found, it goes into sleep. It probably does more, as this mode is calle HOME mode.
+
+Page mode (x01, x04) is not to be confused with page scan mode. It's like pressing a button to reconnect, but it does it automatically.
+
+All extra modes default to sleep mode if nothing happens. This is a R1 page scan mode which can accept a request from host (as seen with the "Search for Controllers" option).
 
 ### Subcommand 0x07: Reset pairing info
 
