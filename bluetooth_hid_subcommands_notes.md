@@ -103,22 +103,28 @@ Left_trigger_ms = ((byte[1] << 8) | byte[0]) * 10;
 
 Replies a uint8 with a value of `x01`.
 
-### Subcommand 0x06: Set power state (sleep/reboot/turn off)
+### Subcommand 0x06: Set HCI state (disconnect/page/pair/turn off)
 
 Causes the controller to change power state.
 
 Takes as argument a uint8_t:
 
-| Arg value # | Remarks                  |
-|:-----------:|:------------------------:|
-|   `x00`     | Deep sleep / Disconnect  |
-|   `x01`     | Cold Reboot              |
-|   `x02`     | Reboot into pairing mode |
-|   `x04`     | Turn off                 |
+| Arg value # | Remarks                                       |
+|:-----------:| --------------------------------------------- |
+|   `x00`     | Disconnect (sleep mode / page scan mode)      |
+|   `x01`     | Reboot and Reconnect (page mode)              |
+|   `x02`     | Reboot and enter Pair mode (discoverable)     |
+|   `x04`     | Reboot and Reconnect (page mode / HOME mode?) |
 
-Option `x01`: Tt does a reboot and goes into deep sleep mode.
-Option `x02`: If some time passes without pairing, the controller tries to connect to the last valid connection.
-Option `x04`: It completely turns off and you can only power it up by pressing the SYNC button.
+Option `x01`: It does a reboot and tries to reconnect. If no host is found, it goes into sleep.
+
+Option `x02`: If some time passes without a pairing, or pressing a button, the controller connects to the last active BD_ADDR.
+
+Option `x04`: It does a reboot and tries to reconnect. If no host is found, it goes into sleep. It probably does more, as this mode is calle HOME mode.
+
+Page mode (x01, x04) is not to be confused with page scan mode. It's like pressing a button to reconnect, but it does it automatically.
+
+All extra modes default to sleep mode if nothing happens. This is a R1 page scan mode which can accept a request from host (as seen with the "Search for Controllers" option).
 
 ### Subcommand 0x07: Reset pairing info
 
@@ -350,14 +356,18 @@ One argument of `x00` Disable  or `x01` Enable.
 
 Replies with ACK `xD0` `x50` and a little-endian uint16. Raises when charging a Joy-Con.
 
-|   Range #            |   Range mV  | Reported battery |
-|:--------------------:|:-----------:| ---------------- |
-|   `x052B` - `x059F`  | 1323 - 1439 | 2 - Critical     |
-|   `x05A0` - `x05DF`  | 1440 - 1503 | 4 - Low          |
-|   `x05E0` - `x0617`  | 1504 - 1559 | 6 - Medium       |
-|   `x0618` - `x0690`  | 1560 - 1680 | 8 - Full         |
+These seem to follow a curve between 3.3V and 4.2V. So a 0.4 multiplier can get us the real battery voltage in mV?
 
-Tests showed charging stops at around 1680mV and the controller turns off at around 1323mV.
+Based on this info, we have the following table:
+
+|   Range #            |   Range     | Range in mV | Reported battery |
+|:--------------------:|:-----------:|:-----------:| ---------------- |
+|   `x0528` - `x059F`  | 1320 - 1439 | 3300 - 3599 | 2 - Critical     |
+|   `x05A0` - `x05DF`  | 1440 - 1503 | 3600 - 3759 | 4 - Low          |
+|   `x05E0` - `x0617`  | 1504 - 1559 | 3760 - 3899 | 6 - Medium       |
+|   `x0618` - `x0690`  | 1560 - 1680 | 3900 - 4200 | 8 - Full         |
+
+Tests showed charging stops at 1680 and the controller turns off at 1320.
 
 ### Subcommand 0x51: Set unknown data. Connection status?
 
