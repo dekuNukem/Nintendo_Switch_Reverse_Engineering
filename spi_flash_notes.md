@@ -1,26 +1,30 @@
 #SPI Flash Memory Information
 
-## Memory map
+## SPI memory map
 
-| Section Name       |  Offset | Size    | Remarks                                                                   |
-| ------------------ |:-------:|:-------:| ------------------------------------------------------------------------- |
-| Static             | `x0000` | `x1000` | Stores static data like BT address, OTA DS 1 offset, etc                  |
-| Failsafe           | `x1000` | `x1000` | Stores OTA Signature Magic and OTA Dynamic Section 2 offset               |
-| Volatile           | `x2000` | `x1000` | Stores last connected device, data for Sticks and Sensor calibration      |
-| Volatile (Back up) | `x3000` | `x1000` | Empty                                                                     |
-| Dynamic            | `x4000` | `x7C000`| Stores Factory configuration and calibration, user calibration and OTA FW |
+| Section Name            |  Offset | Size    | Remarks                                                              |
+| ----------------------- |:-------:|:-------:| -------------------------------------------------------------------- |
+| Initial PatchRAM        | `x0000` | `x1000` | Stores static data like BT address, OTA DS 1 offset, etc             |
+| Failsafe                | `x1000` | `x1000` | Stores OTA Signature Magic and OTA Dynamic Section 2 offset          |
+| Pairing info            | `x2000` | `x1000` | Stores last connected device, data for Sticks and Sensor calibration |
+| Pairing info (factory)  | `x3000` | `x1000` | Empty. (Dev-units use it?)                                           |
+| Pairing info (factory2) | `x4000` | `x1000` | Empty. (Dev-units use it?)                                           |
+| Shipment                | `x5000` | `x1000` | Only first byte is used                                              |
+| Config and calibration  | `x6000` | `xA000` | Stores Factory configuration and calibration, user calibration       |
+| PatchRAM section        | `x10000`| `x70000 | Stores Broadcom PatchRAMs, by default @0x10000 and @0x28000          |
 
-## x0000: Static data
+## x0000: Initial PatchRAM
 
-Static section data starts at `x0000` and ends at `x03B0`.
+Initial PatchRAM section starts at `x0000` and ends at `x03B0`. Has a total of 13 records and does not end with the usual PatchRAM EOF footer (xFE 0000).
 
-Includes Magic numbers, OTA FW 1 offset? and other. 
+Includes Magic numbers, OTA FW DS1 address and code that loads the PatchRAM @0x10000 or @0x28000 by checking the 0xx1ff4 address.
 
-|    Range        |        Sample                      | Remarks                                                        |
-|:---------------:|:----------------------------------:| -------------------------------------------------------------- |
-| `x0000`-`x0010` | `01 08 00 F0 00 00 62 08 C0 5D 89` | Static region Magic                                            |
-| `x0015`-`x001A` | `x57 30 EA 8A BB 7C`               | Bluetooth MAC Address, reversed (7C:BB:8A:EA:30:57)            |
-| `x03B3`-`x03B7` | `x00000100`                        | Dynamic Section Offset 1 for OTA FW, Little-Endian (`x010000`) |
+|    Range        |        Sample                      | Remarks                                             |
+|:---------------:|:----------------------------------:| --------------------------------------------------- |
+| `x0000`-`x0010` | `01 08 00 F0 00 00 62 08 C0 5D 89` | Loader Magic or it sends x895DC008 @x620000F0 MMIO  |
+| `x0012`-`x001A` | `40 0600 x5730EA8ABB7C`            | BD_ADDR type record, in LE (7C:BB:8A:EA:30:57)      |
+| `x001B`-`x03AF` | ---                                | Initial code that loads one of the main PatchRAM    |
+| `x03B0`-`x03B7` | `02 0A 00000100 00200000 0010`     | DS1 Uint32LE (`x010000`) and 2 values (x200, x1000) |
 
 ## x1000 Failsafe mechanism
 
@@ -49,8 +53,8 @@ By connecting through USB (Charging grip), it keeps the active section and the c
 
 Can be reset with `x07` subcommand.
 
-|  Section Range  | Subsection Range | Remarks                                               |
-|:---------------:|:----------------:| ----------------------------------------------------- |
+|  Section Range  | Subsection Range | Remarks                                                         |
+|:---------------:|:----------------:| --------------------------------------------------------------- |
 | `x2000`-`x2025` | -------------    | Pairing info section 1                                          |
 |                 | `x2000`          | Magic. Used=`x95`, Unused=`x00`. If `x00`, checks next section. |
 |                 | `x2001`          | Size of pairing data. Always `x22` bytes                        |
@@ -70,6 +74,18 @@ Can be reset with `x07` subcommand.
 |                 | `x204A`          | Switch=`x68`, PC=`x08`                                          |
 |                 | `x204B`          | Always zero                                                     |
 | --              | --               | The layout is repeated according to saved pairings              |
+
+## x3000 Pairing info (factory)
+
+It copies and uses the pairing info from here to 0x2000.
+
+## x4000 Pairing info (factory2)
+
+It copies the pairing info from here to 0x3000, checks if OK and erases it.
+
+## x5000 Shipment
+
+The first byte is probably set to x1 on new Joy-Con. Switch makes sure to set it to 0.
 
 ## x6000 Factory Configuration and Calibration
 
@@ -117,27 +133,27 @@ This section holds user generated 6-Axis Motion Sensor and Analog Sticks calibra
 00008030: 0040 0040 0e00 fcff e0ff 3b34 3b34 3b34] ; Motion Control Calibration data
 ```
 
-## x010000 Over-The-Air Firmware
-Valid areas for OTA FW updates are DS1 `@x10000` and DS2 `@x28000`.
+## x010000 Broadcom PatchRAM (OTA FW update)
+Valid areas for PatchRAM are DS1 `@x10000` and DS2 `@x28000`.
 
 Which one is loaded is decided by matching the OTA Signature Magic at `x1FF4`. If it matches, it checks the DS2 offset at `x1FFC` and loads OTA in DS2, otherwise it loads DS1 which is pointed by `x03B3` at static section.
 
-Normally the firmware at `x010000` is older.
+Normally the PatchRAM size for Joy-Con is max 96KB, but if the code fits RAM, it can go higher and itt can be updated through UART and Bluetooth.
 
-Maximum size for OTA Firmware is 96KB.
+It patches ROM and RAM and keeps all the customized code for Joy-Con proprietary protocol, hw configuration, internal communication, patches from Broadcom, etc. 
 
-It keeps the Joy-Con application code and patches to the actual firmware.
+It uses records defined, by a uint8_t record type, a uint16LE size and data[size]. There's no checksum, so, user can modify it and it will load, if the modifications were correct, otherwise it will bootloop. The currently known records are 0x40 (BD_ADDR), 0x08 (patches ROM) and 0x0A (patches RAM).
 
-It can be updated through UART and Bluetooth.
+The PatchRAM (OTA FW) is not to be confused with the actual ROM firmware (848KB) of BCM20734.
 
-The OTA FW is not to be confused with the actual Firmware in the 848KB ROM of BCM20734.
+For a parser or an ida loader check [shuffle2's nxpad](https://github.com/shuffle2/nxpad).
 
 
 ## Analog stick factory and user calibration
 
 3 groups of 3 bytes. 
 
-The general code to decode each 3 byte group into uint16t_t is:
+The general code to decode each 3 byte group into uint16_t is:
 ```
 uint16_t data[6]
 data[0] = (stick_cal[1] << 8) & 0xF00 | stick_cal[0];
@@ -192,7 +208,7 @@ Each group defines the X Y Z axis.
 
 Sample (Big-Endian):
 
-| int16t_t # | Sample XYZ       | Remarks                                                                |
+| int16_t #  | Sample XYZ       | Remarks                                                                |
 |:----------:|:----------------:| ---------------------------------------------------------------------- |
 | `0` - `2`  | `FFB0 FEB9 00E0` | Acc XYZ origin position when completely horizontal and stick is upside |
 | `3` - `5`  | `4000 4000 4000` | Acc XYZ sensitivity special coeff, for default sensitivity: ±8G.       |
@@ -201,7 +217,7 @@ Sample (Big-Endian):
 
 For the sensitivities conversion check [here](imu_sensor_notes.md#convert-to-basic-useful-data-using-spi-calibration).
 
-Reference code for converting from uint16t_t to int16t_t for doing the above calculations:
+Reference code for converting from uint16_t to int16_t for doing the above calculations:
 
 ```
 int16_t uint16_to_int16(uint16_t a) {
@@ -247,7 +263,7 @@ Each section is for different stick.
 
 ##### Dead-zone:
 
-It is used to all directions, so it isn't divided by 2. It behaves like a circular dead-zone. Changing it as big as a half axis range, produces a circular d-pad style behavior.
+It is used to all directions, so it isn't divided by 2. It behaves like a radial dead-zone. Changing it as big as a half axis range, produces a circular d-pad style behavior. The default values for Joy-Con translates to ~15% and ~10% for Pro controller.
 
 ##### Range ratio:
 
