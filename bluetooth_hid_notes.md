@@ -1,5 +1,3 @@
-
-
 # Bluetooth HID Information
 
 ## Output reports
@@ -188,7 +186,7 @@ Enables FW update. Unlocks Erase/Write memory commands.
 
 The buffer sent must be exactly one byte. If else, Joy-Con rejects it.
 
-The only possible ways to send it, is a Linux device with patched hidraw to accept 1 byte reports or a custom bluetooth developement kit. 
+The only possible ways to send it, is a Linux device with patched hidraw to accept 1 byte reports or a custom bluetooth development kit. 
 
 | Byte # |  Sample  | Remarks                        |
 |:------:|:--------:| ------------------------------ |
@@ -209,15 +207,15 @@ Prepares the SPI Read report with the requested address and size.
 
 The checksum is calculated as `0x100 - Sum of Bytes`.
 
-Indirect memory map:
+Memory map:
 
-| Address #   |  Size   | Remarks              |
-|:-----------:|:-------:| -------------------- |
-| `x00000000` | `C8000` | ROM region 1 (800KB) |
-| `x000D0000` | `10000` | RAM region 1 (64KB)  |
-| `x00200000` | `48000` | RAM region 2 (288KB) |
-| `x00260000` | `C000`  | ROM region 2 (48KB)  |
-| `xF8000000` | `80000` | SPI                  |
+| Address #   |  Size   | Remarks                |
+|:-----------:|:-------:| ---------------------- |
+| `x00000000` | `C8000` | ROM region 1 (800KB)   |
+| `x000D0000` | `10000` | RAM region 1 (64KB)    |
+| `x00200000` | `48000` | RAM region 2 (288KB)   |
+| `x00260000` | `C000`  | ROM region 2 (48KB)    |
+| `xF8000000` | `80000` | SPI (512KB, fully R/W) |
 
 ### FEATURE 0x72: Memory read
 
@@ -247,11 +245,11 @@ The data returned has the following structure:
 
 The returned size is header + size in 0x71 ft report + 1. So make sure to get your report with an adequate buffer size.
 
-### FEATURE 0x73: Memory erase
+### FEATURE 0x73: Memory sector erase
 
 [Send] feature Report
 
-Erases specified address and size in SPI. Can erase locked sectors.
+Erases specified sector in SPI. Can erase locked sectors.
 
 Should be used only with SPI (0xF8000000 - 0xF807FFFF), because SPI needs to be erased before writing to it.
 
@@ -261,12 +259,16 @@ Should be used only with SPI (0xF8000000 - 0xF807FFFF), because SPI needs to be 
 |:------:|:-------------:| ------------------------------ |
 | 0      | `73`          | Feature report                 |
 | 1 - 4  | `00 80 02 F8` | UInt32LE address               |
-| 5 - 6  | `00 10`       | UInt16LE size. Max 4KB?        |
+| 5 - 6  | `00 10`       | UInt16LE size.                 |
 | 7      | `03`          | Checksum (8-bit 2s Complement) |
+
+This command only checks `& 0x00FFF000` to acquire the sector number. Size is also irrelevant, but it's best to use values `x01 - x100`.
 
 #### Warning:
 
-Don't try to erase anything on the static xF8000000 - xF8000FFF region. It will brick your device and you are gonna need a SPI programmer.
+This erases the whole sector. If you send xF35628F8 x0400, it will not erase 4bytes @x2856F3. It will erase the whole x285000 sector.
+
+You need to read the sector, change the values you want and then erase and program them back.
 
 ### FEATURE 0x74: Memory write
 
@@ -286,13 +288,13 @@ Writes to SPI. Can write locked sectors.
 
 #### Warning:
 
-Don't try to write anything on the static xF8000000 - xF8000FFF region. It will brick your device and you are gonna need a SPI programmer.
+Check ft report x73 for info in erasing first.
 
 ### FEATURE 0x75: Launch (Reboot)
 
 [Send] feature Report
 
-Reboots and executes the firmware in the given address.
+Reboots and executes the firmware rom in the given address.
 
 If address is `x0000` the Host should assume that the device will reboot.
 
@@ -300,11 +302,15 @@ If address is `x0000` the Host should assume that the device will reboot.
 
 | Byte #  |  Sample       | Remarks                                  |
 |:-------:|:-------------:| ---------------------------------------- |
-| 0       | `74`          | Feature report                           |
+| 0       | `75`          | Feature report                           |
 | 1 - 4   | `00 80 02 F8` | UInt32LE entry address for firmware jump |
-| 5 - 6   | `00 00`       | UInt16LE size. Always 0.                 |
-| 7       | `00`          | Always 0                                 |
+| 5 - 6   | `04 00`       | UInt16LE size. Always 4.                 |
+| 7       | `00 80 02 F8` | UInt32LE entry address for firmware jump |
 | 8       | `DC`          | Checksum (8-bit 2s Complement)           |
+
+Sending x75 00000000 0400 00000000 CRC will reboot the device and load the bootrom at 0x0. This is a good practice after finishing erasing/writing proccess.
+
+Exchanging the SPI chip with a compatible one, but bigger size, user can use his own modified ROM firmware (must change addresses) and PatchRAM and launch it by using the above command to send the new address. Also, by modifying the initial PatchRAM in SPI at 0x0, you can create a similar logic that will launch the custom rom in every reboot without using x75 cmd. Additionally, you can add button scan to dual boot ROM firmware or PatchRAM.
 
 ### FEATURE 0xCC
 
