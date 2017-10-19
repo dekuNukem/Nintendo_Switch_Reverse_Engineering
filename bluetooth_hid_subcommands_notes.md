@@ -56,7 +56,7 @@ Response data after 02 command byte:
 
 | Byte # | Sample              | Remarks                                                  |
 |:------:|:-------------------:| -------------------------------------------------------- |
-|  0-1   | `03 48`             | Firmware Version. Latest is 3.48                         |
+|  0-1   | `03 48`             | Firmware Version. Latest is 3.86 (from 4.0.0 and up).    |
 |  2     | `01`                | 1=Left Joy-Con, 2=Right Joy-Con, 3=Pro Controller.       |
 |  3     | `02`                | Unknown. Seems to be always `02`                         |
 |  4-9   | `7C BB 8A EA 30 57` | Joy-Con MAC address in Big Endian                        |
@@ -184,6 +184,16 @@ Takes one argument:
 |   `00`     | Suspend           |
 |   `01`     | Resume            |
 |   `02`     | Resume for update |
+
+### Subcommand 0x24: Set unknown data (fw 3.86 and up)
+
+Gets a 38 byte long argument.
+
+Sets a byte to `x01` (enable something?) and sets also an unknown data (configuration? for MCU?) to the bt device struct that copies it from given argument. Replies with `x80 24 00` always.
+
+### Subcommand 0x25: Reset 0x24 unknown data (fw 3.86 and up)
+
+Sets a byte to `x00` (disable something?) and resets the previous 38 byte data to all zeroes. Replies with `x80 25 00` always.
 
 ### Subcommand 0x28: Set unknown MCU data
 
