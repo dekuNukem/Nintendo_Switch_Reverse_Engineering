@@ -71,7 +71,7 @@ One argument:
 |:----------:| ------------------------------------------------------------------------------------------------ |
 |   `00`     | Used with cmd `x11`. Active polling for IR camera data. 0x31 data format must be set first       |
 |   `01`     | Same as `00`                                                                                     |
-|   `02`     | Same as `00`. Active polling mode for IR camera data. Special IR mode or before configuring it?  |
+|   `02`     | Same as `00`. Active polling mode for IR camera data. For specific IR modes                      |
 |   `23`     | MCU update state report?                                                                         |
 |   `30`     | Standard full mode. Pushes current state @60Hz                                                   |
 |   `31`     | NFC/IR mode. Pushes large packets @60Hz                                                          |
@@ -79,7 +79,7 @@ One argument:
 |   `35`     | Unknown mode.                                                                                    |
 |   `3F`     | Simple HID mode. Pushes updates with every button press                                          |
 
-Starts pushing input data at 60Hz.
+`31` input report has all zeroes for IR/NFC data if a `11` ouput report with subcmd `03 00` or `03 01` or `03 02` was not sent before.
 
 ### Subcommand 0x04: Trigger buttons elapsed time
 
@@ -168,16 +168,15 @@ Subcommand reply echoes the address, size, plus a uint8 status. `x00` = success,
 Takes a Little-endian uint32. Erases the whole 4KB in the specified address to 0xFF.
 Subcommand reply echos the address, plus a uint8 status. `x00` = success, `x01` = write protected.
 
-### Subcommand 0x20: MCU (Microcontroller for Sensors and Peripherals) reset
+### Subcommand 0x20: Reset MCU
 
-### Subcommand 0x21: Write configuration to MCU
+### Subcommand 0x21: Set MCU configuration
 
 Write configuration data to MCU. This data can be IR configuration, NFC configuration or data for the 512KB MCU firmware update.
 
-### Subcommand 0x22: MCU Resume mode
+### Subcommand 0x22: Set MCU state
 
 Takes one argument:
-
 
 | Argument # | Remarks           |
 |:----------:| ----------------- |
@@ -197,21 +196,25 @@ Sets a byte to `x00` (disable something?) and resets the previous 38 byte data t
 
 ### Subcommand 0x28: Set unknown MCU data
 
+Gets a 38 byte long argument and copies it to unknown array[195] at position 3.
+
+Does the same job with OUPUT report 0x12.
+
 Replies with ACK `x80` `x28`.
 
 ### Subcommand 0x29: Get `x28` MCU data
 
-Replies with ACK `xA8` `x29`. Sometimes these subcmd take arguments.
+Replies with ACK `xA8` `x29` and a 34 bytes data, from a different buffer than the on the x28 writes.
 
-### Subcommand 0x2A: Set Unknown MCU data
+### Subcommand 0x2A: Set Unknown MCU configuration
 
-Replies with ACK `x00` `x2A`.
+Gets a uint8_t and checks it if it's 0 and uses the result to function that uses it for shifting a char by 1 or 0 bits.
 
-`x00` as an ACK, means it failed. Some commands if you send wrong arguments reply with this.
+Replies always with ACK `x00` `x2A`.
 
 ### Subcommand 0x2B: Get `x29` MCU data
 
-Replies with ACK `xA9` `x2B`.
+Replies with ACK `xA9` `x2B` and a 20 byte long data (that has also a part from x24 subcmd).
 
 ### Subcommand 0x30: Set player lights
 
