@@ -38,7 +38,7 @@ Command to MCU.
 
 ### OUTPUT 0x12
 
-Unknown.
+Unknown. Does the same thing with 0x28 subcmd.
 
 #### Rumble data
 
