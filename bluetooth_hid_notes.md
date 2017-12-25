@@ -135,7 +135,7 @@ The middle byte is shared between the controllers.
 | 11                | `70`, `C0`, `B0`      | Vibrator input report. Decides if next vibration pattern should be sent.            |
 | 12  (ID `21`)     | `00`, `80`, `90`, `82`| ACK for subcommand reply. If simple ACK, `80`. If reply has data, subcmd ID is added to `80`. If problem or out of range, `00` |
 | 13  (ID `21`)     | `02`, `10`, `03`      | Reply-to subcommand ID. The subcommand ID is used as-is.                            |
-| 14-48  (ID `21`)  | --                    | Subcommand reply data. Max 37 bytes.                                                |
+| 14-48  (ID `21`)  | --                    | Subcommand reply data. Max 35 bytes (excludes 2 byte subcmd ack above).             |
 | 12-48  (ID `23`)  | --                    | MCU FW update input report. Max 37 bytes.                                           |
 | 12-47  (ID `30`, `31`, `32`, `33`) | --   | 6-Axis data. 3 frames of 2 groups of 3 Int16LE each. Group is Acc followed by Gyro. |
 | 48-360  (ID `31`) | --                    | NFC/IR input report. Max 313 bytes.                                                 |
