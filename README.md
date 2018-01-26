@@ -124,7 +124,7 @@ I took apart 2 left Joy-Con, one grey one red. Below you can see the difference 
 
 ### Pesky checksums
 
-It turns out the last byte of each command seems to be a checksum of some sort, and without figuring it out it would be rather difficult testing what each command does because the console will not accept commands with the wrong checksum. 
+It turns out the last byte of each command sent over serial seems to be a checksum of some sort, and without figuring it out it would be rather difficult testing what each command does because the console will not accept commands with the wrong checksum. 
 
 Luckily here are some examples of the checksum, seeing it changes drastically with the difference of a single bit it's probably not some simple xor or modular checksum. If you can figure it out it would be really helpful.
 
@@ -143,74 +143,15 @@ The first 4 bytes are a header, with the 4th byte being the length of the remain
  
 There's some example code for calculating this CRC using a lookup table in [packet_parse/joycon_crc.py](./packet_parse/joycon_crc.py).
 
+*Note: these checksums are only sent over serial, not over the Bluetooth or USB HID mode.*
+
 ### Joy-Con status data packet
 
-In normal operation the console asks Joy-Con for an update every 15ms (66.6fps), the command for requesting update is:
-
-```
-19 01 03 08 00 92 00 01 00 00 69 2d 1f
-```
-
-Around 4ms later, Joy-Con respond with a 61 bytes long answer.
-
-One sample:
-
-```
-19 81 03 38 
-00 92 00 31 
-00 00 e9 2e 
-30 7f 40 00 
-00 00 65 f7 
-81 00 00 00 
-c0 23 01 e2 
-ff 3e 10 0a 
-00 d6 ff d0 
-ff 23 01 e1 
-ff 37 10 0a 
-00 d6 ff cf 
-ff 29 01 dd 
-ff 34 10 0a 
-00 d7 ff ce 
-ff 
-```
-
-Here is what I figured out:
-
-
-|   Byte #  |        Sample value       |               Remarks              |
-|:---------:|:-------------------------:|:----------------------------------:|
-|   0 to 8  | `19 81 03 38 00 92 00 31` |            Header, fixed           |
-| 16 and 17 |          `00 02`          |  Button status, see section below  |
-|     19    |            `f7`           | Joystick X value, reversed nibble? |
-|     20    |            `81`           |          Joystick Y value          |
-| 31 and 32 |          `4e 05`          |          Gyroscope X value         |
-| 33 and 34 |          `cc fb`          |          Gyroscope Y value         |
-| 35 and 36 |          `eb ff`          |          Gyroscope Z value         |
-| 37 and 38 |          `41 00`          |        Accelerometer X Value       |
-| 39 and 40 |          `1b 03`          |        Accelerometer Y Value       |
-| 41 and 42 |          `82 f0`          |        Accelerometer Z Value       |
-
-Each accelerometer and gyroscope axis data is 2 bytes long and forms a int16_t, last byte is the higher byte.
-
-### Button status
-
-The 16th and 17th byte (on line 5, before `65 f7`) are the button status, when a button is pressed the corresponding bit is set to 1.
-
-![Alt text](http://i.imgur.com/QXBaCIe.png)
-
-### Joystick value
-
-Byte 19 and 20 (`f7 81` between 5th and 6th line) are the Joystick values, most likely the raw 8-bit ADC data. Byte 19 is X while byte 20 is Y. Again, bizarrely, the X nibble is reversed, as in the `f7` should actually be `7f` (127 at neutral position). The Y value is correct though (`0x81` is 129).
-
-### The rest of them
-
-Still working on decoding those... It has to contain battery level, button status, joystick position, accelerometer and gyroscope data, and maybe more.
+See the [bluetooth_hid_subcommands_notes.md](./bluetooth_hid_subcommands_notes.md) file for details about the data transferred during normal operations (button status, joysticks, etc).
 
 ### Rumble commands
 
-I did a capture of the command sent from console to initiate a rumble on the Joy-Con. It was captured by pressing L to set off a bomb in BotW, which results in a fairly short rumble. [Here is the capture](./logic_captures/left_grey_joycon_botw_rumble.txt).
-
-You can see the console sends longer commands (17 bytes vs 8 bytes) during the rumble period. I'm yet to look into this, but of course you can.
+Details on rumble data are in the [rumble_data_table.md](./rumble_data_table.md) file.
 
 ## Touchscreen controller
 
