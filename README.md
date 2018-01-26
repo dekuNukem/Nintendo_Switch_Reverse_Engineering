@@ -4,11 +4,15 @@ I'm just going to dump all my discoveries here, and hopefully they would be usef
 
 ## Contact Information
 
-If you think something is wrong, have some observations that I might have missed, stuff you want to contribute, or just general questions please feel free to post here or contact me by email:
+Please feel free contact me by email if you have questions:
 
 `dekunukem_gmail_com`
 
-If you want to use the information here somewhere else, feel free to do so, but do please credit me (dekuNukem).
+If you want to use the information here somewhere else, feel free to do so, but do link back to this repo.
+
+## Contributors
+
+Please remember that the information in this repo is the work of a lot more people than just me, as I was focusing more on the hardware aspect. Please take a look at the [contributers list](https://github.com/dekuNukem/Nintendo_Switch_Reverse_Engineering/graphs/contributors) and appreciate their work. Be sure to credit them as well.
 
 ## Joy-Con PCB Layout and test points
 
@@ -124,24 +128,15 @@ I took apart 2 left Joy-Con, one grey one red. Below you can see the difference 
 
 ### Pesky checksums
 
-It turns out the last byte of each command seems to be a checksum of some sort, and without figuring it out it would be rather difficult testing what each command does because the console will not accept commands with the wrong checksum. 
-
-Luckily here are some examples of the checksum, seeing it changes drastically with the difference of a single bit it's probably not some simple xor or modular checksum. If you can figure it out it would be really helpful.
-
-```
-19 01 03 07 00 91 10 00 00 00 00 3D
-19 01 03 07 00 91 01 00 00 00 00 24
-19 01 03 07 00 91 11 00 00 00 00 0E
-
-19 81 03 07 00 94 10 00 00 00 00 D6
-19 81 03 07 00 94 11 00 00 0F 00 33
-```
+It turns out the last byte of each command sent over serial seems to be a checksum of some sort, and without figuring it out it would be rather difficult testing what each command does because the console will not accept commands with the wrong checksum. 
 
 **Thanks to [ewalt1's](https://github.com/ewalt1) effort and contribution, we seems to have a solution to the checksum problem:** 
 
 The first 4 bytes are a header, with the 4th byte being the length of the remaining packet (not counting the checksum). The next 7 bytes are some type of data, with the 8th byte being the CRC of that data. The CRC used is CRC-8 with a polynomial of 0x8D and an initial value of 0x00.
  
 There's some example code for calculating this CRC using a lookup table in [packet_parse/joycon_crc.py](./packet_parse/joycon_crc.py).
+
+*Note: these checksums are only sent over serial, not over the Bluetooth or USB HID mode.*
 
 ### Joy-Con status data packet
 
@@ -202,15 +197,13 @@ The 16th and 17th byte (on line 5, before `65 f7`) are the button status, when a
 
 Byte 19 and 20 (`f7 81` between 5th and 6th line) are the Joystick values, most likely the raw 8-bit ADC data. Byte 19 is X while byte 20 is Y. Again, bizarrely, the X nibble is reversed, as in the `f7` should actually be `7f` (127 at neutral position). The Y value is correct though (`0x81` is 129).
 
-### The rest of them
+### Joy-Con status data packet
 
-Still working on decoding those... It has to contain battery level, button status, joystick position, accelerometer and gyroscope data, and maybe more.
+See the [bluetooth_hid_subcommands_notes.md](./bluetooth_hid_subcommands_notes.md) file for details about the data transferred during normal operations (button status, joysticks, etc).
 
 ### Rumble commands
 
-I did a capture of the command sent from console to initiate a rumble on the Joy-Con. It was captured by pressing L to set off a bomb in BotW, which results in a fairly short rumble. [Here is the capture](./logic_captures/left_grey_joycon_botw_rumble.txt).
-
-You can see the console sends longer commands (17 bytes vs 8 bytes) during the rumble period. I'm yet to look into this, but of course you can.
+Details on rumble data are in the [rumble_data_table.md](./rumble_data_table.md) file.
 
 ## Touchscreen controller
 
