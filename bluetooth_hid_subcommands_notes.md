@@ -142,7 +142,7 @@ Switch always sends `x08 00` after every initialization.
 
 ### Subcommand 0x10: SPI flash read
 Little-endian int32 address, int8 size, max size is `x1D`.
-Subcommand reply echoes the request info, followed by `size` bytes of data.
+Replies with `x9010` ack and echoes the request info, followed by `size` bytes of data.
 
 ```
 Request:
@@ -161,12 +161,12 @@ Response: INPUT 21
 ### Subcommand 0x11: SPI flash Write
 
 Little-endian int32 address, int8 size. Max size `x1D` data to write.
-Subcommand reply echoes the address, size, plus a uint8 status. `x00` = success, `x01` = write protected.
+Replies with `x8011` ack and a uint8 status. `x00` = success, `x01` = write protected.
 
 ### Subcommand 0x12: SPI sector erase
 
 Takes a Little-endian uint32. Erases the whole 4KB in the specified address to 0xFF.
-Subcommand reply echos the address, plus a uint8 status. `x00` = success, `x01` = write protected.
+Replies with `x8012` ack and a uint8 status. `x00` = success, `x01` = write protected.
 
 ### Subcommand 0x20: Reset MCU
 
