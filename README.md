@@ -2,17 +2,13 @@
 
 I'm just going to dump all my discoveries here, and hopefully they would be useful to the Nintendo Switch community.
 
-## Contact Information
+## Questions?
 
-Please feel free contact me by email if you have questions:
-
-`dekunukem_gmail_com`
-
-If you want to use the information here somewhere else, feel free to do so, but do link back to this repo.
+Please make a post in the [issue section](https://github.com/dekuNukem/Nintendo_Switch_Reverse_Engineering/issues), contributors have been immensely helpful.
 
 ## Contributors
 
-Please remember that the information in this repo is the work of a lot more people than just me, as I was focusing more on the hardware aspect. Please take a look at the [contributers list](https://github.com/dekuNukem/Nintendo_Switch_Reverse_Engineering/graphs/contributors) and appreciate their work. Be sure to credit them as well.
+Please remember that the information in this repo is the work of a lot more people than just me. Please take a look at the [contributers list](https://github.com/dekuNukem/Nintendo_Switch_Reverse_Engineering/graphs/contributors) and appreciate their work. Be sure to credit them as well.
 
 ## Joy-Con PCB Layout and test points
 
