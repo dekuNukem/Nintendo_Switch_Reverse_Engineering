@@ -133,13 +133,14 @@ The middle byte is shared between the controllers.
 | 5, 6, 7           | --                    | Left analog stick data                                                              |
 | 8, 9, 10          | --                    | Right analog stick data                                                             |
 | 11                | `70`, `C0`, `B0`      | Vibrator input report. Decides if next vibration pattern should be sent.            |
-| 12  (ID `21`)     | `00`, `80`, `90`, `82`| ACK for subcommand reply. If simple ACK, `80`. If reply has data, subcmd ID is added to `80`. If problem or out of range, `00` |
+| 12  (ID `21`)     | `00`, `80`, `90`, `82`| ACK byte for subcmd reply. ACK: MSB is `1`, NACK: MSB is `0`. If reply is ACK and has data, `byte12 & 0x7F` gives as the type of data. If simple ACK or NACK, the data type portion is `x00` |
 | 13  (ID `21`)     | `02`, `10`, `03`      | Reply-to subcommand ID. The subcommand ID is used as-is.                            |
 | 14-48  (ID `21`)  | --                    | Subcommand reply data. Max 35 bytes (excludes 2 byte subcmd ack above).             |
 | 12-48  (ID `23`)  | --                    | MCU FW update input report. Max 37 bytes.                                           |
 | 12-47  (ID `30`, `31`, `32`, `33`) | --   | 6-Axis data. 3 frames of 2 groups of 3 Int16LE each. Group is Acc followed by Gyro. |
 | 48-360  (ID `31`) | --                    | NFC/IR input report. Max 313 bytes.                                                 |
 
+(Note2: In the `21` input reports, the byte12 (ACK byte) can be parsed as follows: `byte12 >> 7` tells us if it's an ACK or NACK. If it's an ACK, check `byte12 & 0x7F` to see what type of data it has. If it is a simple ACK, the byte12 is `x80` and thus the type of data is `x00`. If we expect a certain order of received packets, we can hardcode these byte12 values. If it's a NACK, the byte12 is always `x00`)
 
 #### Standard input report - buttons
 | Byte       | Bit `01` | `02` | `04`    | `08`    | `10` | `20`    | `40` | `80`          |
