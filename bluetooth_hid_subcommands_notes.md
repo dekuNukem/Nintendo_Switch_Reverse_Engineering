@@ -385,7 +385,7 @@ Replies with ACK `xD0` `x50` and a little-endian uint16. Raises when charging a 
 
 Internally, the values come from 1000mV - 1800mV regulated voltage samples, that are translated to 1320-1680 values.
 
-These seem to follow a curve between 3.3V and 4.2V. So a 2.5x multiplier can get us the real battery voltage in mV.
+These follow a curve between 3.3V and 4.2V (tested with multimeter). So a 2.5x multiplier can get us the real battery voltage in mV.
 
 Based on this info, we have the following table:
 
@@ -398,18 +398,42 @@ Based on this info, we have the following table:
 
 Tests showed charging stops at 1680 and the controller turns off at 1320.
 
-### Subcommand 0x51: Set unknown data. Connection status?
+### Subcommand 0x51: Set GPIO Pin Output value (7 & 15 @Port 1)
+
+This sets the output value for `Pin 7` and `Pin 15` at `Port 1`. It's currently unknown what they do..
+
+It takes a uint8. Valid values are 0x00, 0x04, 0x10, 0x14. Other values result to these bitwise.
+
+The end result values are translated to `GPIO_PIN_OUTPUT_LOW = 0` and `GPIO_PIN_OUTPUT_HIGH = 0`.
+
+| Value # | PIN @Port 1 | GPIO Output Value    |
+|:-------:|:-----------:| -------------------- |
+| `0x00`  | `7`         | GPIO_PIN_OUTPUT_HIGH |
+|         | `15`        | GPIO_PIN_OUTPUT_LOW  |
+| `0x04`  | `7`         | GPIO_PIN_OUTPUT_LOW  |
+|         | `15`        | GPIO_PIN_OUTPUT_LOW  |
+| `0x10`  | `7`         | GPIO_PIN_OUTPUT_HIGH |
+|         | `15`        | GPIO_PIN_OUTPUT_HIGH |
+| `0x14`  | `7`         | GPIO_PIN_OUTPUT_LOW  |
+|         | `15`        | GPIO_PIN_OUTPUT_HIGH |
 
 Replies with ACK `x80` `x51`.
 
-It takes a uint8. Valid values are 0x00, 0x04, 0x10, 0x14. Other values result to these in groups of 4.
+### Subcommand 0x52: Get GPIO Pin Input/Output value
 
-E.g. 0x0->0x3 = 0x0, 0x4->0x7,0xC-0xF = 0x4, 0x8->0xB = 0x0, 0x10-0x13 = 0x10 and so on.
+Replies with ACK `xD1` `x52` and a uint8. The uint8 value is actually 4bit (b0000WXYZ).
 
-### Subcommand 0x52: Get 0x51 unknown data
+Each bit translates to GPIO_PIN_OUTPUT_LOW or GPIO_PIN_OUTPUT_HIGH. The first 3 bits (ZYX) are **inverted**.
 
-Replies with ACK `xD1` `x52` and a uint8. 
+Example with 0x12:
 
-If the joy-cons are connected to a charging grip, the reply is `x17`. If you remove it from it, changes to `x14`.
+| bit LSB o # | PIN @Port | Example Value           |
+|:-----------:|:---------:| ----------------------- |
+| `bit 0` (Z) | `4 @0`    | 0: GPIO_PIN_OUTPUT_HIGH |
+| `bit 1` (Y) | `2 @3`    | 1: GPIO_PIN_OUTPUT_LOW  |
+| `bit 2` (X) | `7 @1`    | 0: GPIO_PIN_OUTPUT_HIGH |
+| `bit 3` (W) | `15 @1`   | 1: GPIO_PIN_OUTPUT_HIGH |
 
-If you only connect or pair it from sleep mode, the reply is `x04`.
+If the joy-cons are connected to a charging grip, the reply is `x17` (L, L, L, H). If you remove it from it, changes to `x14` (H, H, L, H).
+
+If you only connect or pair it from sleep mode, the reply is `x04` (H, H, L, L).
