@@ -176,6 +176,10 @@ Replies with `x8012` ack and a uint8 status. `x00` = success, `x01` = write prot
 
 Write configuration data to MCU. This data can be IR configuration, NFC configuration or data for the 512KB MCU firmware update.
 
+Takes 38 or 37 bytes long argument data.
+
+Replies with ACK `xA0` `x20` and 34 bytes of data.
+
 ### Subcommand 0x22: Set MCU state
 
 Takes one argument:
@@ -188,35 +192,43 @@ Takes one argument:
 
 ### Subcommand 0x24: Set unknown data (fw 3.86 and up)
 
-Gets a 38 byte long argument.
+Takes a 38 byte long argument.
 
-Sets a byte to `x01` (enable something?) and sets also an unknown data (configuration? for MCU?) to the bt device struct that copies it from given argument. Replies with `x80 24 00` always.
+Sets a byte to `x01` (enable something?) and sets also an unknown data (configuration? for MCU?) to the bt device struct that copies it from given argument.
+
+Replies with `x80 24 00` always.
 
 ### Subcommand 0x25: Reset 0x24 unknown data (fw 3.86 and up)
 
-Sets a byte to `x00` (disable something?) and resets the previous 38 byte data to all zeroes. Replies with `x80 25 00` always.
+Sets the above byte to `x00` (disable something?) and resets the previous 38 byte data to all zeroes.
+
+Replies with `x80 25 00` always.
 
 ### Subcommand 0x28: Set unknown MCU data
 
-Gets a 38 byte long argument and copies it to unknown array[195] at position 3.
+Takes a 38 byte long argument and copies it to unknown array_222640[96] at &array_222640[3].
 
-Does the same job with OUPUT report 0x12.
+Does the same job with OUTPUT report 0x12.
 
 Replies with ACK `x80` `x28`.
 
 ### Subcommand 0x29: Get `x28` MCU data
 
-Replies with ACK `xA8` `x29` and a 34 bytes data, from a different buffer than the on the x28 writes.
+Replies with ACK `xA8` `x29` and 34 bytes data, from a different buffer than the one the x28 writes.
 
-### Subcommand 0x2A: Set Unknown MCU configuration
+### Subcommand 0x2A: Set GPIO Pin Output value (2 @Port 2)
 
-Gets a uint8_t and checks it if it's 0 and uses the result to function that uses it for shifting a char by 1 or 0 bits.
+Takes a uint8_t and sets unknown GPIO Pin 2 at Port 2 to `0` = GPIO_PIN_OUTPUT_LOW` or `1` = GPIO_PIN_OUTPUT_HIGH`.
+
+This normally enables a function. For example, subcmd `x48` sets GPIO Pin 7 @Port 2 output value, which disables or enables IMU.
 
 Replies always with ACK `x00` `x2A`.
 
+`x00` as an ACK here is a bug. Devs forgot to add an ACK reply.
+
 ### Subcommand 0x2B: Get `x29` MCU data
 
-Replies with ACK `xA9` `x2B` and a 20 byte long data (that has also a part from x24 subcmd).
+Replies with ACK `xA9` `x2B` and 20 bytes long data (which has also a part from x24 subcmd).
 
 ### Subcommand 0x30: Set player lights
 
