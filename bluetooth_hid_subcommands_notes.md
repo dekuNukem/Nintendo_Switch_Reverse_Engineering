@@ -99,9 +99,9 @@ Left_trigger_ms = ((byte[1] << 8) | byte[0]) * 10;
 |   10-9  | SR      |
 |   12-11 | HOME    |
 
-### Subcommand 0x05: Get page
+### Subcommand 0x05: Get page list state
 
-Replies a uint8 with a value of `x01`.
+Replies a uint8 with a value of `x01` if there's a Host list with BD addresses/link keys in memory.
 
 ### Subcommand 0x06: Set HCI state (disconnect/page/pair/turn off)
 
@@ -130,15 +130,17 @@ All extra modes default to sleep mode if nothing happens. This is a R1 page scan
 
 Initializes the 0x2000 SPI section.
 
-### Subcommand 0x08: Set shipment
+### Subcommand 0x08: Set shipment low power state
 
 Takes as argument `x00` or `x01`.
 
 If `x01` it writes `x01` @`x5000` of SPI flash. With `x00`, it resets to `xFF` @`x5000`.
 
-If `x01` is set, then Switch initiates pairing, if not, initializes connection with the device.
+If `x01` is set, the feature Triggered Broadcom Fast Connect scans when in suspened or disconnected state is disabled. Additionally, it sets the low power mode, when disconnected, to HID OFF.
 
-Switch always sends `x08 00` after every initialization.
+This is useful when the controllers ship, because the controller cannot wake up from button presses. It does not disable all buttons when it has pairing data, only the easy pressable. A long press from the others can wake up the controller, **if it has pairing data**.
+
+Switch always sends `x08 00` subcmd after every connection, and thus enabling Triggered Broadcom Fast Connect and LPM mode to SLEEP.
 
 ### Subcommand 0x10: SPI flash read
 Little-endian int32 address, int8 size, max size is `x1D`.
