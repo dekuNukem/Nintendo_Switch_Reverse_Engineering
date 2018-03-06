@@ -383,7 +383,9 @@ One argument of `x00` Disable  or `x01` Enable.
 
 Replies with ACK `xD0` `x50` and a little-endian uint16. Raises when charging a Joy-Con.
 
-These seem to follow a curve between 3.3V and 4.2V. So a 0.4 multiplier can get us the real battery voltage in mV?
+Internally, the values come from 1000mV - 1800mV regulated voltage samples, that are translated to 1320-1680 values.
+
+These seem to follow a curve between 3.3V and 4.2V. So a 2.5x multiplier can get us the real battery voltage in mV.
 
 Based on this info, we have the following table:
 
