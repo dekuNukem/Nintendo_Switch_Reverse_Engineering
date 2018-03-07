@@ -99,9 +99,9 @@ Left_trigger_ms = ((byte[1] << 8) | byte[0]) * 10;
 |   10-9  | SR      |
 |   12-11 | HOME    |
 
-### Subcommand 0x05: Get page
+### Subcommand 0x05: Get page list state
 
-Replies a uint8 with a value of `x01`.
+Replies a uint8 with a value of `x01` if there's a Host list with BD addresses/link keys in memory.
 
 ### Subcommand 0x06: Set HCI state (disconnect/page/pair/turn off)
 
@@ -130,15 +130,17 @@ All extra modes default to sleep mode if nothing happens. This is a R1 page scan
 
 Initializes the 0x2000 SPI section.
 
-### Subcommand 0x08: Set shipment
+### Subcommand 0x08: Set shipment low power state
 
 Takes as argument `x00` or `x01`.
 
 If `x01` it writes `x01` @`x5000` of SPI flash. With `x00`, it resets to `xFF` @`x5000`.
 
-If `x01` is set, then Switch initiates pairing, if not, initializes connection with the device.
+If `x01` is set, the feature Triggered Broadcom Fast Connect scans when in suspened or disconnected state is disabled. Additionally, it sets the low power mode, when disconnected, to HID OFF.
 
-Switch always sends `x08 00` after every initialization.
+This is useful when the controllers ship, because the controller cannot wake up from button presses. It does not disable all buttons when it has pairing data, only the easy pressable. A long press from the others can wake up the controller, **if it has pairing data**.
+
+Switch always sends `x08 00` subcmd after every connection, and thus enabling Triggered Broadcom Fast Connect and LPM mode to SLEEP.
 
 ### Subcommand 0x10: SPI flash read
 Little-endian int32 address, int8 size, max size is `x1D`.
@@ -174,6 +176,10 @@ Replies with `x8012` ack and a uint8 status. `x00` = success, `x01` = write prot
 
 Write configuration data to MCU. This data can be IR configuration, NFC configuration or data for the 512KB MCU firmware update.
 
+Takes 38 or 37 bytes long argument data.
+
+Replies with ACK `xA0` `x20` and 34 bytes of data.
+
 ### Subcommand 0x22: Set MCU state
 
 Takes one argument:
@@ -186,35 +192,43 @@ Takes one argument:
 
 ### Subcommand 0x24: Set unknown data (fw 3.86 and up)
 
-Gets a 38 byte long argument.
+Takes a 38 byte long argument.
 
-Sets a byte to `x01` (enable something?) and sets also an unknown data (configuration? for MCU?) to the bt device struct that copies it from given argument. Replies with `x80 24 00` always.
+Sets a byte to `x01` (enable something?) and sets also an unknown data (configuration? for MCU?) to the bt device struct that copies it from given argument.
+
+Replies with `x80 24 00` always.
 
 ### Subcommand 0x25: Reset 0x24 unknown data (fw 3.86 and up)
 
-Sets a byte to `x00` (disable something?) and resets the previous 38 byte data to all zeroes. Replies with `x80 25 00` always.
+Sets the above byte to `x00` (disable something?) and resets the previous 38 byte data to all zeroes.
+
+Replies with `x80 25 00` always.
 
 ### Subcommand 0x28: Set unknown MCU data
 
-Gets a 38 byte long argument and copies it to unknown array[195] at position 3.
+Takes a 38 byte long argument and copies it to unknown array_222640[96] at &array_222640[3].
 
-Does the same job with OUPUT report 0x12.
+Does the same job with OUTPUT report 0x12.
 
 Replies with ACK `x80` `x28`.
 
 ### Subcommand 0x29: Get `x28` MCU data
 
-Replies with ACK `xA8` `x29` and a 34 bytes data, from a different buffer than the on the x28 writes.
+Replies with ACK `xA8` `x29` and 34 bytes data, from a different buffer than the one the x28 writes.
 
-### Subcommand 0x2A: Set Unknown MCU configuration
+### Subcommand 0x2A: Set GPIO Pin Output value (2 @Port 2)
 
-Gets a uint8_t and checks it if it's 0 and uses the result to function that uses it for shifting a char by 1 or 0 bits.
+Takes a uint8_t and sets unknown GPIO Pin 2 at Port 2 to `0` = GPIO_PIN_OUTPUT_LOW` or `1` = GPIO_PIN_OUTPUT_HIGH`.
+
+This normally enables a function. For example, subcmd `x48` sets GPIO Pin 7 @Port 2 output value, which disables or enables IMU.
 
 Replies always with ACK `x00` `x2A`.
 
+`x00` as an ACK here is a bug. Devs forgot to add an ACK reply.
+
 ### Subcommand 0x2B: Get `x29` MCU data
 
-Replies with ACK `xA9` `x2B` and a 20 byte long data (that has also a part from x24 subcmd).
+Replies with ACK `xA9` `x2B` and 20 bytes long data (which has also a part from x24 subcmd).
 
 ### Subcommand 0x30: Set player lights
 
@@ -369,7 +383,9 @@ One argument of `x00` Disable  or `x01` Enable.
 
 Replies with ACK `xD0` `x50` and a little-endian uint16. Raises when charging a Joy-Con.
 
-These seem to follow a curve between 3.3V and 4.2V. So a 0.4 multiplier can get us the real battery voltage in mV?
+Internally, the values come from 1000mV - 1800mV regulated voltage samples, that are translated to 1320-1680 values.
+
+These follow a curve between 3.3V and 4.2V (tested with multimeter). So a 2.5x multiplier can get us the real battery voltage in mV.
 
 Based on this info, we have the following table:
 
@@ -382,18 +398,42 @@ Based on this info, we have the following table:
 
 Tests showed charging stops at 1680 and the controller turns off at 1320.
 
-### Subcommand 0x51: Set unknown data. Connection status?
+### Subcommand 0x51: Set GPIO Pin Output value (7 & 15 @Port 1)
+
+This sets the output value for `Pin 7` and `Pin 15` at `Port 1`. It's currently unknown what they do..
+
+It takes a uint8. Valid values are 0x00, 0x04, 0x10, 0x14. Other values result to these bitwise.
+
+The end result values are translated to `GPIO_PIN_OUTPUT_LOW = 0` and `GPIO_PIN_OUTPUT_HIGH = 0`.
+
+| Value # | PIN @Port 1 | GPIO Output Value    |
+|:-------:|:-----------:| -------------------- |
+| `0x00`  | `7`         | GPIO_PIN_OUTPUT_HIGH |
+|         | `15`        | GPIO_PIN_OUTPUT_LOW  |
+| `0x04`  | `7`         | GPIO_PIN_OUTPUT_LOW  |
+|         | `15`        | GPIO_PIN_OUTPUT_LOW  |
+| `0x10`  | `7`         | GPIO_PIN_OUTPUT_HIGH |
+|         | `15`        | GPIO_PIN_OUTPUT_HIGH |
+| `0x14`  | `7`         | GPIO_PIN_OUTPUT_LOW  |
+|         | `15`        | GPIO_PIN_OUTPUT_HIGH |
 
 Replies with ACK `x80` `x51`.
 
-It takes a uint8. Valid values are 0x00, 0x04, 0x10, 0x14. Other values result to these in groups of 4.
+### Subcommand 0x52: Get GPIO Pin Input/Output value
 
-E.g. 0x0->0x3 = 0x0, 0x4->0x7,0xC-0xF = 0x4, 0x8->0xB = 0x0, 0x10-0x13 = 0x10 and so on.
+Replies with ACK `xD1` `x52` and a uint8. The uint8 value is actually 4bit (b0000WXYZ).
 
-### Subcommand 0x52: Get 0x51 unknown data
+Each bit translates to GPIO_PIN_OUTPUT_LOW or GPIO_PIN_OUTPUT_HIGH. The first 3 bits (ZYX) are **inverted**.
 
-Replies with ACK `xD1` `x52` and a uint8. 
+Example with 0x12:
 
-If the joy-cons are connected to a charging grip, the reply is `x17`. If you remove it from it, changes to `x14`.
+| bit LSB o # | PIN @Port | Example Value           |
+|:-----------:|:---------:| ----------------------- |
+| `bit 0` (Z) | `4 @0`    | 0: GPIO_PIN_OUTPUT_HIGH |
+| `bit 1` (Y) | `2 @3`    | 1: GPIO_PIN_OUTPUT_LOW  |
+| `bit 2` (X) | `7 @1`    | 0: GPIO_PIN_OUTPUT_HIGH |
+| `bit 3` (W) | `15 @1`   | 1: GPIO_PIN_OUTPUT_HIGH |
 
-If you only connect or pair it from sleep mode, the reply is `x04`.
+If the joy-cons are connected to a charging grip, the reply is `x17` (L, L, L, H). If you remove it from it, changes to `x14` (H, H, L, H).
+
+If you only connect or pair it from sleep mode, the reply is `x04` (H, H, L, L).
