@@ -102,6 +102,8 @@ The first byte is probably set to x1 on new Joy-Con. Switch makes sure to set it
 |                 | `x6046 - x604E`  | Right analog stick calibration                                          |
 |                 | `x6050 - x6052`  | Body #RGB color, 24-bit                                                 |
 |                 | `x6053 - x6055`  | Buttons #RGB color, 24-bit                                              |
+|                 | `x6056 - x6058`  | Left Grip #RGB color, 24-bit (Added in 5.0.0 for Pro)                   |
+|                 | `x6059 - x605B`  | Right Grip #RGB color, 24-bit (Added in 5.0.0 for Pro)                  |
 | `x6080`-`x6097` | -------------    | Factory Sensor and Stick device parameters                              |
 |                 | `x6080`-`x6085`  | 6-Axis Horizontal Offsets. (JC sideways)                                |
 |                 | `x6086`-`x6097`  | Stick device parameters 1                                               |
@@ -211,9 +213,9 @@ Sample (Big-Endian):
 | int16_t #  | Sample XYZ       | Remarks                                                                |
 |:----------:|:----------------:| ---------------------------------------------------------------------- |
 | `0` - `2`  | `FFB0 FEB9 00E0` | Acc XYZ origin position when completely horizontal and stick is upside |
-| `3` - `5`  | `4000 4000 4000` | Acc XYZ sensitivity special coeff, for default sensitivity: ±8G.       |
+| `3` - `5`  | `4000 4000 4000` | Acc XYZ sensitivity special coeff, for default sensitivity: Â±8G.       |
 | `6` - `8`  | `000E FFDF FFD0` | Gyro XYZ origin position when still                                    |
-| `9` - `11` | `343B 343B 343B` | Gyro XYZ sensitivity special coeff, for default sensitivity: ±2000dps. |
+| `9` - `11` | `343B 343B 343B` | Gyro XYZ sensitivity special coeff, for default sensitivity: Â±2000dps. |
 
 For the sensitivities conversion check [here](imu_sensor_notes.md#convert-to-basic-useful-data-using-spi-calibration).
 
