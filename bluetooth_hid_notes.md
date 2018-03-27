@@ -124,31 +124,31 @@ The middle byte is shared between the controllers.
 
 (Note: in the following table, the byte with the packet ID is included and located at byte "0".)
 
-|   Byte #          |        Sample         | Remarks                                                                             |
-|:-----------------:|:---------------------:| ----------------------------------------------------------------------------------- |
-| 0                 | `x21`, `x30`, `x31`   | Input report ID                                                                     |
-| 1                 | `00` - `FF`           | Timer. Increments very fast. Can be used to estimate excess Bluetooth latency.      |
-| 2 high nibble     | `0` - `9`             | Battery level. 8=full, 6=medium, 4=low, 2=critical, 0=empty. LSB=Charging.          |
-| 2 low nibble      | `x0`, `x1`, `xE`      | Connection info. `(con_info >> 1) & 3` - 3=JC, 0=Pro/ChrGrip. `con_info & 1` - 1=Switch/USB powered. |
-| 3, 4, 5           | `41 00 82`            | Button status (see below table)                                                     |
-| 6, 7, 8           | --                    | Left analog stick data                                                              |
-| 9, 10, 11         | --                    | Right analog stick data                                                             |
-| 12                | `70`, `C0`, `B0`      | Vibrator input report. Decides if next vibration pattern should be sent.            |
-| 13  (ID `21`)     | `00`, `80`, `90`, `82`| ACK byte for subcmd reply. ACK: MSB is `1`, NACK: MSB is `0`. If reply is ACK and has data, `byte12 & 0x7F` gives as the type of data. If simple ACK or NACK, the data type portion is `x00` |
-| 14  (ID `21`)     | `02`, `10`, `03`      | Reply-to subcommand ID. The subcommand ID is used as-is.                            |
-| 15-49  (ID `21`)  | --                    | Subcommand reply data. Max 35 bytes (excludes 2 byte subcmd ack above).             |
-| 13-49  (ID `23`)  | --                    | NFC/IR MCU FW update input report. Max 37 bytes.                                    |
-| 13-48  (ID `30`, `31`, `32`, `33`) | --   | 6-Axis data. 3 frames of 2 groups of 3 Int16LE each. Group is Acc followed by Gyro. |
-| 49-361  (ID `31`) | --                    | NFC/IR data input report. Max 313 bytes.                                            |
+|   Byte #           |        Sample         | Remarks                                                                             |
+|:------------------:|:---------------------:| ----------------------------------------------------------------------------------- |
+| 0                  | `x21`, `x30`, `x31`   | Input report ID                                                                     |
+| 1                  | `x00` - `xFF`         | Timer. Increments very fast. Can be used to estimate excess Bluetooth latency.      |
+| 2 high nibble      | `0` - `9`             | Battery level. 8=full, 6=medium, 4=low, 2=critical, 0=empty. LSB=Charging.          |
+| 2 low nibble       | `x0`, `x1`, `xE`      | Connection info. `(con_info >> 1) & 3` - 3=JC, 0=Pro/ChrGrip. `con_info & 1` - 1=Switch/USB powered. |
+| 3, 4, 5            | `x41 00 82`           | Button status (see below table)                                                     |
+| 6, 7, 8            | --                    | Left analog stick data                                                              |
+| 9, 10, 11          | --                    | Right analog stick data                                                             |
+| 12                 | `x70`, `xC0`, `xB0`   | Vibrator input report. Decides if next vibration pattern should be sent.            |
+| 13  (ID `x21`)     | `x00`, `x80`, `x90`, `x82`| ACK byte for subcmd reply. ACK: MSB is `1`, NACK: MSB is `0`. If reply is ACK and has data, `byte12 & 0x7F` gives as the type of data. If simple ACK or NACK, the data type portion is `x00` |
+| 14  (ID `x21`)     | `x02`, `x10`, `x03`   | Reply-to subcommand ID. The subcommand ID is used as-is.                            |
+| 15-49  (ID `x21`)  | --                    | Subcommand reply data. Max 35 bytes (excludes 2 byte subcmd ack above).             |
+| 13-49  (ID `x23`)  | --                    | NFC/IR MCU FW update input report. Max 37 bytes.                                    |
+| 13-48  (ID `x30`, `x31`, `x32`, `x33`) | -- | 6-Axis data. 3 frames of 2 groups of 3 Int16LE each. Group is Acc followed by Gyro. |
+| 49-361  (ID `x31`) | --                    | NFC/IR data input report. Max 313 bytes.                                            |
 
 (Note2: In the `21` input reports, the byte13 (ACK byte) can be parsed as follows: `byte13 >> 7` tells us if it's an ACK or NACK. If it's an ACK, check `byte13 & 0x7F` to see what type of data it has. If it is a simple ACK, the byte13 is `x80` and thus the type of data is `x00`. If we expect a certain order of received packets, we can hardcode these byte13 values. If it's a NACK, the byte13 is always `x00`)
 
 #### Standard input report - buttons
-| Byte       | Bit `01` | `02` | `04`    | `08`    | `10` | `20`    | `40` | `80`          |
-|:----------:|:--------:|:----:|:-------:|:-------:|:----:|:-------:|:----:|:-------------:|
-| 3 (Right)  | Y        | X    | B       | A       | SR   | SL      | R    | ZR            |
-| 4 (Shared) | Minus    | Plus | R Stick | L Stick | Home | Capture | --   | Charging Grip |
-| 5 (Left)   | Down     | Up   | Right   | Left    | SR   | SL      | L    | ZL            |
+| Byte       | Bit `x01` | `x02` | `x04`    | `x08`    | `x10` | `x20`    | `x40` | `x80`         |
+|:----------:|:---------:|:-----:|:--------:|:--------:|:-----:|:--------:|:-----:|:-------------:|
+| 3 (Right)  | Y         | X     | B        | A        | SR    | SL       | R     | ZR            |
+| 4 (Shared) | Minus     | Plus  | R Stick  | L Stick  | Home  | Capture  | --    | Charging Grip |
+| 5 (Left)   | Down      | Up    | Right    | Left     | SR    | SL       | L     | ZL            |
 
 Note that the button status of the L and R Joy-Cons can be ORed together to get a complete button status.
 
