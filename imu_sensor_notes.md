@@ -2,17 +2,17 @@
 
 ## Packet data information
 
-If 6-axis sensor is enabled, the IMU data in an 0x30, 0x31, 0x32 and 0x33 input report is packaged like this (assuming the packet ID is located at byte -1):
+If 6-axis sensor is enabled, the IMU data in an 0x30, 0x31, 0x32 and 0x33 input report is packaged like this (assuming the packet ID is located at byte 0):
 
 | Byte       | Remarks                                                       |
 |:----------:| ------------------------------------------------------------- |
-|   12-13    | accel_x (Int16LE)                                             |
-|   14-15    | accel_y (Int16LE)                                             |
-|   16-17    | accel_z (Int16LE)                                             |
-|   18-19    | gyro_1 (Int16LE)                                              |
-|   20-21    | gyro_2 (Int16LE)                                              |
-|   22-23    | gyro_3 (Int16LE)                                              |
-|   24-47    | The data is repeated 2 more times. Each with 5ms Δt sampling. |
+|   13-14    | accel_x (Int16LE)                                             |
+|   15-16    | accel_y (Int16LE)                                             |
+|   17-18    | accel_z (Int16LE)                                             |
+|   19-20    | gyro_1 (Int16LE)                                              |
+|   21-22    | gyro_2 (Int16LE)                                              |
+|   23-24    | gyro_3 (Int16LE)                                              |
+|   25-48    | The data is repeated 2 more times. Each with 5ms Δt sampling. |
 
 The 6-Axis data is repeated 3 times. On Joy-con with a 15ms packet push, this is translated to 5ms difference sampling. E.g. 1st sample 0ms, 2nd 5ms, 3rd 10ms. Using all 3 samples let you have a 5ms precision instead of 15ms.
 
