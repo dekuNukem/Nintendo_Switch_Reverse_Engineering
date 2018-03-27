@@ -8,7 +8,7 @@ All subcommands that do nothing, reply back with ACK `x80##` and `x03`
 
 Replies with `x8000` `x03`
 
-Can be used to get Controller state only (w/o 6-Axis sensor data), like any subcommand that does nothing
+Does nothing actually, but can be used to get Controller state only (w/o 6-Axis sensor data), like any subcommand that does nothing.
 
 ### Subcommand 0x01: Bluetooth manual pairing
 
@@ -56,7 +56,7 @@ Response data after 02 command byte:
 
 | Byte # | Sample               | Remarks                                                  |
 |:------:|:--------------------:| -------------------------------------------------------- |
-|  0-1   | `x03 48`             | Firmware Version. Latest is 3.86 (from 4.0.0 and up).    |
+|  0-1   | `x03 48`             | Firmware Version. Latest is 3.89 (from 5.0.0 and up).    |
 |  2     | `x01`                | 1=Left Joy-Con, 2=Right Joy-Con, 3=Pro Controller.       |
 |  3     | `x02`                | Unknown. Seems to be always `02`                         |
 |  4-9   | `x7C BB 8A EA 30 57` | Joy-Con MAC address in Big Endian                        |
@@ -67,19 +67,20 @@ Response data after 02 command byte:
 
 One argument:
 
-| Argument # | Remarks                                                                                          |
-|:----------:| ------------------------------------------------------------------------------------------------ |
-|   `00`     | Used with cmd `x11`. Active polling for IR camera data. 0x31 data format must be set first       |
-|   `01`     | Same as `00`                                                                                     |
-|   `02`     | Same as `00`. Active polling mode for IR camera data. For specific IR modes                      |
-|   `23`     | MCU update state report?                                                                         |
-|   `30`     | Standard full mode. Pushes current state @60Hz                                                   |
-|   `31`     | NFC/IR mode. Pushes large packets @60Hz                                                          |
-|   `33`     | Unknown mode.                                                                                    |
-|   `35`     | Unknown mode.                                                                                    |
-|   `3F`     | Simple HID mode. Pushes updates with every button press                                          |
+| Arg #  | Remarks                                                                                          |
+|:------:| ------------------------------------------------------------------------------------------------ |
+|  `x00` | Used with cmd `x11`. Active polling for NFC/IR camera data. 0x31 data format must be set first.  |
+|  `x01` | Same as `00`. Active polling mode for NFC/IR MCU configuration data.                             |
+|  `x02` | Same as `00`. Active polling mode for NFC/IR data and configuration. For specific NFC/IR modes   |
+|  `x03` | Same as `00`. Active polling mode for IR camera data. For specific IR modes                      |
+|  `x23` | MCU update state report?                                                                         |
+|  `x30` | Standard full mode. Pushes current state @60Hz                                                   |
+|  `x31` | NFC/IR mode. Pushes large packets @60Hz                                                          |
+|  `x33` | Unknown mode.                                                                                    |
+|  `x35` | Unknown mode.                                                                                    |
+|  `x3F` | Simple HID mode. Pushes updates with every button press                                          |
 
-`31` input report has all zeroes for IR/NFC data if a `11` ouput report with subcmd `03 00` or `03 01` or `03 02` was not sent before.
+`x31` input report has all zeroes for IR/NFC data if a `11` ouput report with subcmd `03 00/01/02/03` was not sent before.
 
 ### Subcommand 0x04: Trigger buttons elapsed time
 
@@ -170,9 +171,9 @@ Replies with `x8011` ack and a uint8 status. `x00` = success, `x01` = write prot
 Takes a Little-endian uint32. Erases the whole 4KB in the specified address to 0xFF.
 Replies with `x8012` ack and a uint8 status. `x00` = success, `x01` = write protected.
 
-### Subcommand 0x20: Reset MCU
+### Subcommand 0x20: Reset NFC/IR MCU
 
-### Subcommand 0x21: Set MCU configuration
+### Subcommand 0x21: Set NFC/IR MCU configuration
 
 Write configuration data to MCU. This data can be IR configuration, NFC configuration or data for the 512KB MCU firmware update.
 
@@ -180,7 +181,7 @@ Takes 38 or 37 bytes long argument data.
 
 Replies with ACK `xA0` `x20` and 34 bytes of data.
 
-### Subcommand 0x22: Set MCU state
+### Subcommand 0x22: Set NFC/IR MCU state
 
 Takes one argument:
 
@@ -194,7 +195,7 @@ Takes one argument:
 
 Takes a 38 byte long argument.
 
-Sets a byte to `x01` (enable something?) and sets also an unknown data (configuration? for MCU?) to the bt device struct that copies it from given argument.
+Sets a byte to `x01` (enable something?) and sets also an unknown data (configuration? for NFC/IR MCU?) to the bt device struct that copies it from given argument.
 
 Replies with `x80 24 00` always.
 
@@ -204,7 +205,7 @@ Sets the above byte to `x00` (disable something?) and resets the previous 38 byt
 
 Replies with `x80 25 00` always.
 
-### Subcommand 0x28: Set unknown MCU data
+### Subcommand 0x28: Set unknown NFC/IR MCU data
 
 Takes a 38 byte long argument and copies it to unknown array_222640[96] at &array_222640[3].
 
@@ -212,7 +213,7 @@ Does the same job with OUTPUT report 0x12.
 
 Replies with ACK `x80` `x28`.
 
-### Subcommand 0x29: Get `x28` MCU data
+### Subcommand 0x29: Get `x28` NFC/IR MCU data
 
 Replies with ACK `xA8` `x29` and 34 bytes data, from a different buffer than the one the x28 writes.
 
@@ -226,7 +227,7 @@ Replies always with ACK `x00` `x2A`.
 
 `x00` as an ACK here is a bug. Devs forgot to add an ACK reply.
 
-### Subcommand 0x2B: Get `x29` MCU data
+### Subcommand 0x2B: Get `x29` NFC/IR MCU data
 
 Replies with ACK `xA9` `x2B` and 20 bytes long data (which has also a part from x24 subcmd).
 

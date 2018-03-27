@@ -26,7 +26,7 @@ See "Rumble data" below.
 
 ### OUTPUT 0x03
 
-MCU FW Update packet
+NFC/IR MCU FW Update packet.
 
 ### OUTPUT 0x10
 
@@ -34,7 +34,7 @@ Rumble only. See OUTPUT 0x01 and "Rumble data" below.
 
 ### OUTPUT 0x11
 
-Command to MCU.
+Request specific data from the NFC/IR MCU. Can also send rumble.
 
 ### OUTPUT 0x12
 
@@ -71,7 +71,7 @@ This input packet is pushed to the host when a button is pressed or released, an
 
 |  Byte # |        Sample value        | Remarks                   |
 |:-------:|:--------------------------:|:-------------------------:|
-|  0      | `x3F`                      | Header, same as report ID |
+|  0      | `x3F`                      | Input report ID           |
 |  1-2    | `x28 CA`                   | Button status             |
 |  3      | `x08`                      | Stick hat data            |
 |  4-11   | `x00 80 00 80 00 80 00 80` | Filler data               |
@@ -99,7 +99,7 @@ Standard input reports used for subcommand replies.
 
 ### INPUT 0x23
 
-MCU FW update input report.
+NFC/IR MCU FW update input report.
 
 ### INPUT 0x30
 
@@ -107,7 +107,7 @@ Standard full mode - input reports with IMU data instead of subcommand replies. 
 
 ### INPUT 0x31
 
-NFC/IR Mode. Pushes large packets with standard input report + NFC/IR input report.
+NFC/IR MCU mode. Pushes large packets with standard input report + NFC/IR MCU data input report.
 
 ### INPUT 0x32
 
@@ -188,7 +188,7 @@ Enables FW update. Unlocks Erase/Write memory commands.
 
 The buffer sent must be exactly one byte. If else, Joy-Con rejects it.
 
-The only possible ways to send it, is a Linux device with patched hidraw to accept 1 byte reports or a custom bluetooth development kit. 
+The only possible ways to send it, is a Linux device with patched hidraw to accept 1 byte reports, directly through l2cap or a custom bluetooth development kit. 
 
 | Byte # |  Sample   | Remarks                        |
 |:------:|:---------:| ------------------------------ |
