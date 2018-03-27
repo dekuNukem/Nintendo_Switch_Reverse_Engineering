@@ -2,11 +2,11 @@
 
 ### Subcommand 0x##: All unused subcommands
 
-All subcommands that do nothing, reply back with ACK `x80` `x##` and `x03`
+All subcommands that do nothing, reply back with ACK `x80##` and `x03`
 
 ### Subcommand 0x00: Get Only Controller State
 
-Replies with `x80` `x00` `x03`
+Replies with `x8000` `x03`
 
 Can be used to get Controller state only (w/o 6-Axis sensor data), like any subcommand that does nothing
 
@@ -24,19 +24,19 @@ The procedure must be done sequentially:
 
 Host Pair request x01 (send HOST BT MAC and request Joy-Con BT MAC):
 
-| Byte # | Sample              | Remarks                                 |
-|:------:|:-------------------:| --------------------------------------- |
-|  0     | `01`                | subcmd                                  |
-|  1     | `01`                | Pair request type                       |
-|  2-7   | `16 30 AA 82 BB 98` | Host Bluetooth address in Little-Endian |
+| Byte # | Sample               | Remarks                                 |
+|:------:|:--------------------:| --------------------------------------- |
+|  0     | `x01`                | subcmd                                  |
+|  1     | `x01`                | Pair request type                       |
+|  2-7   | `x16 30 AA 82 BB 98` | Host Bluetooth address in Little-Endian |
 
 Joy-Con Pair request x01 reply:
 
-| Byte # | Sample              | Remarks                         |
-|:------:|:-------------------:| ------------------------------- |
-|  0     | `01`                | Pair request type               |
-|  1-6   | `57 30 EA 8A BB 7C` | Joy-Con BT MAC in Little-Endian |
-|  7-31  |                     | Descriptor?                     |
+| Byte # | Sample               | Remarks                         |
+|:------:|:--------------------:| ------------------------------- |
+|  0     | `x01`                | Pair request type               |
+|  1-6   | `x57 30 EA 8A BB 7C` | Joy-Con BT MAC in Little-Endian |
+|  7-31  |                      | Descriptor?                     |
 
 Host Pair request x03 (request LTK):
 
@@ -54,14 +54,14 @@ If the command is `x11`, it polls the MCU State? Used with IR Camera or NFC?
 
 Response data after 02 command byte:
 
-| Byte # | Sample              | Remarks                                                  |
-|:------:|:-------------------:| -------------------------------------------------------- |
-|  0-1   | `03 48`             | Firmware Version. Latest is 3.86 (from 4.0.0 and up).    |
-|  2     | `01`                | 1=Left Joy-Con, 2=Right Joy-Con, 3=Pro Controller.       |
-|  3     | `02`                | Unknown. Seems to be always `02`                         |
-|  4-9   | `7C BB 8A EA 30 57` | Joy-Con MAC address in Big Endian                        |
-|  10    | `01`                | Unknown. Seems to be always `01`                         |
-|  11    | `01`                | If `01`, colors in SPI are used. Otherwise default ones. |
+| Byte # | Sample               | Remarks                                                  |
+|:------:|:--------------------:| -------------------------------------------------------- |
+|  0-1   | `x03 48`             | Firmware Version. Latest is 3.86 (from 4.0.0 and up).    |
+|  2     | `x01`                | 1=Left Joy-Con, 2=Right Joy-Con, 3=Pro Controller.       |
+|  3     | `x02`                | Unknown. Seems to be always `02`                         |
+|  4-9   | `x7C BB 8A EA 30 57` | Joy-Con MAC address in Big Endian                        |
+|  10    | `x01`                | Unknown. Seems to be always `01`                         |
+|  11    | `x01`                | If `01`, colors in SPI are used. Otherwise default ones. |
 
 ### Subcommand 0x03: Set input report mode
 
@@ -408,13 +408,13 @@ The end result values are translated to `GPIO_PIN_OUTPUT_LOW = 0` and `GPIO_PIN_
 
 | Value # | PIN @Port 1 | GPIO Output Value    |
 |:-------:|:-----------:| -------------------- |
-| `0x00`  | `7`         | GPIO_PIN_OUTPUT_HIGH |
+| `x00`   | `7`         | GPIO_PIN_OUTPUT_HIGH |
 |         | `15`        | GPIO_PIN_OUTPUT_LOW  |
-| `0x04`  | `7`         | GPIO_PIN_OUTPUT_LOW  |
+| `x04`   | `7`         | GPIO_PIN_OUTPUT_LOW  |
 |         | `15`        | GPIO_PIN_OUTPUT_LOW  |
-| `0x10`  | `7`         | GPIO_PIN_OUTPUT_HIGH |
+| `x10`   | `7`         | GPIO_PIN_OUTPUT_HIGH |
 |         | `15`        | GPIO_PIN_OUTPUT_HIGH |
-| `0x14`  | `7`         | GPIO_PIN_OUTPUT_LOW  |
+| `x14`   | `7`         | GPIO_PIN_OUTPUT_LOW  |
 |         | `15`        | GPIO_PIN_OUTPUT_HIGH |
 
 Replies with ACK `x80` `x51`.

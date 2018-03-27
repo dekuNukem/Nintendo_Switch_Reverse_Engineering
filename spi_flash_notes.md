@@ -11,7 +11,7 @@
 | Pairing info (factory2) | `x4000` | `x1000` | Empty. (Dev-units use it?)                                           |
 | Shipment                | `x5000` | `x1000` | Only first byte is used                                              |
 | Config and calibration  | `x6000` | `xA000` | Stores Factory configuration and calibration, user calibration       |
-| PatchRAM section        | `x10000`| `x70000 | Stores Broadcom PatchRAMs, by default @0x10000 and @0x28000          |
+| PatchRAM section        | `x10000`| `x70000`| Stores Broadcom PatchRAMs, by default @0x10000 and @0x28000          |
 
 ## x0000: Initial PatchRAM
 
@@ -19,12 +19,12 @@ Initial PatchRAM section starts at `x0000` and ends at `x03B0`. Has a total of 1
 
 Includes Magic numbers, OTA FW DS1 address and code that loads the PatchRAM @0x10000 or @0x28000 by checking the 0xx1ff4 address.
 
-|    Range        |        Sample                      | Remarks                                             |
-|:---------------:|:----------------------------------:| --------------------------------------------------- |
-| `x0000`-`x0010` | `01 08 00 F0 00 00 62 08 C0 5D 89` | Loader Magic or it sends x895DC008 @x620000F0 MMIO  |
-| `x0012`-`x001A` | `40 0600 x5730EA8ABB7C`            | BD_ADDR type record, in LE (7C:BB:8A:EA:30:57)      |
-| `x001B`-`x03AF` | ---                                | Initial code that loads one of the main PatchRAM    |
-| `x03B0`-`x03B7` | `02 0A 00000100 00200000 0010`     | DS1 Uint32LE (`x010000`) and 2 values (x200, x1000) |
+|    Range        |        Sample                       | Remarks                                             |
+|:---------------:|:-----------------------------------:| --------------------------------------------------- |
+| `x0000`-`x0010` | `x01 08 00 F0 00 00 62 08 C0 5D 89` | Loader Magic or it sends x895DC008 @x620000F0 MMIO  |
+| `x0012`-`x001A` | `x40 0600 x5730EA8ABB7C`            | BD_ADDR type record, in LE (7C:BB:8A:EA:30:57)      |
+| `x001B`-`x03AF` | ---                                 | Initial code that loads one of the main PatchRAM    |
+| `x03B0`-`x03B7` | `x02 0A 00000100 00200000 0010`     | DS1 Uint32LE (`x010000`) and 2 values (x200, x1000) |
 
 ## x1000 Failsafe mechanism
 
@@ -91,7 +91,7 @@ The first byte is probably set to x1 on new Joy-Con. Switch makes sure to set it
 
 |  Section Range  | Subsection Range | Remarks                                                                 |
 |:---------------:|:----------------:| ----------------------------------------------------------------------- |
-| `x6000`-`x600F` | -------------    | Serial number in non-extended ASCII. If first byte is >= `80`, no S/N. If a byte is `00` `NUL`, skip. Max 15 chars, if 16 chars last one is skipped.|
+| `x6000`-`x600F` | -------------    | Serial number in non-extended ASCII. If first byte is >= `x80`, no S/N. If a byte is `00` `NUL`, skip. Max 15 chars, if 16 chars last one is skipped.|
 | `x6012`         | -------------    | Device type. JC (L): `x01`, JC (R): `x02`, Pro: `x03`. Only the 3 LSB are accounted for. Used internally and for `x02` subcmd. |
 | `x6013`         | -------------    | Unknown, seems to always be `xA0`                                       |
 | `x601B`         | -------------    | Color info exists if `x01`. If 0, default colors used are ARGB `#55555555`, `#FFFFFFFF`. Used for `x02` subcmd. |

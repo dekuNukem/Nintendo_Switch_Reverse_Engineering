@@ -47,14 +47,14 @@ A timing byte, then 4 bytes of rumble data for left Joy-Con, followed by 4 bytes
 The rumble data structure contains 2 bytes High Band data, 2 byte Low Band data.
 The values for HF Band frequency and LF amplitude are encoded.
 
-|  Byte #  |        Range                             | Remarks |
-|:--------:|:----------------------------------------:| ------------------------------------------------------------------------ |
-| 0, 4     | `04` - `FC` (81.75Hz - 313.14Hz)         | High Band Lower Frequency. Steps `+0x0004`.                              |
-| 0-1, 4-5 | `00 01` - `FC 01` (320.00Hz - 1252.57Hz) | Byte `1`,`5` LSB enables High Band Higher Frequency. Steps `+0x0400`.    |
-| 1, 5     | `00 00` - `C8 00` (0.0f - 1.0f)          | High Band Amplitude. Steps `+0x0200`. Real max: `FE`.                    |
-| 2, 6     | `01` - `7F` (40.87Hz - 626.28Hz)         | Low Band Frequency.                                                      |
-| 3, 7     | `40` - `72` (0.0f - 1.0f)                | Low Band Amplitude. Safe max: `00 72`.                                   |
-| 2-3, 6-7 | `80 40` - `80 71` (0.01f - 0.98f)        | Byte `2`,`6` +0x80 enables intermediate LF amplitude. Real max: `80 FF`. |
+|  Byte #  |        Range                               | Remarks                                                                  |
+|:--------:|:------------------------------------------:| ------------------------------------------------------------------------ |
+| 0, 4     | `x04` - `xFC` (81.75Hz - 313.14Hz)         | High Band Lower Frequency. Steps `+0x0004`.                              |
+| 0-1, 4-5 | `x00 01` - `xFC 01` (320.00Hz - 1252.57Hz) | Byte `1`,`5` LSB enables High Band Higher Frequency. Steps `+0x0400`.    |
+| 1, 5     | `x00 00` - `xC8 00` (0.0f - 1.0f)          | High Band Amplitude. Steps `+0x0200`. Real max: `FE`.                    |
+| 2, 6     | `x01` - `x7F` (40.87Hz - 626.28Hz)         | Low Band Frequency.                                                      |
+| 3, 7     | `x40` - `x72` (0.0f - 1.0f)                | Low Band Amplitude. Safe max: `00 72`.                                   |
+| 2-3, 6-7 | `x80 40` - `x80 71` (0.01f - 0.98f)        | Byte `2`,`6` +0x80 enables intermediate LF amplitude. Real max: `80 FF`. |
  
 For a rumble values table, example and the algorithm for frequency, check rumble_data_table.md.
 
@@ -69,12 +69,12 @@ These safe amplitude ranges are defined by Switch HID library.
 
 This input packet is pushed to the host when a button is pressed or released, and provides the "normal controller" interface for the OS.
 
-|  Byte # |        Sample value       | Remarks                   |
-|:-------:|:-------------------------:|:-------------------------:|
-|  0      | `3F`                      | Header, same as report ID |
-|  1-2    | `28 CA`                   | Button status             |
-|  3      | `08`                      | Stick hat data            |
-|  4-11   | `00 80 00 80 00 80 00 80` | Filler data               |
+|  Byte # |        Sample value        | Remarks                   |
+|:-------:|:--------------------------:|:-------------------------:|
+|  0      | `x3F`                      | Header, same as report ID |
+|  1-2    | `x28 CA`                   | Button status             |
+|  3      | `x08`                      | Stick hat data            |
+|  4-11   | `x00 80 00 80 00 80 00 80` | Filler data               |
 
 #### Stick hat data
 
@@ -88,10 +88,10 @@ Hold your controller sideways so that SL, SYNC, and SR line up with the screen. 
 
 #### Button status format
 
-| Byte | Bit `01` | `02`  |`04`        |`08`         |`10`  |`20`     |`40`   |`80`     |
-|:----:|:--------:|:-----:|:-----------|:-----------:|:----:|:-------:|:-----:|:-------:|
-| 1    | Down     | Right | Left       | Up          | SL   | SR      | --    | --      |
-| 2    | Minus    | Plus  | Left Stick | Right Stick | Home | Capture | L / R | ZL / ZR |
+| Byte | Bit `x01` | `x02`  |`x04`        |`x08`         |`x10`  |`x20`     |`x40`   |`x80`     |
+|:----:|:---------:|:------:|:------------|:------------:|:-----:|:--------:|:------:|:--------:|
+| 1    | Down      | Right  | Left        | Up           | SL    | SR       | --     | --       |
+| 2    | Minus     | Plus   | Left Stick  | Right Stick  | Home  | Capture  | L / R  | ZL / ZR  |
 
 ### INPUT 0x21
 
@@ -189,9 +189,9 @@ The buffer sent must be exactly one byte. If else, Joy-Con rejects it.
 
 The only possible ways to send it, is a Linux device with patched hidraw to accept 1 byte reports or a custom bluetooth development kit. 
 
-| Byte # |  Sample  | Remarks                        |
-|:------:|:--------:| ------------------------------ |
-| 0      | `70`     | Feature report                 |
+| Byte # |  Sample   | Remarks                        |
+|:------:|:---------:| ------------------------------ |
+| 0      | `x70`     | Feature report ID              |
 
 ### FEATURE 0x71: Setup memory read
 
@@ -199,34 +199,34 @@ The only possible ways to send it, is a Linux device with patched hidraw to acce
 
 Prepares the SPI Read report with the requested address and size.
 
-| Byte # |  Sample       | Remarks                        |
-|:------:|:-------------:| ------------------------------ |
-| 0      | `71`          | Feature report                 |
-| 1 - 4  | `F4 1F 00 F8` | UInt32LE address               |
-| 5 - 6  | `08 00`       | UInt16LE size. Max xF9 bytes.  |
-| 7      | `7C`          | Checksum (8-bit 2s Complement) |
+| Byte # |  Sample        | Remarks                        |
+|:------:|:--------------:| ------------------------------ |
+| 0      | `x71`          | Feature report ID              |
+| 1 - 4  | `xF4 1F 00 F8` | UInt32LE address               |
+| 5 - 6  | `x08 00`       | UInt16LE size. Max xF9 bytes.  |
+| 7      | `x7C`          | Checksum (8-bit 2s Complement) |
 
 The checksum is calculated as `0x100 - Sum of Bytes`.
 
 Memory map:
 
-| Address #   |  Size   | Remarks                |
-|:-----------:|:-------:| ---------------------- |
-| `x00000000` | `C8000` | ROM region 1 (800KB)   |
-| `x000D0000` | `10000` | RAM region 1 (64KB)    |
-| `x00200000` | `48000` | RAM region 2 (288KB)   |
-| `x00260000` | `C000`  | ROM region 2 (48KB)    |
-| `xF8000000` | `80000` | SPI (512KB, fully R/W) |
+| Address #   |  Size    | Remarks                |
+|:-----------:|:--------:| ---------------------- |
+| `x00000000` | `xC8000` | ROM region 1 (800KB)   |
+| `x000D0000` | `x10000` | RAM region 1 (64KB)    |
+| `x00200000` | `x48000` | RAM region 2 (288KB)   |
+| `x00260000` | `xC000`  | ROM region 2 (48KB)    |
+| `xF8000000` | `x80000` | SPI (512KB, fully R/W) |
 
 ### FEATURE 0x72: Memory read
 
 [Get] feature Report
 
-| Byte # |  Sample  | Remarks                         |
-|:------:|:--------:| ------------------------------- |
-| 0      | `72`     | Feature report                  |
-| 1      | `8E`     | Checksum* (8-bit 2s Complement) |
-| 2-EOF  |          |                                 |
+| Byte # |  Sample   | Remarks                         |
+|:------:|:---------:| ------------------------------- |
+| 0      | `x72`     | Feature report ID               |
+| 1      | `x8E`     | Checksum* (8-bit 2s Complement) |
+| 2-EOF  |           |                                 |
 
 *Checksum is optional.
 
@@ -236,13 +236,13 @@ If the 0x71 command wasn't sent previously, it will return zeroed data (except I
 
 The data returned has the following structure:
 
-| Byte #  |  Sample       | Remarks                        |
-|:-------:|:-------------:| ------------------------------ |
-| 0       | `74`          | Feature report                 |
-| 1 - 4   | `00 80 02 F8` | UInt32LE address               |
-| 5 - 6   | `F9 00`       | UInt16LE size                  |
-| 7-EOF-1 |               | Data requested                 |
-| EOF     | `DC`          | Checksum (8-bit 2s Complement) |
+| Byte #  |  Sample        | Remarks                        |
+|:-------:|:--------------:| ------------------------------ |
+| 0       | `x74`          | Feature report ID              |
+| 1 - 4   | `x00 80 02 F8` | UInt32LE address               |
+| 5 - 6   | `xF9 00`       | UInt16LE size                  |
+| 7-EOF-1 |                | Data requested                 |
+| EOF     | `xDC`          | Checksum (8-bit 2s Complement) |
 
 The returned size is header + size in 0x71 ft report + 1. So make sure to get your report with an adequate buffer size.
 
@@ -256,12 +256,12 @@ Should be used only with SPI (0xF8000000 - 0xF807FFFF), because SPI needs to be 
 
 0x70 command must be sent before using this. Otherwise, Joy-Con will reply with invalid report ID.
 
-| Byte # |  Sample       | Remarks                        |
-|:------:|:-------------:| ------------------------------ |
-| 0      | `73`          | Feature report                 |
-| 1 - 4  | `00 80 02 F8` | UInt32LE address               |
-| 5 - 6  | `00 10`       | UInt16LE size.                 |
-| 7      | `03`          | Checksum (8-bit 2s Complement) |
+| Byte # |  Sample        | Remarks                        |
+|:------:|:--------------:| ------------------------------ |
+| 0      | `x73`          | Feature report ID              |
+| 1 - 4  | `x00 80 02 F8` | UInt32LE address               |
+| 5 - 6  | `x00 10`       | UInt16LE size.                 |
+| 7      | `x03`          | Checksum (8-bit 2s Complement) |
 
 This command only checks `& 0x00FFF000` to acquire the sector number. Size is also irrelevant, but it's best to use values `x01 - x100`.
 
@@ -279,13 +279,13 @@ Writes to SPI. Can write locked sectors.
 
 0x70 command must be sent before using this. Otherwise, Joy-Con will reply with invalid report ID.
 
-| Byte #  |  Sample       | Remarks                        |
-|:-------:|:-------------:| ------------------------------ |
-| 0       | `74`          | Feature report                 |
-| 1 - 4   | `00 80 02 F8` | UInt32LE address               |
-| 5 - 6   | `F9 00`       | UInt16LE size. Max xF9 bytes.  |
-| 7-EOF-1 |               | Data to write                  |
-| EOF     | `DC`          | Checksum (8-bit 2s Complement) |
+| Byte #  |  Sample        | Remarks                        |
+|:-------:|:--------------:| ------------------------------ |
+| 0       | `x74`          | Feature report ID              |
+| 1 - 4   | `x00 80 02 F8` | UInt32LE address               |
+| 5 - 6   | `xF9 00`       | UInt16LE size. Max xF9 bytes.  |
+| 7-EOF-1 |                | Data to write                  |
+| EOF     | `xDC`          | Checksum (8-bit 2s Complement) |
 
 #### Warning:
 
@@ -301,13 +301,13 @@ If address is `x0000` the Host should assume that the device will reboot.
 
 0x70 command must be sent before using this. Otherwise, Joy-Con will reply with invalid report ID.
 
-| Byte #  |  Sample       | Remarks                                  |
-|:-------:|:-------------:| ---------------------------------------- |
-| 0       | `75`          | Feature report                           |
-| 1 - 4   | `00 80 02 F8` | UInt32LE entry address for firmware jump |
-| 5 - 6   | `04 00`       | UInt16LE size. Always 4.                 |
-| 7       | `00 80 02 F8` | UInt32LE entry address for firmware jump |
-| 8       | `DC`          | Checksum (8-bit 2s Complement)           |
+| Byte #  |  Sample        | Remarks                                  |
+|:-------:|:--------------:| ---------------------------------------- |
+| 0       | `x75`          | Feature report ID                        |
+| 1 - 4   | `x00 80 02 F8` | UInt32LE entry address for firmware jump |
+| 5 - 6   | `x04 00`       | UInt16LE size. Always 4.                 |
+| 7       | `x00 80 02 F8` | UInt32LE entry address for firmware jump |
+| 8       | `xDC`          | Checksum (8-bit 2s Complement)           |
 
 Sending x75 00000000 0400 00000000 CRC will reboot the device and load the bootrom at 0x0. This is a good practice after finishing erasing/writing proccess.
 
