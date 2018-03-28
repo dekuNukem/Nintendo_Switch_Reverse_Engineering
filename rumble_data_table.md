@@ -35,6 +35,8 @@ byte[3] = lf_amp & 0xFF;
 
 ## Frequency Table
 
+Values # are in HEX.
+
 | HF Byte 0-1 # | LF Byte 3 # | Frequency (Hz) | Frequency Rounded (Hz) |
 |:--:|:---:|:---:|:---:|
 |		|	`01`	|	40.875885	|	41	|

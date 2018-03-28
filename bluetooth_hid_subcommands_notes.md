@@ -2,13 +2,13 @@
 
 ### Subcommand 0x##: All unused subcommands
 
-All subcommands that do nothing, reply back with ACK `x80` `x##` and `x03`
+All subcommands that do nothing, reply back with ACK `x80##` and `x03`
 
 ### Subcommand 0x00: Get Only Controller State
 
-Replies with `x80` `x00` `x03`
+Replies with `x8000` `x03`
 
-Can be used to get Controller state only (w/o 6-Axis sensor data), like any subcommand that does nothing
+Does nothing actually, but can be used to get Controller state only (w/o 6-Axis sensor data), like any subcommand that does nothing.
 
 ### Subcommand 0x01: Bluetooth manual pairing
 
@@ -24,19 +24,19 @@ The procedure must be done sequentially:
 
 Host Pair request x01 (send HOST BT MAC and request Joy-Con BT MAC):
 
-| Byte # | Sample              | Remarks                                 |
-|:------:|:-------------------:| --------------------------------------- |
-|  0     | `01`                | subcmd                                  |
-|  1     | `01`                | Pair request type                       |
-|  2-7   | `16 30 AA 82 BB 98` | Host Bluetooth address in Little-Endian |
+| Byte # | Sample               | Remarks                                 |
+|:------:|:--------------------:| --------------------------------------- |
+|  0     | `x01`                | subcmd                                  |
+|  1     | `x01`                | Pair request type                       |
+|  2-7   | `x16 30 AA 82 BB 98` | Host Bluetooth address in Little-Endian |
 
 Joy-Con Pair request x01 reply:
 
-| Byte # | Sample              | Remarks                         |
-|:------:|:-------------------:| ------------------------------- |
-|  0     | `01`                | Pair request type               |
-|  1-6   | `57 30 EA 8A BB 7C` | Joy-Con BT MAC in Little-Endian |
-|  7-31  |                     | Descriptor?                     |
+| Byte # | Sample               | Remarks                         |
+|:------:|:--------------------:| ------------------------------- |
+|  0     | `x01`                | Pair request type               |
+|  1-6   | `x57 30 EA 8A BB 7C` | Joy-Con BT MAC in Little-Endian |
+|  7-31  |                      | Descriptor?                     |
 
 Host Pair request x03 (request LTK):
 
@@ -54,32 +54,33 @@ If the command is `x11`, it polls the MCU State? Used with IR Camera or NFC?
 
 Response data after 02 command byte:
 
-| Byte # | Sample              | Remarks                                                  |
-|:------:|:-------------------:| -------------------------------------------------------- |
-|  0-1   | `03 48`             | Firmware Version. Latest is 3.86 (from 4.0.0 and up).    |
-|  2     | `01`                | 1=Left Joy-Con, 2=Right Joy-Con, 3=Pro Controller.       |
-|  3     | `02`                | Unknown. Seems to be always `02`                         |
-|  4-9   | `7C BB 8A EA 30 57` | Joy-Con MAC address in Big Endian                        |
-|  10    | `01`                | Unknown. Seems to be always `01`                         |
-|  11    | `01`                | If `01`, colors in SPI are used. Otherwise default ones. |
+| Byte # | Sample               | Remarks                                                  |
+|:------:|:--------------------:| -------------------------------------------------------- |
+|  0-1   | `x03 48`             | Firmware Version. Latest is 3.89 (from 5.0.0 and up).    |
+|  2     | `x01`                | 1=Left Joy-Con, 2=Right Joy-Con, 3=Pro Controller.       |
+|  3     | `x02`                | Unknown. Seems to be always `02`                         |
+|  4-9   | `x7C BB 8A EA 30 57` | Joy-Con MAC address in Big Endian                        |
+|  10    | `x01`                | Unknown. Seems to be always `01`                         |
+|  11    | `x01`                | If `01`, colors in SPI are used. Otherwise default ones. |
 
 ### Subcommand 0x03: Set input report mode
 
 One argument:
 
-| Argument # | Remarks                                                                                          |
-|:----------:| ------------------------------------------------------------------------------------------------ |
-|   `00`     | Used with cmd `x11`. Active polling for IR camera data. 0x31 data format must be set first       |
-|   `01`     | Same as `00`                                                                                     |
-|   `02`     | Same as `00`. Active polling mode for IR camera data. For specific IR modes                      |
-|   `23`     | MCU update state report?                                                                         |
-|   `30`     | Standard full mode. Pushes current state @60Hz                                                   |
-|   `31`     | NFC/IR mode. Pushes large packets @60Hz                                                          |
-|   `33`     | Unknown mode.                                                                                    |
-|   `35`     | Unknown mode.                                                                                    |
-|   `3F`     | Simple HID mode. Pushes updates with every button press                                          |
+| Arg #  | Remarks                                                                                          |
+|:------:| ------------------------------------------------------------------------------------------------ |
+|  `x00` | Used with cmd `x11`. Active polling for NFC/IR camera data. 0x31 data format must be set first.  |
+|  `x01` | Same as `00`. Active polling mode for NFC/IR MCU configuration data.                             |
+|  `x02` | Same as `00`. Active polling mode for NFC/IR data and configuration. For specific NFC/IR modes   |
+|  `x03` | Same as `00`. Active polling mode for IR camera data. For specific IR modes                      |
+|  `x23` | MCU update state report?                                                                         |
+|  `x30` | Standard full mode. Pushes current state @60Hz                                                   |
+|  `x31` | NFC/IR mode. Pushes large packets @60Hz                                                          |
+|  `x33` | Unknown mode.                                                                                    |
+|  `x35` | Unknown mode.                                                                                    |
+|  `x3F` | Simple HID mode. Pushes updates with every button press                                          |
 
-`31` input report has all zeroes for IR/NFC data if a `11` ouput report with subcmd `03 00` or `03 01` or `03 02` was not sent before.
+`x31` input report has all zeroes for IR/NFC data if a `11` ouput report with subcmd `03 00/01/02/03` was not sent before.
 
 ### Subcommand 0x04: Trigger buttons elapsed time
 
@@ -170,9 +171,9 @@ Replies with `x8011` ack and a uint8 status. `x00` = success, `x01` = write prot
 Takes a Little-endian uint32. Erases the whole 4KB in the specified address to 0xFF.
 Replies with `x8012` ack and a uint8 status. `x00` = success, `x01` = write protected.
 
-### Subcommand 0x20: Reset MCU
+### Subcommand 0x20: Reset NFC/IR MCU
 
-### Subcommand 0x21: Set MCU configuration
+### Subcommand 0x21: Set NFC/IR MCU configuration
 
 Write configuration data to MCU. This data can be IR configuration, NFC configuration or data for the 512KB MCU firmware update.
 
@@ -180,7 +181,7 @@ Takes 38 or 37 bytes long argument data.
 
 Replies with ACK `xA0` `x20` and 34 bytes of data.
 
-### Subcommand 0x22: Set MCU state
+### Subcommand 0x22: Set NFC/IR MCU state
 
 Takes one argument:
 
@@ -194,7 +195,7 @@ Takes one argument:
 
 Takes a 38 byte long argument.
 
-Sets a byte to `x01` (enable something?) and sets also an unknown data (configuration? for MCU?) to the bt device struct that copies it from given argument.
+Sets a byte to `x01` (enable something?) and sets also an unknown data (configuration? for NFC/IR MCU?) to the bt device struct that copies it from given argument.
 
 Replies with `x80 24 00` always.
 
@@ -204,7 +205,7 @@ Sets the above byte to `x00` (disable something?) and resets the previous 38 byt
 
 Replies with `x80 25 00` always.
 
-### Subcommand 0x28: Set unknown MCU data
+### Subcommand 0x28: Set unknown NFC/IR MCU data
 
 Takes a 38 byte long argument and copies it to unknown array_222640[96] at &array_222640[3].
 
@@ -212,7 +213,7 @@ Does the same job with OUTPUT report 0x12.
 
 Replies with ACK `x80` `x28`.
 
-### Subcommand 0x29: Get `x28` MCU data
+### Subcommand 0x29: Get `x28` NFC/IR MCU data
 
 Replies with ACK `xA8` `x29` and 34 bytes data, from a different buffer than the one the x28 writes.
 
@@ -226,7 +227,7 @@ Replies always with ACK `x00` `x2A`.
 
 `x00` as an ACK here is a bug. Devs forgot to add an ACK reply.
 
-### Subcommand 0x2B: Get `x29` MCU data
+### Subcommand 0x2B: Get `x29` NFC/IR MCU data
 
 Replies with ACK `xA9` `x2B` and 20 bytes long data (which has also a part from x24 subcmd).
 
@@ -408,13 +409,13 @@ The end result values are translated to `GPIO_PIN_OUTPUT_LOW = 0` and `GPIO_PIN_
 
 | Value # | PIN @Port 1 | GPIO Output Value    |
 |:-------:|:-----------:| -------------------- |
-| `0x00`  | `7`         | GPIO_PIN_OUTPUT_HIGH |
+| `x00`   | `7`         | GPIO_PIN_OUTPUT_HIGH |
 |         | `15`        | GPIO_PIN_OUTPUT_LOW  |
-| `0x04`  | `7`         | GPIO_PIN_OUTPUT_LOW  |
+| `x04`   | `7`         | GPIO_PIN_OUTPUT_LOW  |
 |         | `15`        | GPIO_PIN_OUTPUT_LOW  |
-| `0x10`  | `7`         | GPIO_PIN_OUTPUT_HIGH |
+| `x10`   | `7`         | GPIO_PIN_OUTPUT_HIGH |
 |         | `15`        | GPIO_PIN_OUTPUT_HIGH |
-| `0x14`  | `7`         | GPIO_PIN_OUTPUT_LOW  |
+| `x14`   | `7`         | GPIO_PIN_OUTPUT_LOW  |
 |         | `15`        | GPIO_PIN_OUTPUT_HIGH |
 
 Replies with ACK `x80` `x51`.
