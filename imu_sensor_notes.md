@@ -64,11 +64,11 @@ The new conversion will be:
 
 ### Gyroscope - Rotation (in revolutions/s)
 
-Internally switch uses revolutions per second instead of degrees. That's why the gyro calibration is always 13371.
+Internally Switch uses revolutions per second instead of degrees. That's why the gyro calibration is always 13371.
 
 Normally to get revolutions/s you need to follow the below equation:
 
-`gyro_revolutions = gyro_raw_component * G_GAIN / SENSOR_RES / 360f` [Value in revolutions/s]
+`gyro_revolutions = gyro_raw_component * G_GAIN / SENSOR_RES / 360.0f` [Value in revolutions/s]
 
 So the equation for the above 3 sensitivities will become:
 
@@ -88,13 +88,13 @@ The [SparkFun library for the LSM6DS3](https://github.com/sparkfun/SparkFun_LSM6
 
 The SPI `accelerometer calibration`, includes 3 important values for each axis:
 
-The `cal_acc_origin` which is the origin position when the Joy-Con is held completely horizontally.
+The `cal_acc_origin` is the origin scale value when the Joy-Con is held completely horizontally. It's not an origin position but how the raw values are affected by noise and by the unleveled body of the controller (triggers protruding).
 
-The `cal_acc_horizontal_offset` which is the offest (difference) that the Joy-Con has when it's on a flat surface than being completely horizontal. (The Trigger bump changes its position and you can use this offset to calibrate the position when it is on a flat surface)
+The `cal_acc_horizontal_offset` is the offest (difference) that the Joy-Con/Pro-con has when it's on a flat surface than being completely horizontal. (The Trigger bumps change its position and you can use this offset to calibrate the position when it is on a flat surface)
 
 The `cal_acc_horizontal_offset` is always the same. Advise [here](spi_flash_dump_notes.md#6-axis-and-stick-device-parameters) for the values each model (JC Left, JC Right, Pro).
 
-The `cal_acc_coeff` which is used for the equations and it's always `x4000` (`16384`).
+The `cal_acc_coeff` is used for the equations and it's always `x4000` (`16384`).
 
 Based on these we can conclude on the following equation to find the final coefficient:
 
@@ -108,7 +108,7 @@ Then we use the coefficient to convert the value into G (SI: 9.8m/s²):
 
 ### Completely level* Accelerometer when horizontal on flat surface:
 
-*This will level the accelerometer to 0 values when resting on flat surface
+*This will level the accelerometer to 0 values when resting on flat surface. It's useful when we perform a manual calibration.
 
 We subtract `cal_acc_horizontal_offset` and then we use the coefficient to convert the value into G (SI: 9.8m/s²):
 
@@ -118,9 +118,9 @@ We subtract `cal_acc_horizontal_offset` and then we use the coefficient to conve
 
 The SPI `gyro calibration`, includes 2 important values for each axis:
 
-The `cal_gyro_offset` which is the offset when the Joy-Con is stable (held still).
+The `cal_gyro_offset` is the offset when the Joy-Con is stable (held still).
 
-The `cal_gyro_coeff` which is the coeff that is used in the equation and it's always `x343B` (`13371`).
+The `cal_gyro_coeff` is the coeff that is used in the equation and it's always `x343B` (`13371`).
 
 Based on these we can conclude on the final equation:
 
@@ -134,13 +134,15 @@ Based on these we can conclude on the final equation:
 
 Then we use the coefficient to convert the value into degrees°/s (SI: 0.01745 rad/s):
 
-`acc_vector_component = acc_raw_component * acc_coeff`
+`acc_vector_component = (acc_raw_component - uint16_to_int16(cal_gyro_offset)) * acc_coeff`
+
+Here, unlike acceleration, the origin position is indeed the still position and not a scaling value. So it must be also used in the unit calculation, in addition to coeffition.
 
 ### Gyroscope - Rotation (in revolutions/s)
 
 The equation will become:
 
-`acc_vector_component = acc_raw_component * acc_coeff * 0.0027777778`
+`acc_vector_component = (acc_raw_component - uint16_to_int16(cal_gyro_offset)) * acc_coeff * 0.0027777778`
 
 ## Noise level range for each sensitivity configuration
 
