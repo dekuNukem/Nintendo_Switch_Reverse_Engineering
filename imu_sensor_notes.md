@@ -134,7 +134,7 @@ Based on these we can conclude on the final equation:
 
 Then we use the coefficient to convert the value into degrees°/s (SI: 0.01745 rad/s):
 
-`acc_vector_component = (acc_raw_component - uint16_to_int16(cal_gyro_offset)) * acc_coeff`
+`gyro_vector_component = (gyro_raw_component - uint16_to_int16(cal_gyro_offset)) * gyro_cal_coeff`
 
 Here, unlike acceleration, the origin position is indeed the still position and not a scaling value. So it must be also used in the unit calculation, in addition to coeffition.
 
@@ -142,7 +142,7 @@ Here, unlike acceleration, the origin position is indeed the still position and 
 
 The equation will become:
 
-`acc_vector_component = (acc_raw_component - uint16_to_int16(cal_gyro_offset)) * acc_coeff * 0.0027777778`
+`gyro_vector_component = (gyro_raw_component - uint16_to_int16(cal_gyro_offset)) * gyro_cal_coeff * 0.0027777778`
 
 ## Noise level range for each sensitivity configuration
 
