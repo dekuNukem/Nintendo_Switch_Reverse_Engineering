@@ -92,15 +92,15 @@ The `cal_acc_origin` is the origin scale value when the Joy-Con is held complete
 
 The `cal_acc_horizontal_offset` is the offest (difference) that the Joy-Con/Pro-con has when it's on a flat surface than being completely horizontal. (The Trigger bumps change its position and you can use this offset to calibrate the position when it is on a flat surface)
 
-The `cal_acc_horizontal_offset` is always the same. Advise [here](spi_flash_dump_notes.md#6-axis-and-stick-device-parameters) for the values each model (JC Left, JC Right, Pro).
+The `cal_acc_horizontal_offset` is always the same. Advise [here](spi_flash_notes.md#6-axis-and-stick-device-parameters) for the values each model (JC Left, JC Right, Pro).
 
-The `cal_acc_coeff` is used for the equations and it's always `x4000` (`16384`).
+ The `cal_acc_coeff` is used for calibrating sensitivity. The default uncalibrated value for ±8G sensitivity is x4000 (16384). Advise [here](spi_flash_notes.md#6-axis-and-stick-device-parameters).
 
 Based on these we can conclude on the following equation to find the final coefficient:
 
 ##### Origin posititon is horizontal and stick is upside:
 
-`acc_coeff = (float)(1.0 / (float)(16384 - uint16_to_int16(cal_acc_origin))) * 4.0f;`
+`acc_coeff = (float)(1.0 / (float)(cal_acc_coeff - uint16_to_int16(cal_acc_origin))) * 4.0f;`
 
 Then we use the coefficient to convert the value into G (SI: 9.8m/s²):
 
@@ -120,17 +120,17 @@ The SPI `gyro calibration`, includes 2 important values for each axis:
 
 The `cal_gyro_offset` is the offset when the Joy-Con is stable (held still).
 
-The `cal_gyro_coeff` is the coeff that is used in the equation and it's always `x343B` (`13371`).
+The `cal_gyro_coeff` is used for calibrating sensitivity. The default uncalibrated value for ±2000dps sensitivity is x343B (13371). Advise [here](spi_flash_notes.md#6-axis-and-stick-device-parameters).
 
 Based on these we can conclude on the final equation:
 
 ##### Default (saturation free) LSM6DS3 ±2000 dps : 70 mdps/digit:
 
-`gyro_cal_coeff = (float)(936.0 / (float)(13371 - uint16_to_int16(cal_gyro_offset)));`
+`gyro_cal_coeff = (float)(936.0 / (float)(cal_gyro_coeff - uint16_to_int16(cal_gyro_offset)));`
 
 ##### Accurate ±2000 dps : 61 mdps/digit:
 
-`gyro_cal_coeff = (float)(816.0 / (float)(13371 - uint16_to_int16(cal_gyro_offset)));`
+`gyro_cal_coeff = (float)(816.0 / (float)(cal_gyro_coeff - uint16_to_int16(cal_gyro_offset)));`
 
 Then we use the coefficient to convert the value into degrees°/s (SI: 0.01745 rad/s):
 
