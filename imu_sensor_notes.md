@@ -92,9 +92,9 @@ The `cal_acc_origin` is the origin scale value when the Joy-Con is held complete
 
 The `cal_acc_horizontal_offset` is the offest (difference) that the Joy-Con/Pro-con has when it's on a flat surface than being completely horizontal. (The Trigger bumps change its position and you can use this offset to calibrate the position when it is on a flat surface)
 
-The `cal_acc_horizontal_offset` is always the same. Advise [here](spi_flash_dump_notes.md#6-axis-and-stick-device-parameters) for the values each model (JC Left, JC Right, Pro).
+The `cal_acc_horizontal_offset` is always the same. Advise [here](spi_flash_notes.md#6-axis-and-stick-device-parameters) for the values each model (JC Left, JC Right, Pro).
 
-The `cal_acc_coeff` is used for the equations.
+ The `cal_acc_coeff` is used for calibrating sensitivity. The default uncalibrated value for ±8G sensitivity is x4000 (16384). Advise [here](spi_flash_notes.md#6-axis-and-stick-device-parameters).
 
 Based on these we can conclude on the following equation to find the final coefficient:
 
@@ -120,7 +120,7 @@ The SPI `gyro calibration`, includes 2 important values for each axis:
 
 The `cal_gyro_offset` is the offset when the Joy-Con is stable (held still).
 
-The `cal_gyro_coeff` is the coeff that is used in the equation.
+The `cal_gyro_coeff` is used for calibrating sensitivity. The default uncalibrated value for ±2000dps sensitivity is x343B (13371). Advise [here](spi_flash_notes.md#6-axis-and-stick-device-parameters).
 
 Based on these we can conclude on the final equation:
 
