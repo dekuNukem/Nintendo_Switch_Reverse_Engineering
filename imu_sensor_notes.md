@@ -74,11 +74,11 @@ So the equation for the above 3 sensitivities will become:
 
 ##### Normal:
 
-`gyro_revolutions = gyro_raw_component * 0.0001694f` (=4813/65535/360)
+`gyro_revolutions = gyro_raw_component * 0.0001694f` (=4000/65535/360)
 
 ##### LSM6DS3:
 
-`gyro_revolutions = gyro_raw_component * 0.0001944f` (=4813/65535/360)
+`gyro_revolutions = gyro_raw_component * 0.0001944f` (=4588/65535/360)
 
 The [SparkFun library for the LSM6DS3](https://github.com/sparkfun/SparkFun_LSM6DS3_Arduino_Library) will likely be a valuable resource for future IMU hacking.
 
