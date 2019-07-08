@@ -8,7 +8,7 @@ Please make a post in the [issue section](https://github.com/dekuNukem/Nintendo_
 
 ## Contributors
 
-Please remember that the information in this repo is the work of a lot more people than just me. Please take a look at the [contributers list](https://github.com/dekuNukem/Nintendo_Switch_Reverse_Engineering/graphs/contributors) and appreciate their work. Be sure to credit them as well.
+Please remember that the information in this repo is the work of a lot more people than just me. Please take a look at the [contributors list](https://github.com/dekuNukem/Nintendo_Switch_Reverse_Engineering/graphs/contributors) and appreciate their work. Be sure to credit them as well.
 
 ## Joy-Con PCB Layout and test points
 
