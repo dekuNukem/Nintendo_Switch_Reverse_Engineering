@@ -5,7 +5,7 @@ The algorithm for amplitude is split in 3 range indexes (idx < 16, 16 <= idx < 3
 log2f(8.7f*amp)*32.0f
 
 // 16 <= idx < 32
-log2f(7.0f*amp)*16.0f
+log2f(17.0f*amp)*16.0f
 ```
 
 An example of code using it is:
@@ -28,7 +28,7 @@ uint8_t encoded_hex_amp = 0;
 if(amp > 0.23f)
   encoded_hex_amp = (uint8_t)round(log2f(amp*8.7f)*32.f);
 else if(amp > 0.12f)
-  encoded_hex_amp = (uint8_t)round(log2f(amp*7.f)*16.f);
+  encoded_hex_amp = (uint8_t)round(log2f(amp*17.f)*16.f);
 else{
   // TBD
 }
