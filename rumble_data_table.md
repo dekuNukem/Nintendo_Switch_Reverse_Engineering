@@ -1,5 +1,12 @@
 The encoding algorithm for frequency is log2((double)freq/10.0)*32.0.
-The algorithm for amplitude is split in 3 range indexes (idx < 16, 16 <= idx < 32, idx < 128) and it's currently undecoded.
+The algorithm for amplitude is split in 3 range indexes (idx < 16, 16 <= idx < 32, idx < 128), it is:
+```
+// 32<= idx < 128
+log2f(8.7f*amp)*32.0f
+
+// 16 <= idx < 32
+log2f(17.0f*amp)*16.0f
+```
 
 An example of code using it is:
 
@@ -15,6 +22,18 @@ uint8_t encoded_hex_freq = (uint8_t)round(log2((double)freq/10.0)*32.0);
 uint16_t hf = (encoded_hex_freq-0x60)*4;
 //Convert to Joy-Con LF range. Range: 0x01-0x7F.
 uint8_t lf = encoded_hex_freq-0x40;
+
+// Float amplitude to hex conversion
+uint8_t encoded_hex_amp = 0;
+if(amp > 0.23f)
+  encoded_hex_amp = (uint8_t)round(log2f(amp*8.7f)*32.f);
+else if(amp > 0.12f)
+  encoded_hex_amp = (uint8_t)round(log2f(amp*17.f)*16.f);
+else{
+  // TBD
+}
+uint16_t hf_amp = encoded_hex_amp * 2;    // encoded_hex_amp<<1;
+uint8_t lf_amp = encoded_hex_amp / 2 + 64;// (encoded_hex_amp>>1)+0x40;
 ```
 
 The high frequency and low amplitude are encoded and must always add the "control" byte to the HA/LF byte. An example is the following:
