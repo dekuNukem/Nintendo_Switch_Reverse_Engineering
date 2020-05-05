@@ -90,7 +90,9 @@ Capture of the docking of the [left](./logic_captures/left_grey_joycon_docking_c
 |            5           |           9          |           Power output        |                             Joy can output power to Ring Fit Adventure or starlink toy                                              |
 |            6           |          10          |          Flow control         |                             Joy-Con will only send data to console when this line is HIGH                                           |
 
-* When first connected the baud rate is at 1000000bps(!), after the initial handshake the speed is then switched to 3125000bps(!!). 
+* When first connected the baud rate is at 1000000bps(!), after the initial handshake the speed is then switched to 3125000bps(!!)
+
+* Thanks to [yujc1986's contribution](https://github.com/dekuNukem/Nintendo_Switch_Reverse_Engineering/commit/bfeadd4f3f7de46a9bd9e06a190f76e4a1887d31), the pin names has been updated according to the circuit board labels on the [Starlink: Battle for Atlas](https://github.com/dekuNukem/Nintendo_Switch_Reverse_Engineering/tree/master/peripheral%20device/startlink%20toy) Joycon adapter.
 
 ### Handshake procedure
 
