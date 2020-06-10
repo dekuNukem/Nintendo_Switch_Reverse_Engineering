@@ -69,12 +69,14 @@ These safe amplitude ranges are defined by Switch HID library.
 
 This input packet is pushed to the host when a button is pressed or released, and provides the "normal controller" interface for the OS.
 
-|  Byte # |        Sample value        | Remarks                   |
-|:-------:|:--------------------------:|:-------------------------:|
-|  0      | `x3F`                      | Input report ID           |
-|  1-2    | `x28 CA`                   | Button status             |
-|  3      | `x08`                      | Stick hat data            |
-|  4-11   | `x00 80 00 80 00 80 00 80` | Filler data               |
+|  Byte #         |        Sample value        | Remarks                   |
+|:---------------:|:--------------------------:|:-------------------------:|
+|  0              | `x3F`                      | Input report ID           |
+|  1-2            | `x28 CA`                   | Button status             |
+|  3              | `x08`                      | Stick hat data            |
+|  4-11 (Joy-Con) | `x00 80 00 80 00 80 00 80` | Filler data               |
+|  4-7 (Pro Con)  | `x40 8A 4F 8A`             | Left analog stick data    |
+|  8-11 (Pro Con) | `xD0 7E DF 7F`             | Right analog stick data   |
 
 #### Stick hat data
 
@@ -92,6 +94,16 @@ Hold your controller sideways so that SL, SYNC, and SR line up with the screen. 
 |:----:|:---------:|:------:|:------------|:------------:|:-----:|:--------:|:------:|:--------:|
 | 1    | Down      | Right  | Left        | Up           | SL    | SR       | --     | --       |
 | 2    | Minus     | Plus   | Left Stick  | Right Stick  | Home  | Capture  | L / R  | ZL / ZR  |
+
+#### Stick data
+
+The code below properly decodes the stick data:
+
+```
+uint8_t *data = packet + (left ? 4 : 8);
+uint16_t stick_horizontal = data[0] | (data[1] << 8);
+uint16_t stick_vertical = data[2] | (data[3] << 8);
+```
 
 ### INPUT 0x21
 
