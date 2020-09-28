@@ -56,7 +56,7 @@ byte[3] = lf_amp & 0xFF;
 
 Values # are in HEX.
 
-| HF Byte 0-1 # | LF Byte 3 # | Frequency (Hz) | Frequency Rounded (Hz) |
+| HF Byte 0-1 # | LF Byte 2 # | Frequency (Hz) | Frequency Rounded (Hz) |
 |:--:|:---:|:---:|:---:|
 |		|	`01`	|	40.875885	|	41	|
 |		|	`02`	|	41.77095	|	42	|
@@ -222,7 +222,7 @@ Values # are in HEX.
 
 ## Amplitude Table
 
-| HA Byte 1 # | LA Byte 3-4 # | Amplitude | Amplitude Rounded |
+| HA Byte 1 # | LA Byte 2-3 # | Amplitude | Amplitude Rounded |
 |:--:|:---:|:---:|:---:|
 |	`0`	|	`00 40`	|	0.000000	|	0.000	|
 |	`2`	|	`80 40`	|	0.007843	|	0.010	|
@@ -328,7 +328,7 @@ Values # are in HEX.
 
 The amplitudes below are not safe for the integrity of the linear resonant actuators.
 
-| HA Byte 1 # | LA Byte 3-4 # | Amplitude | Amplitude Rounded |
+| HA Byte 1 # | LA Byte 2-3 # | Amplitude | Amplitude Rounded |
 |:--:|:---:|:---:|:---:|
 |	`ca`	|	`80 72`	|	1.024826	|	1.025	|
 |	`cc`	|	`00 73`	|	1.047266	|	1.047	|
