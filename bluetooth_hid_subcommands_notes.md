@@ -154,11 +154,11 @@ Request:
                                   ^~~~~~~~~~~ address x6080
                                               ^ length = 0x18 bytes
 Response: INPUT 21
-[xx .E .. .. .. .. .. .. .. .. .. .. 0. 90 80 60 00 00 18 .. .. .. ....]
+[21 .. .. .. .. .. .. .. .. .. .. .. .. 90 10 80 60 00 00 18 .. .. .. ....]
                                         ^ subcommand reply
                                               ^~~~~~~~~~~ address
-                                                       ^ length = 0x18 bytes
-                                                          ^~~~~ data
+                                                          ^ length = 0x18 bytes
+                                                             ^~~~~ data
 ```
 
 ### Subcommand 0x11: SPI flash Write
