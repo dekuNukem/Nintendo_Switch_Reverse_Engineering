@@ -231,9 +231,9 @@ static const value_string nxbt_subc_c_names[] = {
 }
 
 // set mcu config
-static int nxbt_subc_mcuconfig = -1;
-#define nxbt_subc_mcuconfig_register { \
-  &nxbt_subc_mcuconfig, \
+static int nxbt_subc_mcu_config = -1;
+#define nxbt_subc_mcu_config_register { \
+  &nxbt_subc_mcu_config, \
   { \
     "Powerstate configuration", "nxbt.sub.mcu.config", \
     FT_UINT8, BASE_HEX, \
@@ -302,7 +302,7 @@ static int dissect_nxbt_subc(tvbuff_t* tvb, packet_info* pinfo _U_, proto_tree* 
       break;
     case 0x21: //set MCU config
       cursor += 2;
-      proto_tree_add_item(subc_tree, nxbt_subc_mcuconfig, tvb, cursor++, 1, ENC_LITTLE_ENDIAN);
+      proto_tree_add_item(subc_tree, nxbt_subc_mcu_config, tvb, cursor++, 1, ENC_LITTLE_ENDIAN);
       cursor += 34;
       break;
     case 0x22: // Set MCU state
@@ -318,114 +318,6 @@ static int dissect_nxbt_subc(tvbuff_t* tvb, packet_info* pinfo _U_, proto_tree* 
 }
 
 
-// commands to the MCU
-static int nxbt_mcuc = -1;
-static int nxbt_mcuc_tree = -1;
-#define nxbt_mcuc_register { \
-  &nxbt_mcuc, \
-  { \
-    "Command for MCU", "nxbt.mcuc", \
-    FT_NONE, ENC_NA, \
-    NULL, 0x0, \
-    NULL, HFILL \
-  } \
-}
-
-static int nxbt_mcuc_c = -1;
-static const value_string nxbt_mcuc_c_names[] = {
-  {0x01, "Status request"},
-  {0x02, "NFC subsubcommand"},
-  NAMES_END
-};
-#define nxbt_mcuc_c_register { \
-  &nxbt_mcuc_c, \
-  { \
-    "command", "nxbt.mcu.c", \
-    FT_UINT8, BASE_HEX, \
-    VALS(nxbt_mcuc_c_names), 0x0, \
-    NULL, HFILL \
-  } \
-}
-
-static int nxbt_mcuc_seqno = -1;
-#define nxbt_mcuc_seqno_register { \
-  &nxbt_mcuc_seqno, \
-  { \
-    "Sequence no", "nxbt.mcu.c.seq", \
-    FT_UINT8, BASE_DEC, \
-    NULL, 0x0, \
-    NULL, HFILL \
-  } \
-}
-
-#define NXBT_MCUC_EOT_FLAG 0x08
-static int nxbt_mcuc_eot = -1;
-static const true_false_string nxbt_mcuc_eot_names = {
-    "EOT",
-    "MORE"
-};
-#define nxbt_mcuc_eot_register { \
-  &nxbt_mcuc_eot, \
-  { \
-    "eot flag", "nxbt.mcu.c.eot", \
-    FT_BOOLEAN, 8, \
-    TFS(&nxbt_mcuc_eot_names), NXBT_MCUC_EOT_FLAG, \
-    NULL, HFILL \
-  } \
-}
-
-static int nxbt_mcuc_payload_len = -1;
-#define nxbt_mcuc_payload_len_register { \
-  &nxbt_mcuc_payload_len, \
-  { \
-    "Payload_length", "nxbt.mcu.c.data.len", \
-    FT_UINT8, BASE_DEC, \
-    NULL, 0x0, \
-    NULL, HFILL \
-  } \
-}
-
-static int nxbt_mcuc_subc = -1;
-static const value_string nxbt_mcuc_subc_names[] = {
-  {0x01, "Start Polling"},
-  {0x02, "Stop Polling"},
-  {0x04, "Get next Data / Status"},
-  {0x06, "Read and buffer NTag"},
-  {0x0f, "Read mifare data"},
-  NAMES_END
-};
-#define nxbt_mcuc_subc_register { \
-  &nxbt_mcuc_subc, \
-  { \
-    "Subcommand for MCU", "nxbt.mcu.subc", \
-    FT_UINT8, BASE_HEX, \
-    VALS(nxbt_mcuc_subc_names), 0x0, \
-    NULL, HFILL \
-  } \
-}
-
-static int dissect_nxbt_mcuc(tvbuff_t* tvb, packet_info* pinfo _U_, proto_tree* nxbt_tree _U_, void* data _U_, uint cursor) {
-  uint start = cursor;
-  proto_item* mcuc_item = proto_tree_add_none_format(nxbt_tree, nxbt_mcuc, tvb, cursor, -1, "Mcu Subcommand");
-  proto_tree* mcuc_tree = proto_item_add_subtree(mcuc_item, nxbt_mcuc_tree);
-  guint8 mcuc_c = tvb_get_guint8(tvb, cursor);
-  proto_tree_add_item(mcuc_tree, nxbt_mcuc_c, tvb, cursor++, 1, ENC_BIG_ENDIAN);
-  if (mcuc_c == 0x02) {
-    guint8 mcuc_subc = tvb_get_guint8(tvb, cursor);
-    proto_tree_add_item(mcuc_tree, nxbt_mcuc_subc, tvb, cursor++, 1, ENC_BIG_ENDIAN);
-    proto_tree_add_item(mcuc_tree, nxbt_mcuc_seqno, tvb, cursor++, 1, ENC_BIG_ENDIAN);
-    cursor += 1;
-    proto_tree_add_item(mcuc_tree, nxbt_mcuc_eot, tvb, cursor++, 1, ENC_BIG_ENDIAN);
-    guint8 payload_len = tvb_get_guint8(tvb, cursor);
-    proto_tree_add_item(mcuc_tree, nxbt_mcuc_payload_len, tvb, cursor++, 1, ENC_BIG_ENDIAN);
-    cursor += payload_len;
-    col_add_fstr(pinfo->cinfo, COL_INFO, "MCU-NFC command %s", val_to_str(mcuc_subc, nxbt_mcuc_subc_names, "unknown %04x"));
-  } else {
-    col_add_fstr(pinfo->cinfo, COL_INFO, "MCU command %s", val_to_str(mcuc_c, nxbt_mcuc_c_names, "unknown %04x"));
-  }
-  proto_item_set_len(mcuc_item, cursor - start);
-  return cursor;
-}
 
 // subcommand replies
 static int nxbt_rep = -1;
@@ -501,14 +393,33 @@ static int dissect_nxbt_subc_reply(tvbuff_t* tvb, packet_info* pinfo _U_, proto_
 }
 
 
+
+// General MCU stuff
 static int nxbt_mcu = -1;
 static int nxbt_mcu_tree = -1;
 #define nxbt_mcu_register { \
   &nxbt_mcu, \
   { \
-    "Subcommand Reply", "nxbt.mcu", \
+    "MCU Data", "nxbt.mcu", \
     FT_NONE, ENC_NA, \
     NULL, 0x0, \
+    NULL, HFILL \
+  } \
+}
+
+// command and first are identical just on different sides
+static int nxbt_mcu_c = -1;
+static const value_string nxbt_mcu_c_names[] = {
+  {0x01, "Status request"},
+  {0x02, "NFC subsubcommand"},
+  NAMES_END
+};
+#define nxbt_mcu_c_register { \
+  &nxbt_mcu_c, \
+  { \
+    "command", "nxbt.mcu.c", \
+    FT_UINT8, BASE_HEX, \
+    VALS(nxbt_mcu_c_names), 0x0, \
     NULL, HFILL \
   } \
 }
@@ -531,6 +442,117 @@ static const value_string nxbt_mcu_first_names[] = {
   } \
 }
 
+static int nxbt_mcu_seqno = -1;
+#define nxbt_mcu_seqno_register { \
+  &nxbt_mcu_seqno, \
+  { \
+    "Sequence no", "nxbt.mcu.seq", \
+    FT_UINT8, BASE_DEC, \
+    NULL, 0x0, \
+    NULL, HFILL \
+  } \
+}
+
+static int nxbt_mcu_ackseqno = -1;
+#define nxbt_mcu_ackseqno_register { \
+  &nxbt_mcu_ackseqno, \
+  { \
+    "[ack-seqno]", "nxbt.mcu.ackseqno", \
+    FT_UINT8, BASE_DEC, \
+    NULL, 0x0, \
+    NULL, HFILL \
+  } \
+}
+
+#define NXBT_MCUC_EOT_FLAG 0x08
+static int nxbt_mcu_eot = -1;
+static const true_false_string nxbt_mcu_eot_names = {
+    "EOT",
+    "MORE"
+};
+#define nxbt_mcu_eot_register { \
+  &nxbt_mcu_eot, \
+  { \
+    "eot flag", "nxbt.mcu.eot", \
+    FT_BOOLEAN, 8, \
+    TFS(&nxbt_mcu_eot_names), NXBT_MCUC_EOT_FLAG, \
+    NULL, HFILL \
+  } \
+}
+
+static int nxbt_mcu_payload_len = -1;
+#define nxbt_mcu_payload_len_register { \
+  &nxbt_mcu_payload_len, \
+  { \
+    "Payload_length", "nxbt.mcu.data.len", \
+    FT_UINT8, BASE_DEC, \
+    NULL, 0x0, \
+    NULL, HFILL \
+  } \
+}
+
+static int nxbt_mcu_crc = -1;
+#define nxbt_mcu_crc_register { \
+  &nxbt_mcu_crc, \
+  { \
+    "MCU crc", "nxbt.mcu.crc", \
+    FT_UINT8, BASE_HEX, \
+    NULL, 0x0, \
+    NULL, HFILL \
+  } \
+}
+
+
+// MCU out
+static int nxbt_mcu_nfcc = -1;
+static const value_string nxbt_mcu_nfcc_names[] = {
+  {0x01, "Start Polling"},
+  {0x02, "Stop Polling"},
+  {0x04, "Get next Data / Status"},
+  {0x06, "Read and buffer NTag"},
+  {0x08, "[Write to NTag]"},
+  {0x0f, "Read mifare data"},
+  NAMES_END
+};
+#define nxbt_mcu_nfcc_register { \
+  &nxbt_mcu_nfcc, \
+  { \
+    "Subcommand for NFC", "nxbt.mcu.nfc.c", \
+    FT_UINT8, BASE_HEX, \
+    VALS(nxbt_mcu_nfcc_names), 0x0, \
+    NULL, HFILL \
+  } \
+}
+
+static int counter = 1;
+
+static int dissect_nxbt_mcu_out(tvbuff_t* tvb, packet_info* pinfo _U_, proto_tree* nxbt_tree _U_, void* data _U_, uint cursor) {
+  uint start = cursor;
+  proto_item* mcu_item = proto_tree_add_none_format(nxbt_tree, nxbt_mcu, tvb, cursor, -1, "Mcu Command");
+  proto_tree* mcu_tree = proto_item_add_subtree(mcu_item, nxbt_mcu_tree);
+  guint8 mcu_c = tvb_get_guint8(tvb, cursor);
+  proto_tree_add_item(mcu_tree, nxbt_mcu_c, tvb, cursor++, 1, ENC_BIG_ENDIAN);
+  if (mcu_c == 0x02) { // NFC
+    guint8 nfcc = tvb_get_guint8(tvb, cursor);
+    proto_tree_add_item(mcu_tree, nxbt_mcu_nfcc, tvb, cursor++, 1, ENC_BIG_ENDIAN);
+    proto_tree_add_item(mcu_tree, nxbt_mcu_seqno, tvb, cursor++, 1, ENC_BIG_ENDIAN);
+    proto_tree_add_item(mcu_tree, nxbt_mcu_ackseqno, tvb, cursor++, 1, ENC_BIG_ENDIAN);
+    proto_tree_add_item(mcu_tree, nxbt_mcu_eot, tvb, cursor++, 1, ENC_BIG_ENDIAN);
+    //guint8 payload_len = tvb_get_guint8(tvb, cursor);
+    proto_tree_add_item(mcu_tree, nxbt_mcu_payload_len, tvb, cursor++, 1, ENC_BIG_ENDIAN);
+    //cursor += payload_len;
+    cursor += 31;
+    proto_tree_add_item(mcu_tree, nxbt_mcu_crc, tvb, cursor++, 1, ENC_BIG_ENDIAN);
+    col_add_fstr(pinfo->cinfo, COL_INFO, "MCU-NFC command %s %d", val_to_str(nfcc, nxbt_mcu_nfcc_names, "unknown 0x%02x"), ++counter);
+  } else {
+    col_add_fstr(pinfo->cinfo, COL_INFO, "MCU command %s", val_to_str(mcu_c, nxbt_mcu_c_names, "unknown 0x%02x"));
+  }
+  proto_item_set_len(mcu_item, cursor - start);
+  return cursor;
+}
+
+
+// MCU in
 static int nxbt_mcu_power_state = -1;
 static const value_string nxbt_mcu_power_state_names[] = {
   { 0x00, "Suspended" },
@@ -555,22 +577,12 @@ static const value_string nxbt_mcu_power_state_names[] = {
 
 //static int nxbt_mcu_nfc_type = -1;
 
-static int nxbt_mcu_nfc_data_len = -1;
-#define nxbt_mcu_nfc_data_len_register { \
-  &nxbt_mcu_nfc_data_len, \
-  { \
-    "data length", "nxbt.mcu.nfc.data.len", \
-    FT_UINT8, BASE_DEC, \
-    NULL, 0x0, \
-    NULL, HFILL \
-  } \
-}
-
 static int nxbt_mcu_nfc_state = -1;
 static const value_string nxbt_mcu_nfc_state_names[] = {
   { 0x00, "None" },
   { 0x01, "Polled" },
   { 0x02, "Buffered data / Pending read" },
+  { 0x03, "[Writing]"},
   { 0x09, "Polled, found tag again" },
   NAMES_END
 };
@@ -595,17 +607,6 @@ static int nxbt_mcu_nfc_uuid = -1;
   } \
 }
 
-static int nxbt_mcu_nfc_seqno = -1;
-#define nxbt_mcu_nfc_seqno_register { \
-  &nxbt_mcu_nfc_seqno, \
-  { \
-    "NFC packet sequence number", "nxbt.mcu.nfc.seqno", \
-    FT_UINT8, BASE_DEC, \
-    NULL, 0x0, \
-    NULL, HFILL \
-  } \
-}
-
 static int nxbt_mcu_nfc_data = -1;
 #define nxbt_mcu_nfc_data_register { \
   &nxbt_mcu_nfc_data, \
@@ -617,25 +618,15 @@ static int nxbt_mcu_nfc_data = -1;
   } \
 }
 
-static int nxbt_mcucrc = -1;
-#define nxbt_mcucrc_register { \
-  &nxbt_mcucrc, \
-  { \
-    "MCU crc8", "nxbt.mcu.crc", \
-    FT_UINT8, BASE_HEX, \
-    NULL, 0x0, \
-    NULL, HFILL \
-  } \
-}
-
-static int dissect_nxbt_mcu_data(tvbuff_t* tvb, packet_info* pinfo _U_, proto_tree* nxbt_tree _U_, void* data _U_, uint cursor) {
+static int dissect_nxbt_mcu_in(tvbuff_t* tvb, packet_info* pinfo _U_, proto_tree* nxbt_tree _U_, void* data _U_, uint cursor) {
   proto_item* mcu_item = proto_tree_add_none_format(nxbt_tree, nxbt_mcu, tvb, cursor, 313,
-     "MCU data");
+     "MCU response");
   proto_tree* mcu_tree = proto_item_add_subtree(mcu_item, nxbt_mcu_tree);
   guint8 first = tvb_get_guint8(tvb, cursor);
   proto_tree_add_item(mcu_tree, nxbt_mcu_first, tvb, cursor++, 1, ENC_BIG_ENDIAN);
   guint8 seqno = 0;
-  guint8 data_len = 0;
+  //guint8 mcu_seqno = 0;
+  guint8 payload_len = 0;
   switch (first) {
     case 0x01:
       cursor += 6;
@@ -644,22 +635,29 @@ static int dissect_nxbt_mcu_data(tvbuff_t* tvb, packet_info* pinfo _U_, proto_tr
       cursor += 304;
       break;
     case 0x2a:
-      cursor += 6;
+      cursor += 2;
+      proto_tree_add_item(mcu_tree, nxbt_mcu_seqno, tvb, cursor++, 1, ENC_BIG_ENDIAN);
+      proto_tree_add_item(mcu_tree, nxbt_mcu_ackseqno, tvb, cursor++, 1, ENC_BIG_ENDIAN);
+      cursor += 2;
       proto_tree_add_item(mcu_tree, nxbt_mcu_nfc_state, tvb, cursor++, 1, ENC_BIG_ENDIAN);
       cursor += 7;
-      data_len = tvb_get_guint8(tvb, cursor);
-      proto_tree_add_item(mcu_tree, nxbt_mcu_nfc_data_len, tvb, cursor++, 1, ENC_BIG_ENDIAN);
+      payload_len = tvb_get_guint8(tvb, cursor);
+      proto_tree_add_item(mcu_tree, nxbt_mcu_payload_len, tvb, cursor++, 1, ENC_BIG_ENDIAN);
       proto_tree_add_item(mcu_tree, nxbt_mcu_nfc_uuid, tvb, cursor, 7, ENC_BIG_ENDIAN);
       cursor += 7;
       cursor += 289;
-      col_set_str(pinfo->cinfo, COL_INFO, data_len == 0 ? "NFC status" : "NFC status with payload");
+      col_set_str(pinfo->cinfo, COL_INFO, payload_len == 0 ? "NFC status" : "NFC status with payload");
       break;
     case 0x3a:
       cursor += 2;
       seqno = tvb_get_guint8(tvb, cursor);
-      proto_tree_add_item(mcu_tree, nxbt_mcu_nfc_seqno, tvb, cursor++, 1, ENC_BIG_ENDIAN);
+      proto_tree_add_item(mcu_tree, nxbt_mcu_seqno, tvb, cursor++, 1, ENC_BIG_ENDIAN);
+      proto_tree_add_item(mcu_tree, nxbt_mcu_ackseqno, tvb, cursor++, 1, ENC_BIG_ENDIAN);
       if (seqno == 1) {
-        cursor += 11;
+        cursor += 2;
+        proto_tree_add_item(mcu_tree, nxbt_mcu_nfc_state, tvb, cursor++, 1, ENC_BIG_ENDIAN);
+        cursor += 6;
+        proto_tree_add_item(mcu_tree, nxbt_mcu_payload_len, tvb, cursor++, 1, ENC_BIG_ENDIAN);
         proto_tree_add_item(mcu_tree, nxbt_mcu_nfc_uuid, tvb, cursor, 7, ENC_BIG_ENDIAN);
         cursor += 7;
         cursor += 45;
@@ -667,7 +665,7 @@ static int dissect_nxbt_mcu_data(tvbuff_t* tvb, packet_info* pinfo _U_, proto_tr
         cursor += 245;
         col_set_str(pinfo->cinfo, COL_INFO, "NFC read buffered data #1");
       } else if (seqno == 2) {
-        cursor += 6;
+        cursor += 5;
         proto_tree_add_none_format(mcu_tree, nxbt_mcu_nfc_data, tvb, cursor, 295, "Raw NFC tag data");
         cursor += 295;
         cursor += 7;
@@ -678,9 +676,10 @@ static int dissect_nxbt_mcu_data(tvbuff_t* tvb, packet_info* pinfo _U_, proto_tr
       cursor += 311;
       break;
   }
-  proto_tree_add_item(mcu_tree, nxbt_mcucrc, tvb, cursor, 1, ENC_BIG_ENDIAN);
+  proto_tree_add_item(mcu_tree, nxbt_mcu_crc, tvb, cursor, 1, ENC_BIG_ENDIAN);
   return cursor;
 }
+
 
 static int dissect_nxbt(tvbuff_t* tvb, packet_info* pinfo, proto_tree* tree _U_, void* data _U_) {
   col_set_str(pinfo->cinfo, COL_PROTOCOL, "NX BT");
@@ -706,7 +705,7 @@ static int dissect_nxbt(tvbuff_t* tvb, packet_info* pinfo, proto_tree* tree _U_,
     cursor = dissect_nxbt_subc(tvb, pinfo, nxbt_tree, data, cursor);
     //proto_tree_add_item(nxbt_tree, nxbt_subc_data, tvb, cursor, 1, ENC_BIG_ENDIAN);
   } else if (type == 0x11) {
-    cursor = dissect_nxbt_mcuc(tvb, pinfo, nxbt_tree, data, cursor);
+    cursor = dissect_nxbt_mcu_out(tvb, pinfo, nxbt_tree, data, cursor);
   }
 
   // Input
@@ -726,7 +725,7 @@ static int dissect_nxbt(tvbuff_t* tvb, packet_info* pinfo, proto_tree* tree _U_,
     cursor += 36;
   }
   if (type == 0x31) {
-    cursor = dissect_nxbt_mcu_data(tvb, pinfo, nxbt_tree, data, cursor);
+    cursor = dissect_nxbt_mcu_in(tvb, pinfo, nxbt_tree, data, cursor);
   }
   return tvb_captured_length(tvb);
 }
@@ -736,46 +735,51 @@ void proto_register_nxbt(void) {
     hf_nxbt_direction_register,
 		hf_nxbt_type_register,
     hf_nxbt_timer_register,
+
     nxbt_rumble_register,
     nxbt_rumble_left_register,
     nxbt_rumble_right_register,
+
     nxbt_spi_address_register,
     nxbt_spi_length_register,
     nxbt_spi_data_register,
+
     nxbt_subc_register,
     nxbt_subc_c_register,
-    nxbt_subc_mcuconfig_register,
+    nxbt_subc_mcu_config_register,
     nxbt_subc_MCU_state_register,
     nxbt_subc_player_lights_register,
     nxbt_subc_type_register,
-    nxbt_mcuc_register,
-    nxbt_mcuc_c_register,
-    nxbt_mcuc_seqno_register,
-    nxbt_mcuc_eot_register,
-    nxbt_mcuc_payload_len_register,
-    nxbt_mcuc_subc_register,
+
     nxbt_rep_register,
     nxbt_rep_ack_register,
     nxbt_rep_dtype_register,
     nxbt_rep_subc_register,
+
     nxbt_mcu_register,
+    nxbt_mcu_c_register,
     nxbt_mcu_first_register,
+    nxbt_mcu_seqno_register,
+    nxbt_mcu_ackseqno_register,
+    nxbt_mcu_eot_register,
+    nxbt_mcu_payload_len_register,
+    nxbt_mcu_crc_register,
+
+    nxbt_mcu_nfcc_register,
+
     nxbt_mcu_power_state_register,
     nxbt_mcu_nfc_state_register,
-    nxbt_mcu_nfc_data_len_register,
     nxbt_mcu_nfc_uuid_register,
-    nxbt_mcu_nfc_seqno_register,
     nxbt_mcu_nfc_data_register,
-    nxbt_mcucrc_register
+
 	};
 
   static gint* ett[] = {
     &ett_nxbt,
     &nxbt_rumble_tree,
     &nxbt_subc_tree,
-    &nxbt_mcuc_tree,
-    &nxbt_rep_tree,
     &nxbt_mcu_tree,
+    &nxbt_rep_tree,
   };
 
 	proto_nxbt = proto_register_protocol(
