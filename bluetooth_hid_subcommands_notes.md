@@ -56,7 +56,7 @@ Response data after 02 command byte:
 
 | Byte # | Sample               | Remarks                                                  |
 |:------:|:--------------------:| -------------------------------------------------------- |
-|  0-1   | `x03 48`             | Firmware Version. Latest is 3.89 (from 5.0.0 and up).    |
+|  0-1   | `x03 48`             | Firmware Version. Latest is 4.07 (from 5.0.0 and up).    |
 |  2     | `x01`                | 1=Left Joy-Con, 2=Right Joy-Con, 3=Pro Controller.       |
 |  3     | `x02`                | Unknown. Seems to be always `02`                         |
 |  4-9   | `x7C BB 8A EA 30 57` | Joy-Con MAC address in Big Endian                        |
