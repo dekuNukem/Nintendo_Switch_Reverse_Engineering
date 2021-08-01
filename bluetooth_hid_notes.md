@@ -251,11 +251,11 @@ The data returned has the following structure:
 
 | Byte #  |  Sample        | Remarks                        |
 |:-------:|:--------------:| ------------------------------ |
-| 0       | `x74`          | Feature report ID              |
-| 1 - 4   | `x00 80 02 F8` | UInt32LE address               |
-| 5 - 6   | `xF9 00`       | UInt16LE size                  |
+| 0       | `x72`          | Feature report ID              |
+| 1 - 4   | `xF4 1F 00 F8` | UInt32LE address               |
+| 5 - 6   | `x08 00`       | UInt16LE size                  |
 | 7-EOF-1 |                | Data requested                 |
-| EOF     | `xDC`          | Checksum (8-bit 2s Complement) |
+| EOF     | `xC7`          | Checksum (8-bit 2s Complement) |
 
 The returned size is header + size in 0x71 ft report + 1. So make sure to get your report with an adequate buffer size.
 
