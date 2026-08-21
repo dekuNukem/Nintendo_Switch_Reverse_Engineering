@@ -207,10 +207,10 @@ pressing Y in the "Calibrate Control Sticks" menu, it seems to apply a
 calibration where the centers are zero—the stick appears at its maximum upwards
 right deflection and stays there until you reconnect the controller.
 
-For a Pro Controller, the sanity checks include ensuring that the X max, X min,
-and Y min deltas from center are at least `x542` and that the X min delta is at
+For a Pro Controller, the sanity checks include ensuring that the Y max, X min,
+and Y min deltas from center are at least `x542` and that the X max delta is at
 least `x4d5`. The exact center value does not matter. The values can be lower
-for Joy-Cons but by exactly how much has not been determined.
+for Joy-Cons, but by exactly how much has not been determined.
 
 ## 6-Axis sensor factory and user calibration
 
