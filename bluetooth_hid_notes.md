@@ -164,6 +164,13 @@ The middle byte is shared between the controllers.
 
 Note that the button status of the L and R Joy-Cons can be ORed together to get a complete button status.
 
+#### Standard input report (N64 Online Controller) - buttons
+| Byte       | Bit `x01` | `x02` | `x04`    | `x08`    | `x10` | `x20`    | `x40` | `x80`         |
+|:----------:|:---------:|:-----:|:--------:|:--------:|:-----:|:--------:|:-----:|:-------------:|
+| 3 (Right)  | C-Up      | C-Left| B        | A        | --    | --       | R     | C-Down        |
+| 4 (Shared) | C-Right   | Start | --       | ZR       | Home  | Capture  | --    | --            |
+| 5 (Left)   | Down      | Up    | Right    | Left     | --    | --       | L     | Z             |
+
 #### Standard input report - Stick data
 
 The code below properly decodes the stick data:
