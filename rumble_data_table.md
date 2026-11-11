@@ -358,4 +358,44 @@ The amplitudes below are not safe for the integrity of the linear resonant actua
 |	`fc`	|	`00 7f`	|	1.761146	|	1.761	|
 |	`fe`	|	`80 7f`	|	1.799701	|	1.800	|
 
+## Hardware validation of the frequency rows
 
+Measured on a first-generation Pro Controller over Bluetooth, macOS 26.6.2,
+driving output report `0x01` after subcommand `0x48 0x01`.
+
+**Equivalent form.** The table's `encoded_hex_freq = round(32 * log2(f / 10))`
+can also be written with a 40 Hz reference and a `0x40` offset:
+
+```
+code = round(32 * log2(f / 40)) = encoded_hex_freq - 0x40
+hf   = (encoded_hex_freq - 0x60) * 4 = (code - 0x20) * 4
+lf   =  encoded_hex_freq - 0x40      = code
+```
+
+`log2(f/40)*32 = log2(f/10)*32 - 64`, so the two encodings are bit-identical.
+This matters because it makes the two published ranges fall out directly:
+the low band's codes `0x01`–`0x7F` cover about 41–626 Hz and the high band's
+field `0x04`–`0x1FC` covers about 81.75–1252.57 Hz.
+
+**Sweep.** Driving the high band through 90, 120, 160, 200, 260, 320, 420, 520,
+640, 800, 1000 and 1252 Hz at a fixed amplitude changes the texture from a dull
+thud to a sharp buzz in that order. Resting the pad on a table makes it audible:
+the pitch rises with the code.
+
+**Melody.** Playing equal-tempered notes through the high band (`C4` = 261.6 Hz,
+`E4` = 329.6 Hz, `G4` = 392.0 Hz, `A4` = 440 Hz, …) produces a recognisable
+melody. An LRA has one degree of freedom, so its drive frequency is its pitch;
+if the codes were offset by an octave or non-logarithmic, a familiar tune would
+not survive. Notes below roughly C4 are felt rather than heard, and above C6 the
+code steps grow coarse.
+
+**Limits.** These tests show the frequency codes reach the actuator and are
+monotonic and logarithmic as the table describes. They do **not** validate the
+amplitude table, the two bands' relative weighting, or the reproduction of any
+specific game effect; in particular they do not resolve #140's report that some
+Mario Odyssey effects are missing or soft, which may be a game-side encoding
+issue rather than a table error. Only one pad family and one host OS were tested.
+
+**Neutral.** Rest is `00 01 40 40`, not `00 00`: in a report that carries a
+subcommand, the latter is read as the start of subcommand data and silences the
+pad until the next frame. This is easy to hit when writing a "zero" rumble frame.
