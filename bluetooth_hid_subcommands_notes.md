@@ -380,6 +380,27 @@ Consult LSM6DS3.pdf for all registers and their meaning. The registers addresses
 
 One argument of `x00` Disable  or `x01` Enable.
 
+**Over Bluetooth this is required before any rumble output report has an effect.**
+The controller starts with vibration disabled in firmware; writing output report
+`0x01`/`0x30` with valid rumble bytes while it is disabled produces no actuator
+output and no error, which makes it easy to mistake for a broken report or a bad
+frequency table. Send `0x48` with argument `x01` in a subcommand output report
+(the same frame still carries neutral rumble bytes, `00 01 40 40`), wait for the
+subcommand ACK / a short delay (~200 ms was enough in testing), then start writing
+rumble frames.
+
+Verified over Bluetooth on macOS 26.6.2 with a first-generation Pro Controller
+(`0x2009`) and first-generation Joy-Con, opened as `IOHIDDevice`s directly. USB
+behaviour and Switch 2 controllers were not tested.
+
+Related host observation: on macOS, `GameController` holds the pad's *input* path
+but does not own the device. `IOHIDDeviceOpen(dev, kIOHIDOptionsTypeNone)` succeeds
+while `gamecontrollerd` is reading input, so a second holder can send the `0x48`
+subcommand and subsequent rumble reports without seizing the device or installing
+a driver. Two holders on one device is not a good idea for a continuous stream
+(incrementing the packet counter twice and mixing subcommands with rumble is
+unreliable), but it does work for one-off setup frames.
+
 ### Subcommand 0x50: Get regulated voltage
 
 Replies with ACK `xD0` `x50` and a little-endian uint16. Raises when charging a Joy-Con.
